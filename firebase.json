@@ -1,0 +1,19 @@
+{
+  "hosting": {
+    "public": "deulmaru_v2/public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "deulmaru-v2",
+          "region": "asia-northeast3"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>들마루 v2 로그인</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/dashboard.css') }}">
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-copy">
+      <a class="brand" href="/login">
+        <span class="brand-mark">DM</span>
+        <span>
+          <strong>들마루 v2</strong>
+          <small>청년농 공공데이터 대시보드</small>
+        </span>
+      </a>
+      <h1>내 작물과 지역에 맞춘 농업 정보를 한 번에 확인합니다.</h1>
+      <p class="lead">
+        공모전 시연용 로그인입니다. 실제 회원/카카오 로그인은 다음 단계에서 붙이고,
+        지금은 데모 계정으로 화면 흐름을 먼저 안정화합니다.
+      </p>
+      <ul class="login-points">
+        <li>지원사업 추천</li>
+        <li>작물별 재배 일정</li>
+        <li>AI 병해충 진단</li>
+      </ul>
+    </section>
+
+    <section class="login-card">
+      <p class="eyebrow">Demo Login</p>
+      <h2>로그인</h2>
+      {% if error %}
+      <p class="form-error">{{ error }}</p>
+      {% endif %}
+      <form method="post" action="/login">
+        <label>
+          아이디
+          <input type="text" name="user_id" value="demo" autocomplete="username" required>
+        </label>
+        <label>
+          비밀번호
+          <input type="password" name="password" value="demo1234" autocomplete="current-password" required>
+        </label>
+        <button type="submit">들어가기</button>
+      </form>
+      <p class="demo-hint">데모 계정: <strong>demo / demo1234</strong></p>
+    </section>
+  </main>
+</body>
+</html>

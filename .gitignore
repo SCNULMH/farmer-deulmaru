@@ -1,0 +1,56 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Python / Deulmaru v2 ###
+__pycache__/
+*.py[cod]
+deulmaru_v2/.venv/
+deulmaru_v2/.env
+deulmaru_v2/uploads/
+deulmaru_v2/data/*.sqlite3
+deulmaru_v2/*firebase-adminsdk*.json
+deulmaru_v2/service-account*.json
+
+### Secrets / legacy local config ###
+src/main/resources/application.properties
+bin/
+.codex-summary/
+
+### Large ML artifacts ###
+model.pth
+models/*.pth
+
+### Firebase / Google Cloud local state ###
+.firebase/
+*.log

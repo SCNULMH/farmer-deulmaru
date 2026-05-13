@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: deulmaru-v2
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: APP_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_BACKEND
+        value: "firebase"
+      - key: USE_DEMO_DATA
+        value: "true"
+      - key: SUPPORT_API_BASE_URL
+        value: "https://apis.data.go.kr/1390000/youngV2"
+      - key: SUPPORT_API_SERVICE_KEY
+        sync: false
+      - key: NCPMS_API_BASE_URL
+        value: "http://ncpms.rda.go.kr/npmsAPI/service"
+      - key: NCPMS_API_KEY
+        sync: false
+      - key: NONGSARO_API_KEY
+        sync: false
+      - key: KAKAO_CLIENT_ID
+        sync: false
+      - key: KAKAO_REDIRECT_URI
+        value: "https://deulmaru-v2.onrender.com/auth/kakao/callback"
+      - key: FIREBASE_CREDENTIALS_JSON
+        sync: false
