@@ -8,22 +8,79 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>농업 상담 사례</small></span></a>
-    <nav><a href="/">홈</a><a href="/dictionary">병해충 사전</a><a href="/mypage">마이페이지</a></nav>
+    <a class="brand image-brand" href="/">
+      <img src="/static/image/deulmaru-logo.png" alt="들마루">
+      <span><strong>들마루</strong><small>농업 상담 사례</small></span>
+    </a>
+    <nav><a href="/">홈</a><a href="/auth/deulmaru_dictionary">병해충 사전</a><a href="/diagnosis">AI 진단</a><a href="/mypage">마이페이지</a></nav>
   </header>
   <main>
     <section class="page-hero">
       <p class="eyebrow">QnA</p>
       <h1>NCPMS 상담 사례를 검색합니다.</h1>
-      <form class="search-bar" method="get" action="/qna"><input name="query" value="{{ query }}"><button type="submit">검색</button></form>
+      <form class="search-bar" method="get" action="/qna">
+        <input name="query" value="{{ query }}" placeholder="예: 토마토, 고추, 잎마름">
+        <button type="submit">검색</button>
+      </form>
     </section>
-    <section class="cards three" id="consultCards"></section>
+
+    <section class="cards three" id="consultCards">
+      {% for item in consults %}
+      <article class="card consult-card">
+        <span class="tag">{{ item.crop or "상담" }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.summary or "상담 요약을 상세보기에서 확인하세요." }}</p>
+        <p class="muted">{{ item.date }}</p>
+        {% if item.id %}
+        <button type="button" class="secondary-action consult-detail-button" data-consult-id="{{ item.id }}">상세보기</button>
+        {% endif %}
+      </article>
+      {% else %}
+      <article class="card compact-card">
+        <h3>상담 사례를 찾지 못했습니다.</h3>
+        <p>작물명이나 증상 키워드를 바꿔 다시 검색해 보세요.</p>
+      </article>
+      {% endfor %}
+    </section>
   </main>
+
+  <div class="modal-backdrop" id="consultModal" hidden>
+    <section class="modal-panel">
+      <button type="button" class="modal-close" data-close-consult>닫기</button>
+      <div id="consultDetail">상세 정보를 불러오는 중입니다.</div>
+    </section>
+  </div>
+
   <script>
-    fetch(`/api/ncpms/consult?query={{ query }}`).then(r => r.json()).then(items => {
-      document.querySelector("#consultCards").innerHTML = items.map(item => `
-        <article class="card"><span class="tag">${item.crop || "상담"}</span><h3>${item.title}</h3><p>${item.summary || ""}</p><p class="muted">${item.date || ""}</p></article>
-      `).join("");
+    const modal = document.querySelector("#consultModal");
+    const detail = document.querySelector("#consultDetail");
+
+    document.querySelectorAll(".consult-detail-button").forEach((button) => {
+      button.addEventListener("click", async () => {
+        modal.hidden = false;
+        detail.innerHTML = "<strong>상담 상세를 불러오는 중입니다.</strong>";
+        const consultId = button.dataset.consultId;
+        const response = await fetch(`/api/ncpms/consult-detail/${consultId}`);
+        const data = await response.json();
+        const images = (data.images || []).map((image) => `
+          <figure>
+            <img src="${image.url}" alt="${image.title || "상담 이미지"}">
+            <figcaption>${image.title || ""}</figcaption>
+          </figure>
+        `).join("");
+        detail.innerHTML = `
+          <h2>${data.title || "상담 상세"}</h2>
+          <p><strong>상담 요청</strong></p>
+          <p>${data.request || "상담 요청 내용을 불러오지 못했습니다."}</p>
+          <p><strong>전문가 의견</strong></p>
+          <p>${data.opinion || "전문가 의견을 불러오지 못했습니다."}</p>
+          <div class="detail-images">${images}</div>
+        `;
+      });
+    });
+
+    document.querySelector("[data-close-consult]").addEventListener("click", () => {
+      modal.hidden = true;
     });
   </script>
 </body>

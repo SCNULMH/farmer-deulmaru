@@ -359,6 +359,90 @@ main {
   color: var(--muted);
 }
 
+.dictionary-card {
+  overflow: hidden;
+  padding-top: 18px;
+}
+
+.dictionary-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 18px;
+  background: #edf1ea;
+}
+
+.dictionary-thumb.placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.consult-card .secondary-action {
+  width: fit-content;
+  margin-top: 12px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: rgba(14, 24, 18, 0.52);
+  padding: 24px;
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.modal-panel {
+  position: relative;
+  width: min(820px, 94vw);
+  max-height: 86vh;
+  overflow: auto;
+  border-radius: 8px;
+  background: #fff;
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+
+.modal-close {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.detail-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.detail-images figure {
+  margin: 0;
+}
+
+.detail-images img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #edf1ea;
+}
+
+.detail-images figcaption {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .chatbot-button {
   position: fixed;
   right: 28px;

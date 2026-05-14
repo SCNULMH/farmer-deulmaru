@@ -11,7 +11,7 @@ from app.services.db import (
 )
 from app.services.demo_data import get_crop_schedule, get_grants, get_pest_guides, normalize_region
 from app.services.diagnosis import predict_disease
-from app.services.public_data import CROP_NAMES, fetch_support_detail, search_consults, search_pests
+from app.services.public_data import CROP_NAMES, fetch_consult_detail, fetch_support_detail, search_consults, search_pests
 
 router = APIRouter()
 
@@ -101,6 +101,7 @@ async def ncpms_search(query: str = "토마토", search_type: str = "crop") -> l
             "name": item["name"],
             "english_name": "",
             "thumb": "",
+            "image": "",
         }
         for idx, item in enumerate(get_pest_guides(query), start=1)
     ]
@@ -120,6 +121,20 @@ async def ncpms_consult(query: str = "토마토", page: int = 1) -> list[dict]:
             "summary": "API 응답이 없을 때 표시하는 데모 상담 사례입니다. 현장 증상과 병해충 가이드를 함께 확인하세요.",
         }
     ]
+
+
+@router.get("/ncpms/consult-detail/{consult_id}")
+async def ncpms_consult_detail(consult_id: str) -> dict:
+    detail = fetch_consult_detail(consult_id)
+    if detail:
+        return detail
+    return {
+        "id": consult_id,
+        "title": "상담 상세 예시",
+        "request": "작물 잎에 반점이 생기고 생육이 약해지는 증상을 문의한 사례입니다.",
+        "opinion": "정확한 병명은 현장 증상과 사진 확인이 필요하며, 병해충 사전의 증상 정보와 비교한 뒤 방제 여부를 결정하세요.",
+        "images": [],
+    }
 
 
 @router.get("/interests")
