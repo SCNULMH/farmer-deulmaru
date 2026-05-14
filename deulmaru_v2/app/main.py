@@ -17,7 +17,7 @@ from app.services.db import (
     list_interests,
     update_user_profile,
 )
-from app.services.demo_data import get_crop_schedule, get_dashboard_context, get_grants, get_pest_guides
+from app.services.demo_data import REGION_OPTIONS, get_crop_schedule, get_dashboard_context, get_grants, get_pest_guides, normalize_region
 from app.services.diagnosis import predict_disease
 from app.services.public_data import CROP_NAMES, fetch_support_detail, search_consults, search_pests
 
@@ -253,19 +253,66 @@ async def legacy_register(
 
 
 @app.get("/support", response_class=HTMLResponse)
-async def support_page(request: Request) -> HTMLResponse:
+async def support_page(
+    request: Request,
+    keyword: str = "",
+    region: str = "",
+    age: int | None = None,
+    status: str = "",
+    start_date: str = "",
+    end_date: str = "",
+) -> HTMLResponse:
     session_user = require_user(request)
     if isinstance(session_user, RedirectResponse):
         return session_user
+    selected_region = normalize_region(region or session_user.get("region", "전국"))
+    grants = get_grants(
+        session_user,
+        keyword=keyword,
+        region=selected_region,
+        age=age,
+        status=status,
+        start_date=start_date,
+        end_date=end_date,
+    )
     return templates.TemplateResponse(
         "support.html",
-        {"request": request, "session_user": session_user, "grants": get_grants(session_user)},
+        {
+            "request": request,
+            "session_user": session_user,
+            "grants": grants,
+            "filters": {
+                "keyword": keyword,
+                "region": selected_region,
+                "age": age or "",
+                "status": status,
+                "start_date": start_date,
+                "end_date": end_date,
+            },
+            "region_options": REGION_OPTIONS,
+        },
     )
 
 
 @app.get("/supportApi/support", response_class=HTMLResponse)
-async def legacy_support_page(request: Request) -> HTMLResponse:
-    return await support_page(request)
+async def legacy_support_page(
+    request: Request,
+    keyword: str = "",
+    region: str = "",
+    age: int | None = None,
+    status: str = "",
+    start_date: str = "",
+    end_date: str = "",
+) -> HTMLResponse:
+    return await support_page(
+        request,
+        keyword=keyword,
+        region=region,
+        age=age,
+        status=status,
+        start_date=start_date,
+        end_date=end_date,
+    )
 
 
 @app.get("/support/{grant_id}", response_class=HTMLResponse)

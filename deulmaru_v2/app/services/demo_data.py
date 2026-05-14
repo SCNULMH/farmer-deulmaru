@@ -1,9 +1,54 @@
 from __future__ import annotations
 
+import re
 from datetime import date
 
 from app.core.settings import settings
 from app.services.public_data import fetch_crop_schedule, fetch_pest_guides, fetch_support_grants
+
+REGION_CODES = {
+    "전국": "00",
+    "서울": "11",
+    "부산": "21",
+    "대구": "22",
+    "인천": "23",
+    "광주": "24",
+    "대전": "25",
+    "울산": "26",
+    "세종": "29",
+    "경기": "31",
+    "강원": "32",
+    "충북": "33",
+    "충남": "34",
+    "전북": "35",
+    "전남": "36",
+    "경북": "37",
+    "경남": "38",
+    "제주": "39",
+    "나주": "36",
+    "전라남도": "36",
+}
+
+REGION_OPTIONS = [
+    "전국",
+    "서울",
+    "부산",
+    "대구",
+    "인천",
+    "광주",
+    "대전",
+    "울산",
+    "세종",
+    "경기",
+    "강원",
+    "충북",
+    "충남",
+    "전북",
+    "전남",
+    "경북",
+    "경남",
+    "제주",
+]
 
 DEMO_USER = {
     "name": "데모 청년농",
@@ -109,12 +154,32 @@ def get_dashboard_context(user: dict | None = None, diagnosis_history: list[dict
     }
 
 
-def get_grants(user: dict | None = None) -> list[dict]:
+def get_grants(
+    user: dict | None = None,
+    *,
+    keyword: str = "",
+    region: str = "",
+    age: int | None = None,
+    status: str = "",
+    start_date: str = "",
+    end_date: str = "",
+    page: int = 1,
+    limit: int = 24,
+) -> list[dict]:
+    area_code = region_code(region)
     if not settings.use_demo_data:
-        grants = fetch_support_grants()
+        grants = fetch_support_grants(
+            limit=limit,
+            keyword=keyword,
+            area_code=area_code if area_code != "00" else "",
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            page=page,
+        )
         if grants:
-            return personalize_grants(grants, user)
-    return personalize_grants(FALLBACK_GRANTS, user)
+            return filter_grants(personalize_grants(grants, user), keyword=keyword, region=region, age=age)
+    return filter_grants(personalize_grants(FALLBACK_GRANTS, user), keyword=keyword, region=region, age=age)
 
 
 def personalize_grants(grants: list[dict], user: dict | None = None) -> list[dict]:
@@ -153,6 +218,70 @@ def personalize_grants(grants: list[dict], user: dict | None = None) -> list[dic
         personalized.append(item)
 
     return sorted(personalized, key=lambda item: item.get("fit", 0), reverse=True)
+
+
+def region_code(region: str = "") -> str:
+    text = str(region or "").strip()
+    if not text:
+        return ""
+    for name, code in REGION_CODES.items():
+        if name and name in text:
+            return code
+    return ""
+
+
+def normalize_region(region: str = "") -> str:
+    text = str(region or "").strip()
+    for name in REGION_OPTIONS:
+        if name != "전국" and name in text:
+            return name
+    return text or "전국"
+
+
+def filter_grants(grants: list[dict], *, keyword: str = "", region: str = "", age: int | None = None) -> list[dict]:
+    keyword = str(keyword or "").strip()
+    region = normalize_region(region)
+    filtered = []
+    for grant in grants:
+        text = grant_search_text(grant)
+        if keyword and keyword not in text:
+            continue
+        if region and region != "전국" and has_region_text(text) and region not in text and region_code(region) != region_code(text):
+            continue
+        if age is not None and not age_matches(text, age):
+            continue
+        filtered.append(grant)
+    return filtered
+
+
+def grant_search_text(grant: dict) -> str:
+    return " ".join(str(grant.get(key, "")) for key in ("title", "source", "reason", "target", "content", "agency"))
+
+
+def has_region_text(text: str) -> bool:
+    return any(name != "전국" and name in text for name in REGION_CODES)
+
+
+def age_matches(text: str, age: int) -> bool:
+    if age <= 0:
+        return True
+
+    numbers = [int(value) for value in re.findall(r"(\d{2})\s*세", text)]
+    if not numbers:
+        return 19 <= age <= 49 if "청년" in text else True
+
+    range_match = re.search(r"(\d{2})\s*세\s*(?:~|-|부터)\s*(\d{2})\s*세", text)
+    if range_match:
+        start, end = map(int, range_match.groups())
+        return start <= age <= end
+
+    min_values = [int(value) for value in re.findall(r"(\d{2})\s*세\s*이상", text)]
+    max_values = [int(value) for value in re.findall(r"(\d{2})\s*세\s*(?:이하|미만)", text)]
+    min_age = max(min_values) if min_values else 0
+    max_age = min(max_values) if max_values else 150
+    if "미만" in text and max_values:
+        return min_age <= age < max_age
+    return min_age <= age <= max_age
 
 
 def get_crop_schedule(crop_name: str) -> dict:

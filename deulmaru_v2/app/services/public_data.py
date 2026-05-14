@@ -23,7 +23,16 @@ CROP_CONTENTS = {
 CROP_NAMES = sorted(CROP_CONTENTS.keys())
 
 
-def fetch_support_grants(limit: int = 6) -> list[dict]:
+def fetch_support_grants(
+    limit: int = 24,
+    *,
+    keyword: str = "",
+    area_code: str = "",
+    status: str = "",
+    start_date: str = "",
+    end_date: str = "",
+    page: int = 1,
+) -> list[dict]:
     if not settings.support_api_service_key:
         return []
 
@@ -32,8 +41,18 @@ def fetch_support_grants(limit: int = 6) -> list[dict]:
         "typeDv": "json",
         "serviceKey": settings.support_api_service_key,
         "rowCnt": str(limit),
-        "cp": "1",
+        "cp": str(max(1, page)),
     }
+    if keyword:
+        params["search_keyword"] = keyword
+    if area_code:
+        params["search_area1"] = area_code
+    if status:
+        params["search_status"] = status
+    if start_date:
+        params["sd"] = start_date
+    if end_date:
+        params["ed"] = end_date
     try:
         response = httpx.get(url, params=params, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()

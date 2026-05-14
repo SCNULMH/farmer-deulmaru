@@ -9,7 +9,7 @@ from app.services.db import (
     remove_interest,
     save_diagnosis,
 )
-from app.services.demo_data import get_crop_schedule, get_grants, get_pest_guides
+from app.services.demo_data import get_crop_schedule, get_grants, get_pest_guides, normalize_region
 from app.services.diagnosis import predict_disease
 from app.services.public_data import CROP_NAMES, fetch_support_detail, search_consults, search_pests
 
@@ -28,9 +28,26 @@ def current_user_id(request: Request) -> str:
 
 
 @router.get("/grants")
-async def grants(request: Request) -> list[dict]:
+async def grants(
+    request: Request,
+    keyword: str = "",
+    region: str = "",
+    age: int | None = None,
+    status: str = "",
+    start_date: str = "",
+    end_date: str = "",
+) -> list[dict]:
     user = request.session.get("user")
-    return get_grants(user)
+    selected_region = normalize_region(region or (user or {}).get("region", "전국"))
+    return get_grants(
+        user,
+        keyword=keyword,
+        region=selected_region,
+        age=age,
+        status=status,
+        start_date=start_date,
+        end_date=end_date,
+    )
 
 
 @router.get("/grants/{grant_id}")
