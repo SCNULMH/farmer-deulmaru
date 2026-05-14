@@ -28,16 +28,17 @@ def current_user_id(request: Request) -> str:
 
 
 @router.get("/grants")
-async def grants() -> list[dict]:
-    return get_grants()
+async def grants(request: Request) -> list[dict]:
+    user = request.session.get("user")
+    return get_grants(user)
 
 
 @router.get("/grants/{grant_id}")
-async def grant_detail(grant_id: str) -> dict:
+async def grant_detail(grant_id: str, request: Request) -> dict:
     detail = fetch_support_detail(grant_id)
     if detail:
         return detail
-    grant = next((item for item in get_grants() if item["id"] == grant_id), None)
+    grant = next((item for item in get_grants(request.session.get("user")) if item["id"] == grant_id), None)
     if not grant:
         raise HTTPException(status_code=404, detail="Grant not found")
     return {
@@ -146,7 +147,7 @@ async def legacy_interest_cancel(grantId: str, request: Request) -> dict:
 
 @router.post("/interests/{grant_id}", response_model=OkResponse)
 async def add_grant_interest(grant_id: str, request: Request) -> OkResponse:
-    grant = next((item for item in get_grants() if item["id"] == grant_id), None)
+    grant = next((item for item in get_grants(request.session.get("user")) if item["id"] == grant_id), None)
     if not grant:
         raise HTTPException(status_code=404, detail="Grant not found")
     add_interest(current_user_id(request), grant)
@@ -233,7 +234,7 @@ async def recommendation_overall() -> list[dict]:
 @router.get("/recommendation/personal")
 async def recommendation_personal(request: Request) -> dict:
     current_user_id(request)
-    grants = get_grants()
+    grants = get_grants(request.session.get("user"))
     return {
         "overall": {"grantId": grants[0]["id"], "interestCount": 24, **grants[0]} if grants else None,
         "ageGender": {"grantId": grants[1]["id"], "interestCount": 17, **grants[1]} if len(grants) > 1 else None,

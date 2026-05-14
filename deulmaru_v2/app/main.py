@@ -259,7 +259,7 @@ async def support_page(request: Request) -> HTMLResponse:
         return session_user
     return templates.TemplateResponse(
         "support.html",
-        {"request": request, "session_user": session_user, "grants": get_grants()},
+        {"request": request, "session_user": session_user, "grants": get_grants(session_user)},
     )
 
 
@@ -273,7 +273,7 @@ async def support_detail_page(request: Request, grant_id: str) -> HTMLResponse:
     session_user = require_user(request)
     if isinstance(session_user, RedirectResponse):
         return session_user
-    fallback = next((item for item in get_grants() if item["id"] == grant_id), None)
+    fallback = next((item for item in get_grants(session_user) if item["id"] == grant_id), None)
     detail = fetch_support_detail(grant_id)
     if not detail and fallback:
         detail = {

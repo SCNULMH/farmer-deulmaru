@@ -45,14 +45,19 @@ def fetch_support_grants(limit: int = 6) -> list[dict]:
         title = pick(row, "title", "policyNm", "bizNm", "plcyNm", "servNm", "name", default=f"지원사업 {idx + 1}")
         seq = str(pick(row, "seq", "id", "policyId", "plcyNo", default=f"support-{idx + 1}"))
         deadline = pick(row, "applEdDt", "aplyEndDt", "endDt", "reqstEndDe", default="상시/공고 확인")
+        target = clean(pick(row, "eduTarget", "target", "sprtTrgtCn", "plcySprtCn", "bizTrgtCn", default=""))
+        content = clean(pick(row, "contents", "bizCn", "plcyExplnCn", "description", "cn", default=""))
+        agency = clean(pick(row, "chargeAgency", "instNm", "source", "deptNm", "jrsdInstNm", default="청년농 지원사업 API"))
         grants.append(
             {
                 "id": seq,
                 "title": clean(title),
-                "source": "청년농 지원사업 API",
+                "source": agency or "청년농 지원사업 API",
                 "deadline": clean(deadline),
                 "fit": max(72, 96 - idx * 5),
                 "reason": "사용자 지역과 작물 정보를 기준으로 확인할 만한 지원사업입니다.",
+                "target": target,
+                "content": content,
             }
         )
     return grants
