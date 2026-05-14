@@ -93,8 +93,37 @@ async def login_page(request: Request) -> HTMLResponse:
 
 
 @app.post("/login", response_class=HTMLResponse)
-async def login(request: Request, user_id: str = Form(...), password: str = Form(...)) -> HTMLResponse:
-    user = authenticate_user(user_id.strip(), password)
+async def login(
+    request: Request,
+    user_id: str = Form(""),
+    password: str = Form(""),
+    userId: str = Form(""),
+    userPw: str = Form(""),
+) -> HTMLResponse:
+    login_id = (user_id or userId).strip()
+    login_password = password or userPw
+    if not login_id or not login_password:
+        return templates.TemplateResponse(
+            "login.html",
+            {
+                "request": request,
+                "error": "아이디와 비밀번호를 입력해 주세요.",
+            },
+            status_code=400,
+        )
+
+    try:
+        user = authenticate_user(login_id, login_password)
+    except Exception:
+        return templates.TemplateResponse(
+            "login.html",
+            {
+                "request": request,
+                "error": "로그인 처리 중 서버 오류가 발생했습니다. Firestore 권한과 환경변수를 확인해 주세요.",
+            },
+            status_code=500,
+        )
+
     if not user:
         return templates.TemplateResponse(
             "login.html",
@@ -107,6 +136,22 @@ async def login(request: Request, user_id: str = Form(...), password: str = Form
 
     request.session["user"] = user
     return RedirectResponse(url="/", status_code=303)
+
+
+@app.get("/auth/login", response_class=HTMLResponse)
+async def legacy_login_page(request: Request) -> HTMLResponse:
+    return await login_page(request)
+
+
+@app.post("/auth/login", response_class=HTMLResponse)
+async def legacy_login(
+    request: Request,
+    user_id: str = Form(""),
+    password: str = Form(""),
+    userId: str = Form(""),
+    userPw: str = Form(""),
+) -> HTMLResponse:
+    return await login(request, user_id=user_id, password=password, userId=userId, userPw=userPw)
 
 
 @app.get("/signup", response_class=HTMLResponse)
