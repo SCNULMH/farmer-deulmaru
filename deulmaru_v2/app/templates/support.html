@@ -20,12 +20,69 @@
       <span class="nav-user">{{ session_user.name }}</span>
     </nav>
   </header>
+
   <main>
     <section class="page-hero support-hero">
       <p class="eyebrow">Support Programs</p>
-      <h1>{{ session_user.region }} · {{ session_user.crop }} 조건에 맞춰 지원사업을 정리했습니다.</h1>
-      <p class="lead">청년농 지원사업 API 결과를 우선 사용하고, 응답이 없을 때는 제출 시연이 끊기지 않도록 안전 데이터로 전환합니다.</p>
+      <h1>{{ filters.region }} 지역을 우선으로 지원사업을 찾습니다.</h1>
+      <p class="lead">기본값은 내 지역과 작물 기준 추천이고, 필요하면 다른 지역·나이·검색어로 조건을 바꿔 다시 조회할 수 있습니다.</p>
     </section>
+
+    <form class="support-filter" method="get" action="/supportApi/support">
+      <div class="filter-row">
+        <label>
+          검색어
+          <input type="search" name="keyword" value="{{ filters.keyword }}" placeholder="예: 영농정착, 스마트팜, 판로">
+        </label>
+        <label>
+          나이
+          <input type="number" name="age" value="{{ filters.age }}" min="1" max="120" placeholder="예: 29">
+        </label>
+        <label>
+          상태
+          <select name="status">
+            <option value="" {% if not filters.status %}selected{% endif %}>전체</option>
+            <option value="접수중" {% if filters.status == "접수중" %}selected{% endif %}>접수중</option>
+            <option value="예정" {% if filters.status == "예정" %}selected{% endif %}>예정</option>
+            <option value="마감" {% if filters.status == "마감" %}selected{% endif %}>마감</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="filter-row date-row">
+        <label>
+          시작일
+          <input type="date" name="start_date" value="{{ filters.start_date }}">
+        </label>
+        <label>
+          종료일
+          <input type="date" name="end_date" value="{{ filters.end_date }}">
+        </label>
+        <button type="submit">검색</button>
+        <a class="secondary-action" href="/supportApi/support?region={{ session_user.region }}">내 지역</a>
+      </div>
+
+      <input type="hidden" name="region" value="{{ filters.region }}">
+      <div class="region-filter" aria-label="지역 필터">
+        {% for option in region_options %}
+        <button
+          type="submit"
+          name="region"
+          value="{{ option }}"
+          class="region-chip {% if filters.region == option %}active{% endif %}"
+        >{{ option }}</button>
+        {% endfor %}
+      </div>
+    </form>
+
+    <section class="support-result-head">
+      <div>
+        <p class="eyebrow">Results</p>
+        <h2>검색 결과 {{ grants|length }}건</h2>
+      </div>
+      <p>{{ filters.region }} · {{ session_user.crop }} 조건을 기준으로 적합도를 다시 계산했습니다.</p>
+    </section>
+
     <section class="cards three">
       {% for grant in grants %}
       <article class="card grant-card">
@@ -39,9 +96,15 @@
           <button class="interest-button" data-grant-id="{{ grant.id }}">관심 저장</button>
         </div>
       </article>
+      {% else %}
+      <article class="card compact-card">
+        <h3>조건에 맞는 지원사업을 찾지 못했습니다.</h3>
+        <p>지역을 전국으로 바꾸거나 검색어, 나이 조건을 줄여 다시 조회해 보세요.</p>
+      </article>
       {% endfor %}
     </section>
   </main>
+
   <script src="/static/js/dashboard.js"></script>
 </body>
 </html>

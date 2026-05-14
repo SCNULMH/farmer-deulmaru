@@ -302,6 +302,63 @@ main {
   font-size: clamp(34px, 5vw, 58px);
 }
 
+.support-filter {
+  display: grid;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  padding: 22px;
+  margin-bottom: 34px;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 140px 160px;
+  gap: 14px;
+  align-items: end;
+}
+
+.date-row {
+  grid-template-columns: 180px 180px 110px 110px;
+}
+
+.region-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.region-chip {
+  min-height: 36px;
+  border-color: var(--line);
+  background: #fff;
+  color: #39463c;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.region-chip.active {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+}
+
+.support-result-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 34px 0 20px;
+}
+
+.support-result-head p {
+  max-width: 520px;
+  color: var(--muted);
+}
+
 .chatbot-button {
   position: fixed;
   right: 28px;
@@ -759,7 +816,9 @@ input {
   .login-shell,
   .mypage-grid,
   .detail-grid,
-  .search-bar {
+  .search-bar,
+  .filter-row,
+  .date-row {
     grid-template-columns: 1fr;
   }
 
@@ -777,6 +836,11 @@ input {
 
   .tab-box {
     margin: -32px 16px 0;
+  }
+
+  .support-result-head {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   h1 {
