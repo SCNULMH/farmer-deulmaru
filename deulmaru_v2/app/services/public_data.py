@@ -210,6 +210,7 @@ def search_pests(query: str, search_type: str = "sick", limit: int = 12) -> list
                 "name": clean(node_text(item, "sickNameKor") or node_text(item, "sickNameEng") or "병해충 정보"),
                 "english_name": clean(node_text(item, "sickNameEng")),
                 "thumb": clean(node_text(item, "thumbImg")),
+                "image": clean(node_text(item, "thumbImg")),
             }
         )
     return results
@@ -252,6 +253,35 @@ def search_consults(query: str, page: int = 1, limit: int = 10) -> list[dict]:
     return consults
 
 
+def fetch_consult_detail(consult_id: str) -> dict:
+    if not settings.ncpms_api_key:
+        return {}
+
+    try:
+        response = httpx.get(
+            settings.ncpms_api_base_url,
+            params={
+                "apiKey": settings.ncpms_api_key,
+                "serviceCode": "SVC42",
+                "serviceType": "AA001",
+                "dgnssReqNo": consult_id,
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+        response.raise_for_status()
+        root = ET.fromstring(response.text)
+    except Exception:
+        return {}
+
+    return {
+        "id": consult_id,
+        "title": clean(first_text(root, "dgnssReqSj") or "상담 사례"),
+        "request": clean_html(first_text(root, "reqestCn", "dgnssReqCn")),
+        "opinion": clean_html(first_text(root, "dgnssOpin", "answerCn")),
+        "images": collect_images(root),
+    }
+
+
 def fetch_pest_detail(sick_key: str) -> dict:
     try:
         response = httpx.get(
@@ -274,6 +304,7 @@ def fetch_pest_detail(sick_key: str) -> dict:
     return {
         "symptom": clean_html(symptom) if symptom else "",
         "action": clean_html(prevention) if prevention else "",
+        "images": collect_images(root),
     }
 
 
@@ -348,6 +379,26 @@ def first_text(root: ET.Element, *tags: str) -> str:
         if node is not None and node.text:
             return node.text
     return ""
+
+
+def collect_images(root: ET.Element) -> list[dict]:
+    images = []
+    for item in root.findall(".//imageList//item"):
+        url = node_text(item, "image") or node_text(item, "imgUrl") or node_text(item, "thumbImg")
+        if url:
+            images.append(
+                {
+                    "url": clean(url),
+                    "title": clean(node_text(item, "imageTitle") or node_text(item, "title") or "예시 이미지"),
+                }
+            )
+    for tag in ("image", "imgUrl", "thumbImg"):
+        for node in root.findall(f".//{tag}"):
+            if node.text:
+                url = clean(node.text)
+                if url and not any(image["url"] == url for image in images):
+                    images.append({"url": url, "title": "예시 이미지"})
+    return images[:8]
 
 
 def clean(value) -> str:

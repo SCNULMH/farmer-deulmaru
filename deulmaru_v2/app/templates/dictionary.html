@@ -8,8 +8,11 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>NCPMS 병해충 사전</small></span></a>
-    <nav><a href="/">홈</a><a href="/support">지원사업</a><a href="/diagnosis">AI 진단</a><a href="/mypage">마이페이지</a></nav>
+    <a class="brand image-brand" href="/">
+      <img src="/static/image/deulmaru-logo.png" alt="들마루">
+      <span><strong>들마루</strong><small>NCPMS 병해충 사전</small></span>
+    </a>
+    <nav><a href="/">홈</a><a href="/supportApi/support">지원사업</a><a href="/auth/deulmaru_QnA">상담사례</a><a href="/diagnosis">AI 진단</a><a href="/mypage">마이페이지</a></nav>
   </header>
   <main>
     <section class="page-hero">
@@ -24,13 +27,25 @@
         <button type="submit">검색</button>
       </form>
     </section>
-    <section class="cards three" id="dictionaryResults">
+
+    <section class="cards three dictionary-grid" id="dictionaryResults">
       {% for pest in pests %}
-      <article class="card">
+      <article class="card dictionary-card">
+        {% if pest.image or pest.thumb %}
+        <img class="dictionary-thumb" src="{{ pest.image or pest.thumb }}" alt="{{ pest.name }}">
+        {% else %}
+        <div class="dictionary-thumb placeholder">이미지 준비중</div>
+        {% endif %}
         <span class="tag">{{ pest.crop }}</span>
         <h3>{{ pest.name }}</h3>
-        <p>{{ pest.symptom }}</p>
-        <p class="action-text">{{ pest.action }}</p>
+        {% if pest.english_name %}<p class="muted">{{ pest.english_name }}</p>{% endif %}
+        {% if pest.symptom %}<p>{{ pest.symptom }}</p>{% endif %}
+        {% if pest.action %}<p class="action-text">{{ pest.action }}</p>{% endif %}
+      </article>
+      {% else %}
+      <article class="card compact-card">
+        <h3>검색 결과가 없습니다.</h3>
+        <p>작물명 또는 병명을 바꿔 다시 검색해 보세요.</p>
       </article>
       {% endfor %}
     </section>

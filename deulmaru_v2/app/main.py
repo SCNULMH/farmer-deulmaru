@@ -19,7 +19,7 @@ from app.services.db import (
 )
 from app.services.demo_data import REGION_OPTIONS, get_crop_schedule, get_dashboard_context, get_grants, get_pest_guides, normalize_region
 from app.services.diagnosis import predict_disease
-from app.services.public_data import CROP_NAMES, fetch_support_detail, search_consults, search_pests
+from app.services.public_data import CROP_NAMES, fetch_consult_detail, fetch_support_detail, search_consults, search_pests
 
 app = FastAPI(
     title="Deulmaru v2",
@@ -355,14 +355,14 @@ async def dictionary_page(request: Request, query: str = "토마토", search_typ
             "session_user": session_user,
             "query": query,
             "search_type": search_type,
-            "pests": get_pest_guides(query),
+            "pests": search_pests(query, search_type) or get_pest_guides(query),
         },
     )
 
 
 @app.get("/auth/deulmaru_dictionary", response_class=HTMLResponse)
-async def legacy_dictionary_page(request: Request) -> HTMLResponse:
-    return await dictionary_page(request)
+async def legacy_dictionary_page(request: Request, query: str = "토마토", search_type: str = "crop") -> HTMLResponse:
+    return await dictionary_page(request, query=query, search_type=search_type)
 
 
 @app.get("/diagnosis", response_class=HTMLResponse)
@@ -474,15 +474,24 @@ async def qna_page(request: Request, query: str = "토마토") -> HTMLResponse:
     session_user = require_user(request)
     if isinstance(session_user, RedirectResponse):
         return session_user
+    consults = search_consults(query) or [
+        {
+            "id": "demo-consult",
+            "title": f"{query} 재배 상담 예시",
+            "crop": query,
+            "date": "",
+            "summary": "NCPMS 상담 사례 응답이 없을 때 표시하는 예시입니다. 현장 증상과 병해충 가이드를 함께 확인하세요.",
+        }
+    ]
     return templates.TemplateResponse(
         "qna.html",
-        {"request": request, "session_user": session_user, "query": query},
+        {"request": request, "session_user": session_user, "query": query, "consults": consults},
     )
 
 
 @app.get("/auth/deulmaru_QnA", response_class=HTMLResponse)
-async def legacy_qna_page(request: Request) -> HTMLResponse:
-    return await qna_page(request)
+async def legacy_qna_page(request: Request, query: str = "토마토") -> HTMLResponse:
+    return await qna_page(request, query=query)
 
 
 @app.get("/ncpms/search")
@@ -503,7 +512,8 @@ async def legacy_ncpms_consult(query: str, page: int = 1) -> dict:
 
 @app.get("/ncpms/consult_detail")
 async def legacy_ncpms_consult_detail(consult_id: str) -> dict:
-    return {"consult_id": consult_id, "detail": "상담 상세 정보는 검색 결과 요약을 기준으로 확인하세요."}
+    detail = fetch_consult_detail(consult_id)
+    return detail or {"consult_id": consult_id, "detail": "상담 상세 정보는 검색 결과 요약을 기준으로 확인하세요."}
 
 
 @app.post("/upload")
