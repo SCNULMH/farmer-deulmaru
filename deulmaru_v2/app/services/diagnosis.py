@@ -6,23 +6,24 @@ from fastapi import UploadFile
 async def predict_disease(crop_name: str, file: UploadFile) -> dict:
     """Demo-safe diagnosis adapter.
 
-    A real PyTorch model can replace the rule below without changing the route
-    or UI. This keeps contest demos stable while model work continues.
+    A real PyTorch model can replace this function without changing the route
+    or UI contract. Uploaded images are read for prediction only and are not
+    persisted to the local filesystem.
     """
 
     content = await file.read()
     size_kb = round(len(content) / 1024, 1)
 
     if not content:
-        return {"ok": False, "message": "이미지 파일이 비어 있습니다."}
+        return {"ok": False, "message": "이미지 파일을 다시 선택해 주세요."}
 
     suggested = {
         "토마토": ("잎곰팡이병 의심", 84),
         "고추": ("탄저병 의심", 78),
-        "참외": ("흰가루병 의심", 81),
-        "포도": ("정상 또는 초기 증상", 67),
+        "상추": ("노균병 의심", 81),
+        "딸기": ("잿빛곰팡이병 주의", 67),
     }
-    disease, confidence = suggested.get(crop_name, ("분석 대기", 60))
+    disease, confidence = suggested.get(crop_name, ("추가 확인 필요", 60))
 
     return {
         "ok": True,
@@ -31,6 +32,6 @@ async def predict_disease(crop_name: str, file: UploadFile) -> dict:
         "size_kb": size_kb,
         "disease": disease,
         "confidence": confidence,
-        "next_action": "NCPMS 병해충 사전과 연결해 증상, 예찰, 방제 정보를 확인하세요.",
+        "next_action": "NCPMS 병해충 가이드와 현장 증상을 함께 확인한 뒤 방제 여부를 결정하세요.",
         "model_mode": "demo",
     }

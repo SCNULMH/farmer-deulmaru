@@ -1,4 +1,5 @@
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
+from pydantic import BaseModel
 
 from app.services.db import (
     add_interest,
@@ -13,6 +14,10 @@ from app.services.diagnosis import predict_disease
 router = APIRouter()
 
 
+class OkResponse(BaseModel):
+    ok: bool
+
+
 def current_user_id(request: Request) -> str:
     user = request.session.get("user")
     if not user:
@@ -21,42 +26,42 @@ def current_user_id(request: Request) -> str:
 
 
 @router.get("/grants")
-def grants() -> list[dict]:
+async def grants() -> list[dict]:
     return get_grants()
 
 
 @router.get("/crop-schedule/{crop_name}")
-def crop_schedule(crop_name: str) -> dict:
+async def crop_schedule(crop_name: str) -> dict:
     return get_crop_schedule(crop_name)
 
 
 @router.get("/pests")
-def pests() -> list[dict]:
+async def pests() -> list[dict]:
     return get_pest_guides()
 
 
 @router.get("/interests")
-def interests(request: Request) -> list[dict]:
+async def interests(request: Request) -> list[dict]:
     return list_interests(current_user_id(request))
 
 
-@router.post("/interests/{grant_id}")
-def add_grant_interest(grant_id: str, request: Request) -> dict:
+@router.post("/interests/{grant_id}", response_model=OkResponse)
+async def add_grant_interest(grant_id: str, request: Request) -> OkResponse:
     grant = next((item for item in get_grants() if item["id"] == grant_id), None)
     if not grant:
         raise HTTPException(status_code=404, detail="Grant not found")
     add_interest(current_user_id(request), grant)
-    return {"ok": True}
+    return OkResponse(ok=True)
 
 
-@router.delete("/interests/{grant_id}")
-def delete_grant_interest(grant_id: str, request: Request) -> dict:
+@router.delete("/interests/{grant_id}", response_model=OkResponse)
+async def delete_grant_interest(grant_id: str, request: Request) -> OkResponse:
     remove_interest(current_user_id(request), grant_id)
-    return {"ok": True}
+    return OkResponse(ok=True)
 
 
 @router.get("/diagnosis/history")
-def diagnosis_history(request: Request) -> list[dict]:
+async def diagnosis_history(request: Request) -> list[dict]:
     return list_diagnosis_history(current_user_id(request))
 
 

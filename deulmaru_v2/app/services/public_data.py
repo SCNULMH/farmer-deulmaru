@@ -13,9 +13,9 @@ REQUEST_TIMEOUT = 8.0
 CROP_CONTENTS = {
     "토마토": "30646",
     "고추": "30600",
-    "참외": "30640",
-    "포도": "30669",
-    "상추": "30624",
+    "상추": "30640",
+    "딸기": "30669",
+    "감자": "30624",
     "배추": "30618",
     "오이": "30636",
 }
@@ -40,9 +40,9 @@ def fetch_support_grants(limit: int = 6) -> list[dict]:
     rows = find_list(payload)
     grants = []
     for idx, row in enumerate(rows[:limit]):
-        title = pick(row, "title", "policyNm", "bizNm", "plcyNm", "servNm", "사업명", default=f"지원사업 {idx + 1}")
+        title = pick(row, "title", "policyNm", "bizNm", "plcyNm", "servNm", "name", default=f"지원사업 {idx + 1}")
         seq = str(pick(row, "seq", "id", "policyId", "plcyNo", default=f"support-{idx + 1}"))
-        deadline = pick(row, "applEdDt", "aplyEndDt", "endDt", "reqstEndDe", default="상시/확인 필요")
+        deadline = pick(row, "applEdDt", "aplyEndDt", "endDt", "reqstEndDe", default="상시/공고 확인")
         grants.append(
             {
                 "id": seq,
@@ -50,7 +50,7 @@ def fetch_support_grants(limit: int = 6) -> list[dict]:
                 "source": "청년농 지원사업 API",
                 "deadline": clean(deadline),
                 "fit": max(72, 96 - idx * 5),
-                "reason": "사용자 지역과 청년농 조건을 기준으로 우선 검토할 지원사업입니다.",
+                "reason": "사용자 지역과 작물 정보를 기준으로 확인할 만한 지원사업입니다.",
             }
         )
     return grants
@@ -76,8 +76,7 @@ def fetch_crop_schedule(crop_name: str) -> dict | None:
 
     html_node = root.find(".//htmlCn")
     html_text = html_node.text if html_node is not None else ""
-    text = clean_html(html_text)
-    tasks = split_tasks(text)
+    tasks = split_tasks(clean_html(html_text))
     if not tasks:
         return None
     return {
@@ -120,8 +119,8 @@ def fetch_pest_guides(query: str = "토마토", limit: int = 3) -> list[dict]:
                 "crop": clean(crop),
                 "name": clean(name),
                 "source": "NCPMS 병해충 API",
-                "symptom": detail.get("symptom") or "NCPMS 상세 정보에서 증상과 발생 조건을 확인합니다.",
-                "action": detail.get("action") or "예찰 후 등록 약제와 방제 기준을 확인합니다.",
+                "symptom": detail.get("symptom") or "NCPMS 상세 증상 정보를 확인해 현장 증상과 비교하세요.",
+                "action": detail.get("action") or "등록 약제와 방제 기준을 확인한 뒤 조치하세요.",
             }
         )
     return guides
@@ -203,7 +202,7 @@ def clean_html(value: str | None) -> str:
 
 
 def split_tasks(text: str) -> list[dict]:
-    chunks = [chunk.strip(" -ㆍ·") for chunk in re.split(r"[\n\r]+|(?<=다\.)", text) if chunk.strip()]
+    chunks = [chunk.strip(" -\t") for chunk in re.split(r"[\n\r]+|(?<=다\.)", text) if chunk.strip()]
     tasks = []
     for idx, chunk in enumerate(chunks[:8]):
         if len(chunk) < 8:

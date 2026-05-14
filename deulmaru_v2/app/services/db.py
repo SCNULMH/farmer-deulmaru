@@ -58,7 +58,7 @@ def demo_user() -> dict[str, str]:
     return {
         "id": "demo",
         "password_hash": hash_password("demo1234"),
-        "name": "예비 청년농 김하루",
+        "name": "데모 청년농",
         "region": "전남 나주",
         "crop": "토마토",
         "created_at": now(),
@@ -126,13 +126,63 @@ def init_sqlite() -> None:
 
 def init_firebase() -> None:
     client = get_firestore_client()
-    user = demo_user()
-    ref = client.collection("users").document(user["id"])
-    ref.set(user, merge=True)
+    ref = client.collection("users").document("demo")
+    if not ref.get().exists:
+        ref.set(demo_user())
+
+
+def user_payload(user: dict[str, str]) -> dict[str, str]:
+    return {
+        "id": user["id"].strip(),
+        "password_hash": hash_password(user["password"]),
+        "name": user["name"].strip(),
+        "region": user["region"].strip(),
+        "crop": user["crop"].strip(),
+        "created_at": now(),
+    }
+
+
+def create_user(user: dict[str, str]) -> dict:
+    return create_user_firebase(user) if use_firebase() else create_user_sqlite(user)
+
+
+def create_user_sqlite(user: dict[str, str]) -> dict:
+    payload = user_payload(user)
+    with get_connection() as conn:
+        exists = conn.execute("SELECT 1 FROM users WHERE id = ?", (payload["id"],)).fetchone()
+        if exists:
+            raise ValueError("이미 사용 중인 아이디입니다.")
+        conn.execute(
+            """
+            INSERT INTO users
+                (id, password_hash, name, region, crop, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                payload["id"],
+                payload["password_hash"],
+                payload["name"],
+                payload["region"],
+                payload["crop"],
+                payload["created_at"],
+            ),
+        )
+    return row_to_user(payload)
+
+
+def create_user_firebase(user: dict[str, str]) -> dict:
+    payload = user_payload(user)
+    ref = get_firestore_client().collection("users").document(payload["id"])
+    if ref.get().exists:
+        raise ValueError("이미 사용 중인 아이디입니다.")
+    ref.set(payload)
+    return row_to_user(payload)
 
 
 def authenticate_user(user_id: str, password: str) -> dict | None:
-    return authenticate_user_firebase(user_id, password) if use_firebase() else authenticate_user_sqlite(user_id, password)
+    if use_firebase():
+        return authenticate_user_firebase(user_id, password)
+    return authenticate_user_sqlite(user_id, password)
 
 
 def authenticate_user_sqlite(user_id: str, password: str) -> dict | None:
@@ -233,7 +283,9 @@ def remove_interest(user_id: str, grant_id: str) -> None:
 
 
 def list_diagnosis_history(user_id: str) -> list[dict]:
-    return list_diagnosis_history_firebase(user_id) if use_firebase() else list_diagnosis_history_sqlite(user_id)
+    if use_firebase():
+        return list_diagnosis_history_firebase(user_id)
+    return list_diagnosis_history_sqlite(user_id)
 
 
 def list_diagnosis_history_sqlite(user_id: str) -> list[dict]:
@@ -264,13 +316,6 @@ def list_diagnosis_history_firebase(user_id: str) -> list[dict]:
     return [doc.to_dict() for doc in docs]
 
 
-def save_diagnosis(user_id: str, result: dict) -> None:
-    if use_firebase():
-        save_diagnosis_firebase(user_id, result)
-    else:
-        save_diagnosis_sqlite(user_id, result)
-
-
 def diagnosis_payload(user_id: str, result: dict) -> dict:
     return {
         "user_id": user_id,
@@ -280,6 +325,13 @@ def diagnosis_payload(user_id: str, result: dict) -> dict:
         "filename": result.get("filename"),
         "created_at": now(),
     }
+
+
+def save_diagnosis(user_id: str, result: dict) -> None:
+    if use_firebase():
+        save_diagnosis_firebase(user_id, result)
+    else:
+        save_diagnosis_sqlite(user_id, result)
 
 
 def save_diagnosis_sqlite(user_id: str, result: dict) -> None:

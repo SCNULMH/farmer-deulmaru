@@ -13,23 +13,23 @@
         <span class="brand-mark">DM</span>
         <span>
           <strong>들마루 v2</strong>
-          <small>청년농 공공데이터 대시보드</small>
+          <small>청년농 맞춤형 공공데이터 대시보드</small>
         </span>
       </a>
-      <h1>내 작물과 지역에 맞춘 농업 정보를 한 번에 확인합니다.</h1>
+      <h1>내 농장 조건에 맞는 지원사업과 작물 정보를 한곳에서 봅니다.</h1>
       <p class="lead">
-        공모전 시연용 로그인입니다. 실제 회원/카카오 로그인은 다음 단계에서 붙이고,
-        지금은 데모 계정으로 화면 흐름을 먼저 안정화합니다.
+        지역, 작물, 성장 단계에 맞춰 지원사업, 재배 일정, 병해충 가이드를 확인하세요.
+        이미 계정이 있다면 로그인하고, 처음이라면 바로 가입할 수 있습니다.
       </p>
       <ul class="login-points">
         <li>지원사업 추천</li>
-        <li>작물별 재배 일정</li>
-        <li>AI 병해충 진단</li>
+        <li>작물 일정 관리</li>
+        <li>AI 병해 진단</li>
       </ul>
     </section>
 
     <section class="login-card">
-      <p class="eyebrow">Demo Login</p>
+      <p class="eyebrow">Login</p>
       <h2>로그인</h2>
       {% if error %}
       <p class="form-error">{{ error }}</p>
@@ -43,9 +43,10 @@
           비밀번호
           <input type="password" name="password" value="demo1234" autocomplete="current-password" required>
         </label>
-        <button type="submit">들어가기</button>
+        <button type="submit">로그인</button>
       </form>
       <p class="demo-hint">데모 계정: <strong>demo / demo1234</strong></p>
+      <p class="demo-hint">처음 오셨나요? <a href="/signup">회원가입</a></p>
     </section>
   </main>
 </body>
