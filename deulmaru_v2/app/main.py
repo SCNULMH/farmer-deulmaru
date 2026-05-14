@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import FastAPI, Form, Request
+from fastapi import File, FastAPI, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -18,7 +18,8 @@ from app.services.db import (
     update_user_profile,
 )
 from app.services.demo_data import get_crop_schedule, get_dashboard_context, get_grants, get_pest_guides
-from app.services.public_data import CROP_NAMES, fetch_support_detail
+from app.services.diagnosis import predict_disease
+from app.services.public_data import CROP_NAMES, fetch_support_detail, search_consults, search_pests
 
 app = FastAPI(
     title="Deulmaru v2",
@@ -144,6 +145,7 @@ async def login(
 
 
 @app.get("/auth/login", response_class=HTMLResponse)
+@app.get("/auth/deulmaru_Login", response_class=HTMLResponse)
 async def legacy_login_page(request: Request) -> HTMLResponse:
     return await login_page(request)
 
@@ -159,11 +161,30 @@ async def legacy_login(
     return await login(request, user_id=user_id, password=password, userId=userId, userPw=userPw)
 
 
+@app.get("/auth/logout")
+async def legacy_logout(request: Request) -> RedirectResponse:
+    request.session.clear()
+    return RedirectResponse(url="/", status_code=303)
+
+
 @app.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request) -> HTMLResponse:
     if request.session.get("user"):
         return RedirectResponse(url="/", status_code=303)
     return templates.TemplateResponse("signup.html", {"request": request, "error": None})
+
+
+@app.get("/auth/register-options", response_class=HTMLResponse)
+@app.get("/auth/signin", response_class=HTMLResponse)
+@app.get("/auth/deulmaru_SignIn_Main", response_class=HTMLResponse)
+async def legacy_register_options(request: Request) -> HTMLResponse:
+    return await signup_page(request)
+
+
+@app.get("/auth/register", response_class=HTMLResponse)
+@app.get("/auth/deulmaru_SignIn", response_class=HTMLResponse)
+async def legacy_register_page(request: Request) -> HTMLResponse:
+    return await signup_page(request)
 
 
 @app.post("/signup", response_class=HTMLResponse)
@@ -204,6 +225,27 @@ async def signup(
     return RedirectResponse(url="/", status_code=303)
 
 
+@app.post("/auth/register", response_class=HTMLResponse)
+async def legacy_register(
+    request: Request,
+    userId: str = Form(...),
+    userPw: str = Form(...),
+    userNickname: str = Form(...),
+    userEmail: str = Form(""),
+    userLocate: str = Form("지역 미입력"),
+    userBirth: str = Form(""),
+    userGender: str = Form(""),
+) -> HTMLResponse:
+    return await signup(
+        request,
+        user_id=userId,
+        password=userPw,
+        name=userNickname or userEmail or userId,
+        region=userLocate,
+        crop="토마토",
+    )
+
+
 @app.get("/support", response_class=HTMLResponse)
 async def support_page(request: Request) -> HTMLResponse:
     session_user = require_user(request)
@@ -213,6 +255,11 @@ async def support_page(request: Request) -> HTMLResponse:
         "support.html",
         {"request": request, "session_user": session_user, "grants": get_grants()},
     )
+
+
+@app.get("/supportApi/support", response_class=HTMLResponse)
+async def legacy_support_page(request: Request) -> HTMLResponse:
+    return await support_page(request)
 
 
 @app.get("/support/{grant_id}", response_class=HTMLResponse)
@@ -238,6 +285,11 @@ async def support_detail_page(request: Request, grant_id: str) -> HTMLResponse:
     )
 
 
+@app.get("/supportApi/detail/{seq}", response_class=HTMLResponse)
+async def legacy_support_detail_page(request: Request, seq: str) -> HTMLResponse:
+    return await support_detail_page(request, seq)
+
+
 @app.get("/dictionary", response_class=HTMLResponse)
 async def dictionary_page(request: Request, query: str = "토마토", search_type: str = "crop") -> HTMLResponse:
     session_user = require_user(request)
@@ -255,6 +307,11 @@ async def dictionary_page(request: Request, query: str = "토마토", search_typ
     )
 
 
+@app.get("/auth/deulmaru_dictionary", response_class=HTMLResponse)
+async def legacy_dictionary_page(request: Request) -> HTMLResponse:
+    return await dictionary_page(request)
+
+
 @app.get("/diagnosis", response_class=HTMLResponse)
 async def diagnosis_page(request: Request) -> HTMLResponse:
     session_user = require_user(request)
@@ -269,6 +326,11 @@ async def diagnosis_page(request: Request) -> HTMLResponse:
             "crop_names": CROP_NAMES,
         },
     )
+
+
+@app.get("/auth/deulmaru_Diagnosis", response_class=HTMLResponse)
+async def legacy_diagnosis_page(request: Request) -> HTMLResponse:
+    return await diagnosis_page(request)
 
 
 @app.get("/mypage", response_class=HTMLResponse)
@@ -288,6 +350,11 @@ async def mypage(request: Request) -> HTMLResponse:
             "message": None,
         },
     )
+
+
+@app.get("/auth/mypage", response_class=HTMLResponse)
+async def legacy_auth_mypage(request: Request) -> HTMLResponse:
+    return await mypage(request)
 
 
 @app.post("/mypage", response_class=HTMLResponse)
@@ -317,6 +384,38 @@ async def update_mypage(
     )
 
 
+@app.post("/mypage/update-profile", response_class=HTMLResponse)
+async def legacy_update_profile(
+    request: Request,
+    userNickname: str = Form(...),
+    userPw: str = Form(""),
+    userLocate: str = Form(...),
+    userCrop: str = Form("토마토"),
+) -> HTMLResponse:
+    return await update_mypage(
+        request,
+        name=userNickname,
+        region=userLocate,
+        crop=userCrop,
+        password=userPw,
+    )
+
+
+@app.post("/mypage/update-crop")
+async def legacy_update_crop(request: Request, userCrop: str = Form(...)) -> dict:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return {"ok": False, "message": "로그인이 필요합니다."}
+    user = update_user_profile(
+        session_user["id"],
+        name=session_user["name"],
+        region=session_user["region"],
+        crop=userCrop,
+    )
+    request.session["user"] = user
+    return {"ok": True, "message": "재배작물 정보가 업데이트되었습니다."}
+
+
 @app.get("/qna", response_class=HTMLResponse)
 async def qna_page(request: Request, query: str = "토마토") -> HTMLResponse:
     session_user = require_user(request)
@@ -326,6 +425,51 @@ async def qna_page(request: Request, query: str = "토마토") -> HTMLResponse:
         "qna.html",
         {"request": request, "session_user": session_user, "query": query},
     )
+
+
+@app.get("/auth/deulmaru_QnA", response_class=HTMLResponse)
+async def legacy_qna_page(request: Request) -> HTMLResponse:
+    return await qna_page(request)
+
+
+@app.get("/ncpms/search")
+async def legacy_ncpms_search(query: str, type: str = "sick") -> dict:
+    return {"items": search_pests(query, "crop" if type == "crop" else "sick")}
+
+
+@app.get("/ncpms/sick_detail")
+async def legacy_ncpms_sick_detail(sick_key: str) -> dict:
+    # Existing frontend can still use the list payload; detailed fallback keeps the route alive.
+    return {"sick_key": sick_key, "detail": "상세 정보는 병해충 사전 검색 결과와 NCPMS 원문을 함께 확인하세요."}
+
+
+@app.get("/ncpms/consult")
+async def legacy_ncpms_consult(query: str, page: int = 1) -> dict:
+    return {"items": search_consults(query, page)}
+
+
+@app.get("/ncpms/consult_detail")
+async def legacy_ncpms_consult_detail(consult_id: str) -> dict:
+    return {"consult_id": consult_id, "detail": "상담 상세 정보는 검색 결과 요약을 기준으로 확인하세요."}
+
+
+@app.post("/upload")
+async def legacy_upload(
+    request: Request,
+    file: UploadFile = File(...),
+    cropName: str = Form("토마토"),
+) -> dict:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return {"message": "로그인이 필요합니다."}
+    result = await predict_disease(crop_name=cropName, file=file)
+    if result.get("ok"):
+        return {
+            "prediction": f"{result['disease']} ({result['confidence']}%)",
+            "imageUrl": "",
+            **result,
+        }
+    return {"message": result.get("message", "진단에 실패했습니다.")}
 
 
 @app.post("/logout")

@@ -56,6 +56,11 @@ async def crop_schedule(crop_name: str) -> dict:
     return get_crop_schedule(crop_name)
 
 
+@router.get("/crop-schedule")
+async def legacy_crop_schedule(cropName: str = "토마토") -> dict:
+    return get_crop_schedule(cropName)
+
+
 @router.get("/crop-names")
 async def crop_names() -> list[str]:
     return CROP_NAMES
@@ -104,6 +109,41 @@ async def interests(request: Request) -> list[dict]:
     return list_interests(current_user_id(request))
 
 
+@router.get("/interest/list")
+async def legacy_interest_list(request: Request) -> list[dict]:
+    return list_interests(current_user_id(request))
+
+
+@router.get("/interest/check")
+async def legacy_interest_check(grantId: str, request: Request) -> dict:
+    exists = any(item.get("grant_id") == grantId or item.get("grantId") == grantId for item in list_interests(current_user_id(request)))
+    return {"exists": exists}
+
+
+@router.post("/interest/add")
+async def legacy_interest_add(
+    request: Request,
+    grantId: str = Form(...),
+    applEdDt: str = Form("상시/공고 확인"),
+    title: str = Form("지원사업"),
+) -> dict:
+    add_interest(
+        current_user_id(request),
+        {
+            "id": grantId,
+            "title": title,
+            "deadline": applEdDt,
+        },
+    )
+    return {"ok": True, "message": "관심 지원사업으로 저장했습니다."}
+
+
+@router.delete("/interest/cancel")
+async def legacy_interest_cancel(grantId: str, request: Request) -> dict:
+    remove_interest(current_user_id(request), grantId)
+    return {"ok": True, "message": "관심 지원사업을 취소했습니다."}
+
+
 @router.post("/interests/{grant_id}", response_model=OkResponse)
 async def add_grant_interest(grant_id: str, request: Request) -> OkResponse:
     grant = next((item for item in get_grants() if item["id"] == grant_id), None)
@@ -124,10 +164,49 @@ async def diagnosis_history(request: Request) -> list[dict]:
     return list_diagnosis_history(current_user_id(request))
 
 
+@router.get("/ident/history")
+async def legacy_ident_history(request: Request) -> list[dict]:
+    return [
+        {
+            "id": item.get("id"),
+            "cropName": item.get("crop"),
+            "diseaseName": item.get("disease"),
+            "confidence": item.get("confidence"),
+            "createdAt": item.get("created_at"),
+            **item,
+        }
+        for item in list_diagnosis_history(current_user_id(request))
+    ]
+
+
 @router.delete("/diagnosis/history/{diagnosis_id}", response_model=OkResponse)
 async def delete_diagnosis_history(diagnosis_id: str, request: Request) -> OkResponse:
     delete_diagnosis(current_user_id(request), diagnosis_id)
     return OkResponse(ok=True)
+
+
+@router.delete("/ident/delete/{diagnosis_id}", response_model=OkResponse)
+async def legacy_ident_delete(diagnosis_id: str, request: Request) -> OkResponse:
+    delete_diagnosis(current_user_id(request), diagnosis_id)
+    return OkResponse(ok=True)
+
+
+@router.post("/ident/save")
+async def legacy_ident_save(
+    request: Request,
+    diseaseName: str = Form(...),
+    cropName: str = Form(...),
+) -> dict:
+    save_diagnosis(
+        current_user_id(request),
+        {
+            "crop": cropName,
+            "disease": diseaseName,
+            "confidence": 70,
+            "filename": None,
+        },
+    )
+    return {"ok": True, "message": "진단 이력을 저장했습니다."}
 
 
 @router.post("/diagnosis")
@@ -141,3 +220,22 @@ async def diagnosis(
     if result.get("ok"):
         save_diagnosis(user_id, result)
     return result
+
+
+@router.get("/recommendation/overall")
+async def recommendation_overall() -> list[dict]:
+    return [
+        {"grantId": item["id"], "interestCount": max(1, 30 - index * 7), **item}
+        for index, item in enumerate(get_grants()[:3])
+    ]
+
+
+@router.get("/recommendation/personal")
+async def recommendation_personal(request: Request) -> dict:
+    current_user_id(request)
+    grants = get_grants()
+    return {
+        "overall": {"grantId": grants[0]["id"], "interestCount": 24, **grants[0]} if grants else None,
+        "ageGender": {"grantId": grants[1]["id"], "interestCount": 17, **grants[1]} if len(grants) > 1 else None,
+        "region": {"grantId": grants[2]["id"], "interestCount": 11, **grants[2]} if len(grants) > 2 else None,
+    }
