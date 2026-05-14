@@ -96,7 +96,7 @@ def get_dashboard_context(user: dict | None = None, diagnosis_history: list[dict
             "crop": crop,
             "stage": current_user.get("stage", DEMO_USER["stage"]),
         },
-        "grants": get_grants(),
+        "grants": get_grants(current_user),
         "schedule": get_crop_schedule(crop),
         "pests": get_pest_guides(crop),
         "diagnosis_history": diagnosis_history or [],
@@ -109,12 +109,50 @@ def get_dashboard_context(user: dict | None = None, diagnosis_history: list[dict
     }
 
 
-def get_grants() -> list[dict]:
+def get_grants(user: dict | None = None) -> list[dict]:
     if not settings.use_demo_data:
         grants = fetch_support_grants()
         if grants:
-            return grants
-    return FALLBACK_GRANTS
+            return personalize_grants(grants, user)
+    return personalize_grants(FALLBACK_GRANTS, user)
+
+
+def personalize_grants(grants: list[dict], user: dict | None = None) -> list[dict]:
+    if not user:
+        return grants
+
+    region = str(user.get("region") or "").strip()
+    crop = str(user.get("crop") or "").strip()
+    region_tokens = [token for token in region.replace("특별시", "").replace("광역시", "").replace("도", "").split() if token]
+    crop_tokens = [crop] if crop else []
+
+    personalized = []
+    for index, grant in enumerate(grants):
+        text = " ".join(str(grant.get(key, "")) for key in ("title", "source", "reason", "target", "content"))
+        score = int(grant.get("fit", max(72, 96 - index * 5)))
+        reasons = []
+
+        if region and (region in text or any(token in text for token in region_tokens)):
+            score += 10
+            reasons.append(f"{region} 지역 조건 반영")
+        if crop and any(token and token in text for token in crop_tokens):
+            score += 6
+            reasons.append(f"{crop} 작물 정보 반영")
+        if not reasons:
+            if region or crop:
+                score += 2
+                context = " · ".join(value for value in (region, crop) if value)
+                reasons.append(f"{context} 조건으로 후보 비교")
+            else:
+                reasons.append("청년농 공통 지원 조건 우선")
+
+        item = dict(grant)
+        item["fit"] = min(score, 99)
+        item["match_reason"] = " · ".join(reasons)
+        item["reason"] = f"{item.get('reason', '지원 조건을 확인할 만한 사업입니다.')} ({item['match_reason']})"
+        personalized.append(item)
+
+    return sorted(personalized, key=lambda item: item.get("fit", 0), reverse=True)
 
 
 def get_crop_schedule(crop_name: str) -> dict:

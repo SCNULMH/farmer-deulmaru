@@ -1,13 +1,6 @@
 # 들마루 v2
 
-공모전 제출용으로 새로 구성하는 Python/FastAPI 버전입니다. 기존 Spring 프로젝트는 보존하고, v2는 `개인화 농업 의사결정 대시보드`를 중심으로 다시 설계합니다.
-
-## 목표
-
-- 공공데이터 활용성이 첫 화면에서 드러나는 구조
-- 청년농/귀농 초기 사용자를 위한 맞춤 지원사업, 재배 일정, 병해충 진단 흐름
-- 기존 팀 코드와 UI를 그대로 재사용하지 않는 새 구현
-- 실제 API/AI 모델 연결 전에도 공모전 시연이 가능한 데모 모드
+청년농/귀농 초기 사용자를 위한 FastAPI 기반 공공데이터 맞춤형 대시보드입니다. 회원가입 후 사용자 지역과 작물을 저장하고, 지원사업 추천, 재배 일정, 병해충 가이드, AI 진단 기록을 한 화면에서 확인합니다.
 
 ## 실행
 
@@ -17,95 +10,66 @@ cd C:\Users\user\Desktop\farmer-deulmaru\deulmaru_v2
 uvicorn app.main:app --reload --port 8000
 ```
 
-브라우저에서 `http://127.0.0.1:8000`으로 접속합니다.
+접속: `http://127.0.0.1:8000`
 
-## 데모 로그인
+데모 계정:
 
 - 아이디: `demo`
 - 비밀번호: `demo1234`
 
-현재 로그인은 SQLite 사용자 테이블을 사용하는 데모 로그인입니다. 실제 서비스 계정 정책은 추후 비밀번호 해시 강화와 카카오 로그인 연결로 확장합니다.
+## 회원가입과 저장소
 
-## API 키 설정
+- `/signup`에서 아이디, 비밀번호, 이름, 지역, 주요 작물을 입력합니다.
+- 로컬 개발 기본값은 `DATABASE_BACKEND=sqlite`이며 `data/deulmaru.sqlite3`에 저장됩니다.
+- 배포 환경은 `DATABASE_BACKEND=firebase`를 사용해 Firestore `users/{user_id}` 문서에 저장합니다.
+- 관심 지원사업과 진단 기록은 Firestore에서는 사용자 문서 하위 컬렉션으로 저장됩니다.
 
-현재 v2는 기존 Spring 프로젝트의 API 키를 `.env`로 옮겨 실제 API 호출을 수행합니다. API 장애나 빈 응답이 있으면 샘플 데이터 fallback을 사용합니다.
+## 환경변수
+
+`.env.example`을 복사해 `.env`를 만들고 필요한 값을 채웁니다.
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-`.env`에 다음 값을 채웁니다.
+주요 값:
 
-- `SUPPORT_API_SERVICE_KEY`: 청년농 지원사업 API 키
-- `NCPMS_API_KEY`: NCPMS API 키
-- `NONGSARO_API_KEY`: 농사로 API 키
-- `KAKAO_CLIENT_ID`: 카카오 로그인 client id
+- `APP_SECRET_KEY`: 세션 서명 키
+- `DATABASE_BACKEND`: `sqlite` 또는 `firebase`
+- `USE_DEMO_DATA`: `true`면 외부 API 대신 데모 데이터를 우선 사용
+- `SUPPORT_API_SERVICE_KEY`, `NCPMS_API_KEY`, `NONGSARO_API_KEY`: 공공데이터 API 키
+- `FIREBASE_CREDENTIALS_JSON`: 서비스 계정 JSON을 한 줄 환경변수로 등록
+- `GOOGLE_APPLICATION_CREDENTIALS`: 로컬 서비스 계정 파일 경로
 
-`USE_DEMO_DATA=false`이면 실제 API를 우선 호출합니다. `USE_DEMO_DATA=true`이면 실제 API 대신 샘플 데이터를 사용합니다.
+## API Fallback
 
-현재 로컬 검증 완료:
-
-- 청년농 지원사업 API: 실제 목록 수신 완료
-- 농사로 작물 재배 일정 API: 토마토 일정 수신 완료
-- NCPMS 병해충 API: 고추 병해충 목록 수신 완료
-
-## DB
-
-저장소는 환경변수로 선택합니다.
-
-- 로컬 기본값: `DATABASE_BACKEND=sqlite`
-- 제출/배포 권장값: `DATABASE_BACKEND=firebase`
-
-SQLite는 로컬 개발에는 빠르지만 Render 배포 환경에서는 파일 저장이 안정적이지 않습니다. 공모전 제출용 공개 URL은 Firebase Firestore를 권장합니다. 자세한 구성안은 `DEPLOYMENT_PLAN.md`를 참고하세요.
+`USE_DEMO_DATA=true`이면 항상 `app/services/demo_data.py`의 데모 데이터를 사용합니다. `USE_DEMO_DATA=false`여도 외부 API 키가 없거나 통신 장애가 발생하면 데모 데이터로 자동 fallback합니다.
 
 ## 배포
 
-Render 배포용 파일을 포함했습니다.
+Firebase Hosting은 고정 제출 URL을 제공하고, Cloud Run은 FastAPI 서버를 실행합니다.
 
-- `render.yaml`
-- `Procfile`
-- `runtime.txt`
+1. GitHub 저장소를 Cloud Shell에서 pull 합니다.
+2. `deulmaru_v2` 폴더를 Cloud Run 서비스 `deulmaru-v2`로 배포합니다.
+3. Firebase Hosting rewrite가 Cloud Run으로 요청을 전달합니다.
+4. 필요한 공공데이터 API 키를 Cloud Run 환경변수에 등록합니다.
+5. 배포 후 `/health`가 `{"status":"ok"}`를 반환하는지 확인합니다.
 
-Render에서 GitHub repo를 연결하고, 환경변수에 API 키와 `APP_SECRET_KEY`를 넣으면 됩니다.
+컨테이너 배포 환경의 ephemeral filesystem 제약 때문에 사용자 업로드 이미지는 저장하지 않습니다. 진단 기능은 파일 내용을 읽어 결과만 DB에 기록합니다.
 
 ## 구조
 
 ```text
 deulmaru_v2/
   app/
-    main.py
-    core/
-      settings.py
-    routers/
-      api.py
-    services/
-      db.py
-      demo_data.py
-      diagnosis.py
+    main.py                 # 페이지 라우트, 로그인, 회원가입
+    routers/api.py          # 대시보드 API
+    services/db.py          # SQLite/Firestore 저장소 추상화
+    services/demo_data.py   # 외부 API fallback 데이터
+    services/public_data.py # 공공데이터 API 클라이언트
+    services/diagnosis.py   # 교체 가능한 진단 어댑터
     templates/
-      login.html
-      dashboard.html
     static/
-      css/dashboard.css
-      js/dashboard.js
-  data/
+  render.yaml
   requirements.txt
 ```
-
-## 다음 작업
-
-1. 실제 공공데이터 API 클라이언트 추가
-   - 청년농 지원사업: 완료
-   - 농사로 작물 일정: 완료
-   - NCPMS 병해충 정보: 완료
-
-2. 진단 모델 어댑터 교체
-   - 현재 `app/services/diagnosis.py`는 데모 응답을 반환합니다.
-   - 이후 PyTorch 모델을 연결해도 라우트와 화면은 유지됩니다.
-
-3. Firebase Firestore 전환
-   - Render 환경변수에 `DATABASE_BACKEND=firebase`를 등록합니다.
-   - Render 환경변수에 `FIREBASE_CREDENTIALS_JSON`을 등록합니다.
-
-4. 기획서 문장과 화면 문구 정리
-   - 공공데이터 활용성, 구체성, 독창성, 발전 가능성, 시의성을 발표자료에 맞춰 다듬습니다.

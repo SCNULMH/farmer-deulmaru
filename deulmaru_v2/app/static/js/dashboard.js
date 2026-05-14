@@ -4,7 +4,7 @@ const result = document.querySelector("#diagnosisResult");
 if (form && result) {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    result.innerHTML = "<strong>진단 중입니다.</strong><p>이미지를 읽고 데모 진단 모델에 전달하고 있습니다.</p>";
+    result.innerHTML = "<strong>진단 중입니다.</strong><p>이미지를 읽고 진단 모델에 전달하고 있습니다.</p>";
 
     try {
       const response = await fetch("/api/diagnosis", {
@@ -21,7 +21,7 @@ if (form && result) {
       result.innerHTML = `
         <strong>${data.disease}</strong>
         <p>${data.crop} 이미지 ${data.filename} (${data.size_kb}KB)</p>
-        <p>신뢰도 ${data.confidence}% · ${data.model_mode} mode</p>
+        <p>신뢰도 ${data.confidence}%</p>
         <p>${data.next_action}</p>
         <p class="muted">분석 결과는 최근 진단 기록에 저장됩니다.</p>
       `;
