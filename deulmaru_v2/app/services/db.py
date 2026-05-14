@@ -188,7 +188,7 @@ def authenticate_user(user_id: str, password: str) -> dict | None:
 def authenticate_user_sqlite(user_id: str, password: str) -> dict | None:
     with get_connection() as conn:
         row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
-    if not row or row["password_hash"] != hash_password(password):
+    if not row or not password_matches(row, password):
         return None
     return row_to_user(row)
 
@@ -198,18 +198,40 @@ def authenticate_user_firebase(user_id: str, password: str) -> dict | None:
     if not doc.exists:
         return None
     data = doc.to_dict()
-    if data.get("password_hash") != hash_password(password):
+    data["id"] = data.get("id") or doc.id
+    if not password_matches(data, password):
         return None
     return row_to_user(data)
 
 
+def password_matches(row: Any, password: str) -> bool:
+    expected_hash = get_value(row, "password_hash")
+    if expected_hash and expected_hash == hash_password(password):
+        return True
+
+    # Compatibility with old Spring entities or manually inserted Firestore documents.
+    legacy_password = get_value(row, "password") or get_value(row, "userPw") or get_value(row, "user_pw")
+    if not legacy_password:
+        return False
+    return legacy_password == password or legacy_password == hash_password(password)
+
+
 def row_to_user(row: Any) -> dict:
     return {
-        "id": row["id"],
-        "name": row["name"],
-        "region": row["region"],
-        "crop": row["crop"],
+        "id": get_value(row, "id") or get_value(row, "userId") or get_value(row, "user_id"),
+        "name": get_value(row, "name") or get_value(row, "userNickname") or get_value(row, "nickname") or "청년농",
+        "region": get_value(row, "region") or get_value(row, "userLocate") or get_value(row, "locate") or "지역 미입력",
+        "crop": get_value(row, "crop") or get_value(row, "userCrop") or get_value(row, "cropName") or "토마토",
     }
+
+
+def get_value(row: Any, key: str):
+    if isinstance(row, dict):
+        return row.get(key)
+    try:
+        return row[key]
+    except (KeyError, IndexError):
+        return None
 
 
 def get_user(user_id: str) -> dict | None:
