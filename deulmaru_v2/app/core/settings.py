@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_secret_key: str = "change-this-for-local-demo"
     database_backend: str = "sqlite"
-    support_api_base_url: str = "https://apis.data.go.kr/1390000/youngV2"
+    support_api_base_url: str = "http://apis.data.go.kr/1390000/youngV2"
     support_api_service_key: str = ""
     ncpms_api_base_url: str = "http://ncpms.rda.go.kr/npmsAPI/service"
     ncpms_api_key: str = ""

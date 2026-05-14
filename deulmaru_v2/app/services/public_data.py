@@ -31,6 +31,8 @@ def fetch_support_grants(limit: int = 6) -> list[dict]:
     params = {
         "typeDv": "json",
         "serviceKey": settings.support_api_service_key,
+        "rowCnt": str(limit),
+        "cp": "1",
     }
     try:
         response = httpx.get(url, params=params, timeout=REQUEST_TIMEOUT)
