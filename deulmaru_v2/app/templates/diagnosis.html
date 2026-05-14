@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 진단 - 들마루 v2</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>AI 병해 진단</small></span></a>
+    <nav><a href="/">홈</a><a href="/dictionary">병해충 사전</a><a href="/mypage">마이페이지</a></nav>
+  </header>
+  <main>
+    <section class="page-hero"><p class="eyebrow">AI Diagnosis</p><h1>작물 이미지를 업로드해 의심 병해를 확인합니다.</h1></section>
+    <section class="diagnosis-layout">
+      <form id="diagnosisForm" class="diagnosis-form">
+        <label>작물
+          <select name="crop_name">
+            {% for crop in crop_names %}<option {% if crop == session_user.crop %}selected{% endif %}>{{ crop }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>작물 이미지 <input type="file" name="file" accept="image/*" required></label>
+        <button type="submit">진단하고 저장</button>
+      </form>
+      <div id="diagnosisResult" class="result-panel"><strong>진단 결과가 여기에 표시됩니다.</strong><p>결과는 사용자 진단 이력에 저장됩니다.</p></div>
+    </section>
+    <section class="section-grid">
+      <div class="section-heading"><p class="eyebrow">History</p><h2>최근 진단 이력</h2></div>
+      <div class="cards three">
+        {% for item in history %}
+        <article class="card compact-card"><span class="tag">{{ item.crop }}</span><h3>{{ item.disease }}</h3><p>신뢰도 {{ item.confidence }}%</p><p class="muted">{{ item.created_at }}</p></article>
+        {% else %}
+        <article class="card compact-card"><h3>아직 이력이 없습니다.</h3><p>첫 진단을 실행해 보세요.</p></article>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

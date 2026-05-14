@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from app.services.db import (
     add_interest,
+    delete_diagnosis,
     list_diagnosis_history,
     list_interests,
     remove_interest,
@@ -10,6 +11,7 @@ from app.services.db import (
 )
 from app.services.demo_data import get_crop_schedule, get_grants, get_pest_guides
 from app.services.diagnosis import predict_disease
+from app.services.public_data import CROP_NAMES, fetch_support_detail, search_consults, search_pests
 
 router = APIRouter()
 
@@ -30,14 +32,71 @@ async def grants() -> list[dict]:
     return get_grants()
 
 
+@router.get("/grants/{grant_id}")
+async def grant_detail(grant_id: str) -> dict:
+    detail = fetch_support_detail(grant_id)
+    if detail:
+        return detail
+    grant = next((item for item in get_grants() if item["id"] == grant_id), None)
+    if not grant:
+        raise HTTPException(status_code=404, detail="Grant not found")
+    return {
+        "id": grant["id"],
+        "title": grant["title"],
+        "target": grant["reason"],
+        "period": grant["deadline"],
+        "agency": grant["source"],
+        "content": grant["reason"],
+        "url": "",
+    }
+
+
 @router.get("/crop-schedule/{crop_name}")
 async def crop_schedule(crop_name: str) -> dict:
     return get_crop_schedule(crop_name)
 
 
+@router.get("/crop-names")
+async def crop_names() -> list[str]:
+    return CROP_NAMES
+
+
 @router.get("/pests")
-async def pests() -> list[dict]:
-    return get_pest_guides()
+async def pests(crop: str = "토마토") -> list[dict]:
+    return get_pest_guides(crop)
+
+
+@router.get("/ncpms/search")
+async def ncpms_search(query: str = "토마토", search_type: str = "crop") -> list[dict]:
+    results = search_pests(query, search_type)
+    if results:
+        return results
+    return [
+        {
+            "sick_key": f"fallback-{idx}",
+            "crop": item["crop"],
+            "name": item["name"],
+            "english_name": "",
+            "thumb": "",
+        }
+        for idx, item in enumerate(get_pest_guides(query), start=1)
+    ]
+
+
+@router.get("/ncpms/consult")
+async def ncpms_consult(query: str = "토마토", page: int = 1) -> list[dict]:
+    results = search_consults(query, page)
+    if results:
+        return results
+    return [
+        {
+            "id": "demo-consult",
+            "title": f"{query} 재배 상담 예시",
+            "crop": query,
+            "date": "",
+            "summary": "API 응답이 없을 때 표시하는 데모 상담 사례입니다. 현장 증상과 병해충 가이드를 함께 확인하세요.",
+        }
+    ]
 
 
 @router.get("/interests")
@@ -63,6 +122,12 @@ async def delete_grant_interest(grant_id: str, request: Request) -> OkResponse:
 @router.get("/diagnosis/history")
 async def diagnosis_history(request: Request) -> list[dict]:
     return list_diagnosis_history(current_user_id(request))
+
+
+@router.delete("/diagnosis/history/{diagnosis_id}", response_model=OkResponse)
+async def delete_diagnosis_history(diagnosis_id: str, request: Request) -> OkResponse:
+    delete_diagnosis(current_user_id(request), diagnosis_id)
+    return OkResponse(ok=True)
 
 
 @router.post("/diagnosis")

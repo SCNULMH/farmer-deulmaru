@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QnA - 들마루 v2</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>농업 상담 사례</small></span></a>
+    <nav><a href="/">홈</a><a href="/dictionary">병해충 사전</a><a href="/mypage">마이페이지</a></nav>
+  </header>
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow">QnA</p>
+      <h1>NCPMS 상담 사례를 검색합니다.</h1>
+      <form class="search-bar" method="get" action="/qna"><input name="query" value="{{ query }}"><button type="submit">검색</button></form>
+    </section>
+    <section class="cards three" id="consultCards"></section>
+  </main>
+  <script>
+    fetch(`/api/ncpms/consult?query={{ query }}`).then(r => r.json()).then(items => {
+      document.querySelector("#consultCards").innerHTML = items.map(item => `
+        <article class="card"><span class="tag">${item.crop || "상담"}</span><h3>${item.title}</h3><p>${item.summary || ""}</p><p class="muted">${item.date || ""}</p></article>
+      `).join("");
+    });
+  </script>
+</body>
+</html>

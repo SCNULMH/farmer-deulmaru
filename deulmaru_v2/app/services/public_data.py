@@ -20,6 +20,8 @@ CROP_CONTENTS = {
     "오이": "30636",
 }
 
+CROP_NAMES = sorted(CROP_CONTENTS.keys())
+
 
 def fetch_support_grants(limit: int = 6) -> list[dict]:
     if not settings.support_api_service_key:
@@ -54,6 +56,29 @@ def fetch_support_grants(limit: int = 6) -> list[dict]:
             }
         )
     return grants
+
+
+def fetch_support_detail(seq: str) -> dict | None:
+    if not settings.support_api_service_key:
+        return None
+
+    url = f"{settings.support_api_base_url}/policyViewV2"
+    params = {
+        "typeDv": "json",
+        "serviceKey": settings.support_api_service_key,
+        "seq": seq,
+    }
+    try:
+        response = httpx.get(url, params=params, timeout=REQUEST_TIMEOUT)
+        response.raise_for_status()
+        payload = response.json()
+    except Exception:
+        return None
+
+    row = first_dict(payload)
+    if not row:
+        return None
+    return normalize_support_detail(row)
 
 
 def fetch_crop_schedule(crop_name: str) -> dict | None:
@@ -126,6 +151,81 @@ def fetch_pest_guides(query: str = "토마토", limit: int = 3) -> list[dict]:
     return guides
 
 
+def search_pests(query: str, search_type: str = "sick", limit: int = 12) -> list[dict]:
+    if not settings.ncpms_api_key:
+        return []
+
+    params = {
+        "apiKey": settings.ncpms_api_key,
+        "serviceCode": "SVC01",
+        "serviceType": "AA001",
+        "displayCount": str(limit),
+        "startPoint": "1",
+    }
+    if search_type == "crop":
+        params["cropName"] = query
+    else:
+        params["sickNameKor"] = query
+
+    try:
+        response = httpx.get(settings.ncpms_api_base_url, params=params, timeout=REQUEST_TIMEOUT)
+        response.raise_for_status()
+        root = ET.fromstring(response.text)
+    except Exception:
+        return []
+
+    results = []
+    for item in root.findall(".//item")[:limit]:
+        sick_key = node_text(item, "sickKey")
+        results.append(
+            {
+                "sick_key": sick_key,
+                "crop": clean(node_text(item, "cropName") or query),
+                "name": clean(node_text(item, "sickNameKor") or node_text(item, "sickNameEng") or "병해충 정보"),
+                "english_name": clean(node_text(item, "sickNameEng")),
+                "thumb": clean(node_text(item, "thumbImg")),
+            }
+        )
+    return results
+
+
+def search_consults(query: str, page: int = 1, limit: int = 10) -> list[dict]:
+    if not settings.ncpms_api_key:
+        return []
+
+    start_point = max(1, (page - 1) * limit + 1)
+    try:
+        response = httpx.get(
+            settings.ncpms_api_base_url,
+            params={
+                "apiKey": settings.ncpms_api_key,
+                "serviceCode": "SVC41",
+                "serviceType": "AA001",
+                "dgnssReqSj": query,
+                "displayCount": str(limit),
+                "startPoint": str(start_point),
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+        response.raise_for_status()
+        root = ET.fromstring(response.text)
+    except Exception:
+        return []
+
+    consults = []
+    for item in root.findall(".//item")[:limit]:
+        consults.append(
+            {
+                "id": clean(node_text(item, "dgnssReqNo")),
+                "title": clean(node_text(item, "dgnssReqSj") or "상담 사례"),
+                "crop": clean(node_text(item, "cropName")),
+                "date": clean(node_text(item, "registDt")),
+                "summary": clean(node_text(item, "dgnssReqCn"))[:180],
+            }
+        )
+    return consults
+
+
 def fetch_pest_detail(sick_key: str) -> dict:
     try:
         response = httpx.get(
@@ -149,6 +249,40 @@ def fetch_pest_detail(sick_key: str) -> dict:
         "symptom": clean_html(symptom) if symptom else "",
         "action": clean_html(prevention) if prevention else "",
     }
+
+
+def normalize_support_detail(row: dict) -> dict:
+    return {
+        "id": str(pick(row, "seq", "id", "policyId", "plcyNo", default="")),
+        "title": clean(pick(row, "title", "policyNm", "bizNm", "plcyNm", "servNm", "name", default="지원사업")),
+        "target": clean(pick(row, "eduTarget", "target", "sprtTrgtCn", "plcySprtCn", default="공고문 확인")),
+        "period": clean(
+            f"{pick(row, 'applStDt', 'aplyBgngDt', 'startDt', default='공고 확인')} ~ "
+            f"{pick(row, 'applEdDt', 'aplyEndDt', 'endDt', default='공고 확인')}"
+        ),
+        "agency": clean(pick(row, "chargeAgency", "instNm", "source", "deptNm", default="공고 기관")),
+        "content": clean(pick(row, "contents", "bizCn", "plcyExplnCn", "description", default="상세 내용은 공고를 확인하세요.")),
+        "url": clean(pick(row, "url", "link", "refUrl", default="")),
+    }
+
+
+def first_dict(value) -> dict | None:
+    if isinstance(value, dict):
+        direct = value.get("policy_result") or value.get("data") or value.get("item")
+        if isinstance(direct, dict):
+            return direct
+        if isinstance(direct, list) and direct and isinstance(direct[0], dict):
+            return direct[0]
+        for child in value.values():
+            found = first_dict(child)
+            if found:
+                return found
+        return value if any(isinstance(v, str) for v in value.values()) else None
+    if isinstance(value, list):
+        for item in value:
+            if isinstance(item, dict):
+                return item
+    return None
 
 
 def find_list(value) -> list:
