@@ -212,6 +212,42 @@ def row_to_user(row: Any) -> dict:
     }
 
 
+def get_user(user_id: str) -> dict | None:
+    if use_firebase():
+        doc = get_firestore_client().collection("users").document(user_id).get()
+        return row_to_user(doc.to_dict()) if doc.exists else None
+    with get_connection() as conn:
+        row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+    return row_to_user(row) if row else None
+
+
+def update_user_profile(user_id: str, *, name: str, region: str, crop: str, password: str = "") -> dict:
+    payload = {
+        "name": name.strip(),
+        "region": region.strip(),
+        "crop": crop.strip(),
+        "updated_at": now(),
+    }
+    if password:
+        payload["password_hash"] = hash_password(password)
+
+    if use_firebase():
+        get_firestore_client().collection("users").document(user_id).set(payload, merge=True)
+    else:
+        with get_connection() as conn:
+            if password:
+                conn.execute(
+                    "UPDATE users SET name = ?, region = ?, crop = ?, password_hash = ? WHERE id = ?",
+                    (payload["name"], payload["region"], payload["crop"], payload["password_hash"], user_id),
+                )
+            else:
+                conn.execute(
+                    "UPDATE users SET name = ?, region = ?, crop = ? WHERE id = ?",
+                    (payload["name"], payload["region"], payload["crop"], user_id),
+                )
+    return get_user(user_id) or {"id": user_id, "name": name, "region": region, "crop": crop}
+
+
 def list_interests(user_id: str) -> list[dict]:
     return list_interests_firebase(user_id) if use_firebase() else list_interests_sqlite(user_id)
 
@@ -292,7 +328,7 @@ def list_diagnosis_history_sqlite(user_id: str) -> list[dict]:
     with get_connection() as conn:
         rows = conn.execute(
             """
-            SELECT crop, disease, confidence, filename, created_at
+            SELECT id, crop, disease, confidence, filename, created_at
             FROM diagnosis_history
             WHERE user_id = ?
             ORDER BY id DESC
@@ -313,7 +349,12 @@ def list_diagnosis_history_firebase(user_id: str) -> list[dict]:
         .limit(10)
         .stream()
     )
-    return [doc.to_dict() for doc in docs]
+    results = []
+    for doc in docs:
+        item = doc.to_dict()
+        item["id"] = doc.id
+        results.append(item)
+    return results
 
 
 def diagnosis_payload(user_id: str, result: dict) -> dict:
@@ -358,3 +399,16 @@ def save_diagnosis_firebase(user_id: str, result: dict) -> None:
     get_firestore_client().collection("users").document(user_id).collection(
         "diagnosis_history"
     ).add(diagnosis_payload(user_id, result))
+
+
+def delete_diagnosis(user_id: str, diagnosis_id: str) -> None:
+    if use_firebase():
+        get_firestore_client().collection("users").document(user_id).collection(
+            "diagnosis_history"
+        ).document(diagnosis_id).delete()
+    else:
+        with get_connection() as conn:
+            conn.execute(
+                "DELETE FROM diagnosis_history WHERE user_id = ? AND id = ?",
+                (user_id, diagnosis_id),
+            )

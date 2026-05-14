@@ -9,8 +9,16 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.core.settings import settings
 from app.routers import api
-from app.services.db import authenticate_user, create_user, init_db, list_diagnosis_history
-from app.services.demo_data import get_dashboard_context
+from app.services.db import (
+    authenticate_user,
+    create_user,
+    init_db,
+    list_diagnosis_history,
+    list_interests,
+    update_user_profile,
+)
+from app.services.demo_data import get_crop_schedule, get_dashboard_context, get_grants, get_pest_guides
+from app.services.public_data import CROP_NAMES, fetch_support_detail
 
 app = FastAPI(
     title="Deulmaru v2",
@@ -58,14 +66,23 @@ async def dashboard(request: Request) -> HTMLResponse:
         return RedirectResponse(url="/login", status_code=303)
 
     diagnosis_history = list_diagnosis_history(session_user["id"])
+    interests = list_interests(session_user["id"])
     return templates.TemplateResponse(
         "dashboard.html",
         {
             "request": request,
             **get_dashboard_context(user=session_user, diagnosis_history=diagnosis_history),
             "session_user": session_user,
+            "interests": interests,
         },
     )
+
+
+def require_user(request: Request) -> dict | RedirectResponse:
+    session_user = request.session.get("user")
+    if not session_user:
+        return RedirectResponse(url="/login", status_code=303)
+    return session_user
 
 
 @app.get("/login", response_class=HTMLResponse)
@@ -135,6 +152,130 @@ async def signup(
 
     request.session["user"] = user
     return RedirectResponse(url="/", status_code=303)
+
+
+@app.get("/support", response_class=HTMLResponse)
+async def support_page(request: Request) -> HTMLResponse:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return session_user
+    return templates.TemplateResponse(
+        "support.html",
+        {"request": request, "session_user": session_user, "grants": get_grants()},
+    )
+
+
+@app.get("/support/{grant_id}", response_class=HTMLResponse)
+async def support_detail_page(request: Request, grant_id: str) -> HTMLResponse:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return session_user
+    fallback = next((item for item in get_grants() if item["id"] == grant_id), None)
+    detail = fetch_support_detail(grant_id)
+    if not detail and fallback:
+        detail = {
+            "id": fallback["id"],
+            "title": fallback["title"],
+            "target": fallback["reason"],
+            "period": fallback["deadline"],
+            "agency": fallback["source"],
+            "content": fallback["reason"],
+            "url": "",
+        }
+    return templates.TemplateResponse(
+        "support_detail.html",
+        {"request": request, "session_user": session_user, "grant": detail, "grant_id": grant_id},
+    )
+
+
+@app.get("/dictionary", response_class=HTMLResponse)
+async def dictionary_page(request: Request, query: str = "토마토", search_type: str = "crop") -> HTMLResponse:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return session_user
+    return templates.TemplateResponse(
+        "dictionary.html",
+        {
+            "request": request,
+            "session_user": session_user,
+            "query": query,
+            "search_type": search_type,
+            "pests": get_pest_guides(query),
+        },
+    )
+
+
+@app.get("/diagnosis", response_class=HTMLResponse)
+async def diagnosis_page(request: Request) -> HTMLResponse:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return session_user
+    return templates.TemplateResponse(
+        "diagnosis.html",
+        {
+            "request": request,
+            "session_user": session_user,
+            "history": list_diagnosis_history(session_user["id"]),
+            "crop_names": CROP_NAMES,
+        },
+    )
+
+
+@app.get("/mypage", response_class=HTMLResponse)
+async def mypage(request: Request) -> HTMLResponse:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return session_user
+    return templates.TemplateResponse(
+        "mypage.html",
+        {
+            "request": request,
+            "session_user": session_user,
+            "interests": list_interests(session_user["id"]),
+            "history": list_diagnosis_history(session_user["id"]),
+            "schedule": get_crop_schedule(session_user["crop"]),
+            "crop_names": CROP_NAMES,
+            "message": None,
+        },
+    )
+
+
+@app.post("/mypage", response_class=HTMLResponse)
+async def update_mypage(
+    request: Request,
+    name: str = Form(...),
+    region: str = Form(...),
+    crop: str = Form(...),
+    password: str = Form(""),
+) -> HTMLResponse:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return session_user
+    user = update_user_profile(session_user["id"], name=name, region=region, crop=crop, password=password)
+    request.session["user"] = user
+    return templates.TemplateResponse(
+        "mypage.html",
+        {
+            "request": request,
+            "session_user": user,
+            "interests": list_interests(user["id"]),
+            "history": list_diagnosis_history(user["id"]),
+            "schedule": get_crop_schedule(user["crop"]),
+            "crop_names": CROP_NAMES,
+            "message": "회원 정보가 저장되었습니다.",
+        },
+    )
+
+
+@app.get("/qna", response_class=HTMLResponse)
+async def qna_page(request: Request, query: str = "토마토") -> HTMLResponse:
+    session_user = require_user(request)
+    if isinstance(session_user, RedirectResponse):
+        return session_user
+    return templates.TemplateResponse(
+        "qna.html",
+        {"request": request, "session_user": session_user, "query": query},
+    )
 
 
 @app.post("/logout")

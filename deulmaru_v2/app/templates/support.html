@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>지원사업 - 들마루 v2</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>지원사업 정보</small></span></a>
+    <nav>
+      <a href="/">홈</a><a href="/dictionary">병해충 사전</a><a href="/diagnosis">AI 진단</a><a href="/mypage">마이페이지</a>
+      <span class="nav-user">{{ session_user.name }}</span>
+    </nav>
+  </header>
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow">Support Programs</p>
+      <h1>청년농 지원사업을 한 번에 확인하세요.</h1>
+      <p class="lead">공공데이터 API를 우선 사용하고, 응답이 없으면 안정적인 fallback 데이터로 전환합니다.</p>
+    </section>
+    <section class="cards three">
+      {% for grant in grants %}
+      <article class="card grant-card">
+        <div class="fit">{{ grant.fit }}%</div>
+        <h3>{{ grant.title }}</h3>
+        <p>{{ grant.reason }}</p>
+        <footer><span>{{ grant.source }}</span><strong>{{ grant.deadline }}</strong></footer>
+        <div class="card-actions">
+          <a class="secondary-action" href="/support/{{ grant.id }}">상세보기</a>
+          <button class="interest-button" data-grant-id="{{ grant.id }}">관심 저장</button>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+  </main>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

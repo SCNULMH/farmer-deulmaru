@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>지원사업 상세 - 들마루 v2</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>지원사업 상세</small></span></a>
+    <nav><a href="/support">지원사업</a><a href="/mypage">마이페이지</a><span class="nav-user">{{ session_user.name }}</span></nav>
+  </header>
+  <main>
+    {% if grant %}
+    <section class="page-hero detail-hero">
+      <p class="eyebrow">{{ grant.agency }}</p>
+      <h1>{{ grant.title }}</h1>
+      <p class="lead">{{ grant.content }}</p>
+    </section>
+    <section class="detail-grid">
+      <article class="card"><span class="tag">대상</span><p>{{ grant.target }}</p></article>
+      <article class="card"><span class="tag">신청기간</span><p>{{ grant.period }}</p></article>
+      <article class="card"><span class="tag">기관</span><p>{{ grant.agency }}</p></article>
+    </section>
+    <div class="hero-actions">
+      <button class="interest-button" data-grant-id="{{ grant.id or grant_id }}">관심 저장</button>
+      <a class="secondary-action" href="/support">목록으로</a>
+      {% if grant.url %}<a class="primary-action" href="{{ grant.url }}" target="_blank" rel="noreferrer">공고 열기</a>{% endif %}
+    </div>
+    {% else %}
+    <section class="page-hero"><h1>지원사업 정보를 찾지 못했습니다.</h1><a class="secondary-action" href="/support">목록으로</a></section>
+    {% endif %}
+  </main>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

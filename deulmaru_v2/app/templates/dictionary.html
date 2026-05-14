@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>병해충 사전 - 들마루 v2</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>NCPMS 병해충 사전</small></span></a>
+    <nav><a href="/">홈</a><a href="/support">지원사업</a><a href="/diagnosis">AI 진단</a><a href="/mypage">마이페이지</a></nav>
+  </header>
+  <main>
+    <section class="page-hero">
+      <p class="eyebrow">Dictionary</p>
+      <h1>작물명이나 병명으로 병해충 정보를 검색합니다.</h1>
+      <form class="search-bar" method="get" action="/dictionary">
+        <select name="search_type">
+          <option value="crop" {% if search_type == "crop" %}selected{% endif %}>작물명</option>
+          <option value="sick" {% if search_type == "sick" %}selected{% endif %}>병명</option>
+        </select>
+        <input name="query" value="{{ query }}" placeholder="토마토">
+        <button type="submit">검색</button>
+      </form>
+    </section>
+    <section class="cards three" id="dictionaryResults">
+      {% for pest in pests %}
+      <article class="card">
+        <span class="tag">{{ pest.crop }}</span>
+        <h3>{{ pest.name }}</h3>
+        <p>{{ pest.symptom }}</p>
+        <p class="action-text">{{ pest.action }}</p>
+      </article>
+      {% endfor %}
+    </section>
+  </main>
+</body>
+</html>

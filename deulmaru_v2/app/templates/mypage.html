@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마이페이지 - 들마루 v2</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">DM</span><span><strong>들마루 v2</strong><small>내 농장 관리</small></span></a>
+    <nav><a href="/">홈</a><a href="/support">지원사업</a><a href="/diagnosis">AI 진단</a><span class="nav-user">{{ session_user.name }}</span></nav>
+  </header>
+  <main>
+    <section class="page-hero"><p class="eyebrow">My Page</p><h1>{{ session_user.name }}님의 농장 정보와 저장 데이터를 관리합니다.</h1></section>
+    <section class="mypage-grid">
+      <form class="diagnosis-form" method="post" action="/mypage">
+        <h2>회원 정보 수정</h2>
+        {% if message %}<p class="form-success">{{ message }}</p>{% endif %}
+        <label>이름 <input name="name" value="{{ session_user.name }}" required></label>
+        <label>지역 <input name="region" value="{{ session_user.region }}" required></label>
+        <label>주요 작물 <input name="crop" value="{{ session_user.crop }}" list="cropList" required></label>
+        <datalist id="cropList">{% for crop in crop_names %}<option value="{{ crop }}">{% endfor %}</datalist>
+        <label>새 비밀번호 <input type="password" name="password" placeholder="변경할 때만 입력"></label>
+        <button type="submit">저장</button>
+      </form>
+      <article class="result-panel">
+        <strong>{{ schedule.crop }} 재배 일정</strong>
+        {% for item in schedule.tasks %}<p><b>{{ item.period }}</b> {{ item.task }}</p>{% endfor %}
+      </article>
+    </section>
+    <section class="section-grid">
+      <div class="section-heading"><p class="eyebrow">Saved</p><h2>관심 지원사업</h2></div>
+      <div class="cards three">
+        {% for item in interests %}
+        <article class="card compact-card"><span class="tag">{{ item.deadline }}</span><h3>{{ item.title }}</h3><p class="muted">{{ item.created_at }}</p></article>
+        {% else %}
+        <article class="card compact-card"><h3>관심 저장이 없습니다.</h3><p>지원사업 목록에서 관심 저장을 눌러보세요.</p></article>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+</body>
+</html>

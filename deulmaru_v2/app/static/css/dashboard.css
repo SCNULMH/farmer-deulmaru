@@ -225,12 +225,61 @@ dd {
 
 .metric-strip {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1px;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--line);
+}
+
+.page-hero {
+  padding: 74px 0 34px;
+}
+
+.page-hero h1 {
+  font-size: clamp(38px, 6vw, 68px);
+}
+
+.detail-hero h1 {
+  max-width: 960px;
+}
+
+.card-actions,
+.search-bar,
+.mypage-grid,
+.detail-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.card-actions {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 22px;
+}
+
+.search-bar {
+  grid-template-columns: 150px minmax(0, 1fr) 110px;
+  max-width: 720px;
+  margin-top: 26px;
+}
+
+.mypage-grid {
+  grid-template-columns: 390px 1fr;
+  align-items: stretch;
+}
+
+.detail-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.form-success {
+  border: 1px solid rgba(47, 111, 78, 0.28);
+  border-radius: 8px;
+  background: rgba(47, 111, 78, 0.08);
+  color: var(--green);
+  padding: 12px;
+  line-height: 1.5;
 }
 
 .metric-strip div {
@@ -478,7 +527,10 @@ input {
   .split,
   .diagnosis-layout,
   .sources,
-  .login-shell {
+  .login-shell,
+  .mypage-grid,
+  .detail-grid,
+  .search-bar {
     grid-template-columns: 1fr;
   }
 
