@@ -12,14 +12,14 @@
       <span class="brand-mark">DM</span>
       <span>
         <strong>들마루 v2</strong>
-        <small>공공데이터 기반 농업 의사결정 대시보드</small>
+        <small>청년농 맞춤형 공공데이터 대시보드</small>
       </span>
     </a>
     <nav>
       <a href="#grants">지원사업</a>
-      <a href="#schedule">재배일정</a>
-      <a href="#diagnosis">AI진단</a>
-      <a href="#sources">공공데이터</a>
+      <a href="#schedule">재배 일정</a>
+      <a href="#diagnosis">AI 진단</a>
+      <a href="#sources">데이터 출처</a>
       <span class="nav-user">{{ session_user.name }}</span>
       <form method="post" action="/logout" class="logout-form">
         <button type="submit" class="nav-logout">로그아웃</button>
@@ -30,31 +30,31 @@
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">2026 농업·농촌 공공데이터 활용 창업경진대회</p>
-        <h1>청년농의 오늘 할 일을 공공데이터로 바로 정리합니다.</h1>
+        <p class="eyebrow">2026 청년농 데이터 도우미</p>
+        <h1>{{ user.name }}님에게 맞는 농업 정보를 빠르게 확인하세요.</h1>
         <p class="lead">
-          지원사업, 작물 일정, 병해충 정보, AI 진단 이력을 한 화면에서 연결해
-          초보 농업인의 시행착오를 줄이는 개인화 농업 대시보드입니다.
+          지역과 작물 정보를 바탕으로 지원사업, 재배 일정, 병해충 가이드를 한 화면에 모았습니다.
+          외부 API가 불안정하거나 데모 모드일 때는 안정적인 데모 데이터로 자동 전환됩니다.
         </p>
         <div class="hero-actions">
-          <a class="primary-action" href="#diagnosis">진단 시연</a>
-          <a class="secondary-action" href="#grants">추천 보기</a>
+          <a class="primary-action" href="#diagnosis">AI 진단 시작</a>
+          <a class="secondary-action" href="#grants">지원사업 보기</a>
         </div>
       </div>
       <aside class="profile-panel">
-        <span class="panel-label">시연 사용자</span>
+        <span class="panel-label">내 농장 정보</span>
         <h2>{{ user.name }}</h2>
         <dl>
           <div><dt>지역</dt><dd>{{ user.region }}</dd></div>
           <div><dt>작물</dt><dd>{{ user.crop }}</dd></div>
-          <div><dt>상태</dt><dd>{{ user.stage }}</dd></div>
+          <div><dt>단계</dt><dd>{{ user.stage }}</dd></div>
         </dl>
       </aside>
     </section>
 
-    <section class="metric-strip" aria-label="서비스 요약">
-      <div><strong>4</strong><span>연동 데이터 축</span></div>
-      <div><strong>{{ grants|length }}</strong><span>맞춤 지원사업</span></div>
+    <section class="metric-strip" aria-label="요약 지표">
+      <div><strong>4</strong><span>연결 데이터 소스</span></div>
+      <div><strong>{{ grants|length }}</strong><span>추천 지원사업</span></div>
       <div><strong>{{ schedule.tasks|length }}</strong><span>이번 주 작업</span></div>
       <div><strong>{{ diagnosis_history|length }}</strong><span>저장된 진단</span></div>
     </section>
@@ -74,7 +74,7 @@
             <span>{{ grant.source }}</span>
             <strong>{{ grant.deadline }}</strong>
           </footer>
-          <button class="interest-button" data-grant-id="{{ grant.id }}">관심 등록</button>
+          <button class="interest-button" data-grant-id="{{ grant.id }}">관심 저장</button>
         </article>
         {% endfor %}
       </div>
@@ -84,7 +84,7 @@
       <div>
         <p class="eyebrow">Crop Schedule</p>
         <h2>{{ schedule.crop }} 재배 일정</h2>
-        <p class="muted">{{ schedule.source }}를 기준으로 이번 주 작업을 요약합니다.</p>
+        <p class="muted">{{ schedule.source }} 기준으로 정리한 주요 작업입니다.</p>
       </div>
       <ol class="timeline">
         {% for item in schedule.tasks %}
@@ -99,7 +99,7 @@
     <section class="section-grid" id="diagnosis">
       <div class="section-heading">
         <p class="eyebrow">AI Diagnosis</p>
-        <h2>이미지 진단에서 병해충 정보까지</h2>
+        <h2>작물 사진으로 병해 의심 결과 확인</h2>
       </div>
       <div class="diagnosis-layout">
         <form id="diagnosisForm" class="diagnosis-form">
@@ -108,19 +108,19 @@
             <select name="crop_name">
               <option>토마토</option>
               <option>고추</option>
-              <option>참외</option>
-              <option>포도</option>
+              <option>상추</option>
+              <option>딸기</option>
             </select>
           </label>
           <label>
-            잎 또는 열매 이미지
+            작물 이미지
             <input type="file" name="file" accept="image/*" required>
           </label>
-          <button type="submit">분석하고 저장하기</button>
+          <button type="submit">진단하기</button>
         </form>
         <div id="diagnosisResult" class="result-panel">
-          <strong>시연 결과가 여기에 표시됩니다.</strong>
-          <p>실제 모델 연결 전에는 데모 어댑터가 응답하고, 결과는 SQLite에 저장됩니다.</p>
+          <strong>진단 결과가 여기에 표시됩니다.</strong>
+          <p>이미지는 서버에 영구 저장하지 않고 분석 결과만 DB에 기록합니다.</p>
         </div>
       </div>
     </section>
@@ -128,7 +128,7 @@
     <section class="section-grid">
       <div class="section-heading">
         <p class="eyebrow">Diagnosis History</p>
-        <h2>최근 진단 이력</h2>
+        <h2>최근 진단 기록</h2>
       </div>
       <div class="cards three" id="historyCards">
         {% for item in diagnosis_history %}
@@ -141,7 +141,7 @@
         {% else %}
         <article class="card compact-card">
           <h3>아직 저장된 진단이 없습니다.</h3>
-          <p>이미지를 업로드하면 진단 이력이 여기에 쌓입니다.</p>
+          <p>작물 이미지를 업로드하면 최근 진단 기록이 여기에 쌓입니다.</p>
         </article>
         {% endfor %}
       </div>
@@ -150,7 +150,7 @@
     <section class="section-grid">
       <div class="section-heading">
         <p class="eyebrow">NCPMS Guide</p>
-        <h2>관련 병해충 예찰 카드</h2>
+        <h2>병해충 관리 가이드</h2>
       </div>
       <div class="cards three">
         {% for pest in pests %}
@@ -167,7 +167,7 @@
     <section class="sources" id="sources">
       <div>
         <p class="eyebrow">Public Data</p>
-        <h2>공모전 평가 항목에 맞춘 데이터 사용 계획</h2>
+        <h2>연결 데이터 출처</h2>
       </div>
       <ul>
         {% for source in data_sources %}

@@ -20,6 +20,8 @@ cd farmer-deulmaru/deulmaru_v2
 gcloud config set project growup-39cbf
 ```
 
+반드시 `cd farmer-deulmaru/deulmaru_v2` 이후에 배포해야 합니다. `~`에서 `--source .`를 실행하면 FastAPI 소스가 아닌 Cloud Shell 홈 디렉터리를 빌드하게 되어 실패합니다.
+
 필요 API를 활성화합니다.
 
 ```bash
@@ -80,6 +82,8 @@ Cloud Run service `deulmaru-v2` does not exist in region `asia-northeast3` in th
 ```
 
 Cloud Run 배포를 먼저 완료한 뒤 Hosting 배포를 다시 실행하면 됩니다.
+
+Cloud Run build가 실패하면 Cloud Build 로그에서 현재 작업 디렉터리가 `deulmaru_v2`였는지 먼저 확인합니다. 이 저장소에는 `.gcloudignore`가 있어 `.env`와 Firebase service-account JSON은 source deploy에 포함되지 않습니다.
 
 ## 3. 확인
 

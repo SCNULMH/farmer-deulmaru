@@ -1,0 +1,12 @@
+.gcloudignore
+.git
+.gitignore
+.venv/
+__pycache__/
+*.pyc
+*.log
+.env
+*.sqlite3
+data/
+*firebase-adminsdk*.json
+service-account*.json
