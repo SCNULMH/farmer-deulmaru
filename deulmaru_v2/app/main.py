@@ -78,6 +78,11 @@ async def dashboard(request: Request) -> HTMLResponse:
     )
 
 
+@app.post("/")
+async def dashboard_post_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/", status_code=303)
+
+
 def require_user(request: Request) -> dict | RedirectResponse:
     session_user = request.session.get("user")
     if not session_user:
