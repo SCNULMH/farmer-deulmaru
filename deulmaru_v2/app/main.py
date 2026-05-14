@@ -27,7 +27,13 @@ app = FastAPI(
     version="0.4.0",
 )
 
-app.add_middleware(SessionMiddleware, secret_key=settings.app_secret_key)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.app_secret_key,
+    session_cookie="__session",
+    same_site="lax",
+    https_only=True,
+)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 app.include_router(api.router, prefix="/api")
