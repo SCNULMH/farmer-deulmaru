@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     use_demo_data: bool = True
     diagnosis_model_path: str = "app/ml_models/model.pth"
     max_image_upload_bytes: int = 5 * 1024 * 1024
+    diagnosis_timeout_seconds: int = 25
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8-sig", extra="ignore")
 
