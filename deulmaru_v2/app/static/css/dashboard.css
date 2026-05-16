@@ -236,6 +236,74 @@ main {
   color: var(--ink);
 }
 
+.usage-panel {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.4fr);
+  gap: 24px;
+  margin-top: 24px;
+  border: 1px solid rgba(47, 111, 78, 0.22);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #eef5ef 100%);
+  box-shadow: var(--shadow);
+  padding: clamp(24px, 4vw, 38px);
+}
+
+.usage-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.usage-intro h2 {
+  margin: 0 0 14px;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.usage-intro p {
+  margin: 0;
+  color: #465348;
+  line-height: 1.7;
+}
+
+.usage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.usage-grid article {
+  min-height: 176px;
+  border: 1px solid rgba(47, 111, 78, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 20px;
+}
+
+.usage-grid span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(47, 111, 78, 0.12);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.usage-grid strong {
+  display: block;
+  margin-top: 14px;
+  font-size: 18px;
+}
+
+.usage-grid p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .text-link {
   color: var(--green);
   font-weight: 900;
@@ -554,6 +622,78 @@ main {
   height: calc(100% - 54px);
   border: 0;
   display: block;
+}
+
+.usage-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(13, 22, 16, 0.48);
+}
+
+.usage-modal[hidden] {
+  display: none;
+}
+
+.usage-modal-card {
+  position: relative;
+  width: min(560px, 100%);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 26px 70px rgba(16, 28, 19, 0.28);
+  padding: clamp(26px, 5vw, 40px);
+}
+
+.usage-modal-card h2 {
+  margin: 0 0 12px;
+  font-size: clamp(26px, 5vw, 38px);
+}
+
+.usage-modal-card p:not(.eyebrow) {
+  color: #465348;
+  line-height: 1.7;
+}
+
+.usage-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  padding: 0;
+}
+
+.usage-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.usage-modal-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 900;
+  padding: 0 16px;
+}
+
+.usage-modal-actions a + a {
+  background: var(--blue);
 }
 
 .hero {
@@ -984,6 +1124,7 @@ input {
 
   .hero,
   .main-visual,
+  .usage-panel,
   .split,
   .diagnosis-layout,
   .sources,
@@ -999,6 +1140,7 @@ input {
   .metric-strip,
   .cards.three,
   .profile-strip,
+  .usage-grid,
   .benefit-list,
   .svc-list {
     grid-template-columns: 1fr;

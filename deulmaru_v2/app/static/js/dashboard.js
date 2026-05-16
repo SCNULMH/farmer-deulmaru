@@ -3,6 +3,9 @@ const result = document.querySelector("#diagnosisResult");
 const chatbotToggle = document.querySelector("[data-chatbot-toggle]");
 const chatbotClose = document.querySelector("[data-chatbot-close]");
 const chatbotPanel = document.querySelector("#chatbotPanel");
+const usageModal = document.querySelector("#usageModal");
+const usageModalClose = document.querySelector("[data-usage-modal-close]");
+const usageModalStorageKey = "deulmaruUsageModalClosed";
 
 function setChatbotOpen(isOpen) {
   if (!chatbotPanel || !chatbotToggle) return;
@@ -23,8 +26,44 @@ if (chatbotClose) {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     setChatbotOpen(false);
+    closeUsageModal();
   }
 });
+
+function closeUsageModal() {
+  if (!usageModal) return;
+  usageModal.hidden = true;
+  try {
+    window.localStorage.setItem(usageModalStorageKey, "true");
+  } catch (error) {
+    // Ignore storage restrictions in private browsing modes.
+  }
+}
+
+if (usageModal) {
+  let shouldShowUsageModal = true;
+  try {
+    shouldShowUsageModal = window.localStorage.getItem(usageModalStorageKey) !== "true";
+  } catch (error) {
+    shouldShowUsageModal = true;
+  }
+
+  if (shouldShowUsageModal) {
+    window.setTimeout(() => {
+      usageModal.hidden = false;
+    }, 450);
+  }
+
+  usageModal.addEventListener("click", (event) => {
+    if (event.target === usageModal) {
+      closeUsageModal();
+    }
+  });
+}
+
+if (usageModalClose) {
+  usageModalClose.addEventListener("click", closeUsageModal);
+}
 
 if (form && result) {
   form.addEventListener("submit", async (event) => {
