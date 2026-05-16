@@ -1,14 +1,23 @@
 services:
   - type: web
-    name: deulmaru-v2
     runtime: python
+    name: deulmaru-v2
+    repo: https://github.com/SCNULMH/farmer-deulmaru
+    branch: main
+    rootDir: deulmaru_v2
     plan: free
     region: singapore
-    rootDir: deulmaru_v2
     buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     healthCheckPath: "/health"
     autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - deulmaru_v2/**
+        - render.yaml
+      ignoredPaths:
+        - src/**
+        - "*.md"
     envVars:
       - key: APP_SECRET_KEY
         generateValue: true
