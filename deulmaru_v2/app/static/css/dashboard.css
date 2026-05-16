@@ -21,6 +21,8 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: Arial, "Noto Sans KR", sans-serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 a {
@@ -572,6 +574,21 @@ main {
   font-weight: 900;
 }
 
+.manual-button {
+  position: fixed;
+  right: 28px;
+  bottom: 104px;
+  z-index: 32;
+  min-height: 46px;
+  border-color: var(--blue);
+  border-radius: 999px;
+  background: var(--blue);
+  color: #fff;
+  box-shadow: var(--shadow);
+  padding: 0 18px;
+  font-weight: 900;
+}
+
 .chatbot-button img {
   width: 44px;
   height: 44px;
@@ -657,6 +674,31 @@ main {
   line-height: 1.7;
 }
 
+.manual-steps {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.manual-steps li {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 14px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+.manual-steps strong {
+  color: var(--green);
+}
+
+.manual-steps span {
+  color: #465348;
+  line-height: 1.6;
+}
+
 .usage-modal-close {
   position: absolute;
   top: 14px;
@@ -718,6 +760,8 @@ h2,
 h3,
 p {
   margin-top: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 h1 {
@@ -742,6 +786,7 @@ h3 {
   color: #435044;
   font-size: 19px;
   line-height: 1.7;
+  word-break: keep-all;
 }
 
 .hero-actions {
@@ -1067,6 +1112,9 @@ input {
 .login-copy h1 {
   margin-top: 54px;
   font-size: clamp(42px, 6vw, 72px);
+  line-height: 1.12;
+  max-width: 860px;
+  text-wrap: balance;
 }
 
 .login-points {
@@ -1164,11 +1212,21 @@ input {
     bottom: 16px;
   }
 
+  .manual-button {
+    right: 16px;
+    bottom: 88px;
+  }
+
   .chatbot-panel {
     right: 12px;
     bottom: 82px;
     width: calc(100vw - 24px);
     height: min(580px, calc(100vh - 104px));
+  }
+
+  .manual-steps li {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 
   h1 {

@@ -248,6 +248,10 @@
     <span>AI 이삭이</span>
   </button>
 
+  <button class="manual-button" type="button" data-manual-toggle aria-controls="usageModal" aria-expanded="false">
+    <span>사용 매뉴얼</span>
+  </button>
+
   <section class="chatbot-panel" id="chatbotPanel" hidden aria-label="AI 이삭이 챗봇">
     <div class="chatbot-panel-head">
       <strong>AI 이삭이</strong>
@@ -259,12 +263,30 @@
   <section class="usage-modal" id="usageModal" hidden role="dialog" aria-modal="true" aria-labelledby="usageModalTitle">
     <div class="usage-modal-card">
       <button type="button" class="usage-modal-close" data-usage-modal-close aria-label="안내 닫기">×</button>
-      <p class="eyebrow">Welcome to Deulmaru</p>
-      <h2 id="usageModalTitle">들마루는 이렇게 활용합니다</h2>
-      <p>
-        로그인 후 내 지역과 작물 정보를 기준으로 지원사업을 먼저 확인하고,
-        병해충 진단·사전·상담사례를 함께 보며 현장 의사결정에 활용할 수 있습니다.
-      </p>
+      <p class="eyebrow">User Manual</p>
+      <h2 id="usageModalTitle">들마루 사용 매뉴얼</h2>
+      <ol class="manual-steps">
+        <li>
+          <strong>내 농장 정보 확인</strong>
+          <span>메인에서 이름, 지역, 작물, 생육 단계를 확인합니다.</span>
+        </li>
+        <li>
+          <strong>지원사업 찾기</strong>
+          <span>내 지역과 조건에 맞는 지원사업을 먼저 보고, 지역·나이·상태로 다시 검색합니다.</span>
+        </li>
+        <li>
+          <strong>병해충 정보 확인</strong>
+          <span>병해충 사전에서 작물명이나 병해충명으로 증상, 이미지, 상세 정보를 확인합니다.</span>
+        </li>
+        <li>
+          <strong>AI 진단 활용</strong>
+          <span>작물 사진을 올려 의심 질병과 관련 병해충 정보를 함께 확인합니다.</span>
+        </li>
+        <li>
+          <strong>상담사례 참고</strong>
+          <span>Q&A에서 비슷한 농업 상담사례를 찾아 현장 대응에 참고합니다.</span>
+        </li>
+      </ol>
       <div class="usage-modal-actions">
         <a href="/supportApi/support">지원사업 보기</a>
         <a href="/auth/deulmaru_Diagnosis">AI 진단 시작</a>
