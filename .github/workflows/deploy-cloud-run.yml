@@ -1,12 +1,6 @@
 name: Deploy Cloud Run
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "deulmaru_v2/**"
-      - ".github/workflows/deploy-cloud-run.yml"
   workflow_dispatch:
 
 concurrency:
