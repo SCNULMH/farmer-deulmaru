@@ -3,9 +3,9 @@ const result = document.querySelector("#diagnosisResult");
 const chatbotToggle = document.querySelector("[data-chatbot-toggle]");
 const chatbotClose = document.querySelector("[data-chatbot-close]");
 const chatbotPanel = document.querySelector("#chatbotPanel");
+const manualToggle = document.querySelector("[data-manual-toggle]");
 const usageModal = document.querySelector("#usageModal");
 const usageModalClose = document.querySelector("[data-usage-modal-close]");
-const usageModalStorageKey = "deulmaruUsageModalClosed";
 
 function setChatbotOpen(isOpen) {
   if (!chatbotPanel || !chatbotToggle) return;
@@ -33,27 +33,24 @@ document.addEventListener("keydown", (event) => {
 function closeUsageModal() {
   if (!usageModal) return;
   usageModal.hidden = true;
-  try {
-    window.localStorage.setItem(usageModalStorageKey, "true");
-  } catch (error) {
-    // Ignore storage restrictions in private browsing modes.
+  if (manualToggle) {
+    manualToggle.setAttribute("aria-expanded", "false");
   }
 }
 
+function openUsageModal() {
+  if (!usageModal) return;
+  usageModal.hidden = false;
+  if (manualToggle) {
+    manualToggle.setAttribute("aria-expanded", "true");
+  }
+}
+
+if (manualToggle) {
+  manualToggle.addEventListener("click", openUsageModal);
+}
+
 if (usageModal) {
-  let shouldShowUsageModal = true;
-  try {
-    shouldShowUsageModal = window.localStorage.getItem(usageModalStorageKey) !== "true";
-  } catch (error) {
-    shouldShowUsageModal = true;
-  }
-
-  if (shouldShowUsageModal) {
-    window.setTimeout(() => {
-      usageModal.hidden = false;
-    }, 450);
-  }
-
   usageModal.addEventListener("click", (event) => {
     if (event.target === usageModal) {
       closeUsageModal();
