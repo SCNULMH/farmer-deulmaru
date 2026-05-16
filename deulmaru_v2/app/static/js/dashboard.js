@@ -104,7 +104,7 @@ if (form && result) {
         <p>${escapeHtml(data.crop)} 이미지 ${escapeHtml(data.filename)} (${escapeHtml(data.size_kb)}KB)</p>
         <p>신뢰도 ${escapeHtml(data.confidence)}%</p>
         <p>${escapeHtml(data.next_action)}</p>
-        ${data.model_mode ? `<p class="muted">분석 모드: ${escapeHtml(data.model_mode)}</p>` : ""}
+        <p class="muted">분석 모드: ${escapeHtml(data.model_mode || "서버 응답 확인 필요")}</p>
         ${relatedPests ? `<div class="related-pest-list"><p><strong>관련 병해충 정보</strong></p>${relatedPests}</div>` : ""}
         <p class="muted">분석 결과는 최근 진단 기록에 저장됩니다.</p>
       `;
