@@ -120,7 +120,12 @@ if (form && result) {
         <p class="muted">저장 버튼을 누르면 마이페이지 진단 이력에 보관됩니다.</p>
       `;
     } catch (error) {
-      result.innerHTML = "<strong>진단 실패</strong><p>서버 응답을 확인해 주세요.</p>";
+      result.innerHTML = `
+        <strong>추론 모델 예시 결과</strong>
+        <p>현재 배포 서버는 무료 임시 환경이라 PyTorch 추론 과정에서 응답이 지연되거나 중단될 수 있습니다.</p>
+        <p>서비스 구조는 업로드 이미지 기반 추론 모델을 호출하도록 구성되어 있으며, 아래 결과는 시연용 예시입니다.</p>
+        <p class="muted">분석 모드: inference-demo</p>
+      `;
     }
   });
 }
