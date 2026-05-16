@@ -12,7 +12,7 @@
     <nav><a href="/">홈</a><a href="/dictionary">병해충 사전</a><a href="/mypage">마이페이지</a></nav>
   </header>
   <main>
-    <section class="page-hero"><p class="eyebrow">AI Diagnosis</p><h1>작물 이미지를 업로드해 의심 병해를 확인합니다.</h1></section>
+    <section class="page-hero"><p class="eyebrow">AI Diagnosis</p><h1>작물 이미지를 업로드해 의심 병해를 확인합니다.</h1><p class="lead">현재 배포 서버는 무료 임시 환경이라 실제 PyTorch 추론이 불안정할 수 있습니다. 기능 구조는 추론 모델 연동형으로 구현되어 있으며, 서버 자원 부족 시 예시 결과 안내로 대체됩니다.</p></section>
     <section class="diagnosis-layout">
       <form id="diagnosisForm" class="diagnosis-form">
         <label>작물
@@ -23,7 +23,7 @@
         <label>작물 이미지 <input type="file" name="file" accept="image/*" required></label>
         <button type="submit">진단하고 저장</button>
       </form>
-      <div id="diagnosisResult" class="result-panel"><strong>진단 결과가 여기에 표시됩니다.</strong><p>결과는 사용자 진단 이력에 저장됩니다.</p></div>
+      <div id="diagnosisResult" class="result-panel"><strong>진단 결과가 여기에 표시됩니다.</strong><p>임시 서버에서는 실제 추론이 제한될 수 있으며, 결과 확인 후 저장 버튼을 눌러야 마이페이지에 보관됩니다.</p></div>
     </section>
     <section class="section-grid">
       <div class="section-heading"><p class="eyebrow">History</p><h2>최근 진단 이력</h2></div>
