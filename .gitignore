@@ -50,6 +50,7 @@ bin/
 ### Large ML artifacts ###
 model.pth
 models/*.pth
+!deulmaru_v2/app/ml_models/model.pth
 
 ### Firebase / Google Cloud local state ###
 .firebase/

@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     firebase_credentials_json: str = ""
     google_application_credentials: str = ""
     use_demo_data: bool = True
+    diagnosis_model_path: str = "app/ml_models/model.pth"
+    max_image_upload_bytes: int = 5 * 1024 * 1024
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8-sig", extra="ignore")
 
