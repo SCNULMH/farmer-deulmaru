@@ -62,7 +62,6 @@
         <a class="secondary-action" href="/supportApi/support?region={{ session_user.region }}">내 지역</a>
       </div>
 
-      <input type="hidden" name="region" value="{{ filters.region }}">
       <div class="region-filter" aria-label="지역 필터">
         {% for option in region_options %}
         <button
