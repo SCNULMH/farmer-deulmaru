@@ -20,6 +20,13 @@ class OkResponse(BaseModel):
     ok: bool
 
 
+class DiagnosisSaveRequest(BaseModel):
+    crop: str
+    disease: str
+    confidence: float | int
+    filename: str | None = None
+
+
 def current_user_id(request: Request) -> str:
     user = request.session.get("user")
     if not user:
@@ -272,7 +279,7 @@ async def diagnosis(
     crop_name: str = Form(...),
     file: UploadFile = File(...),
 ) -> dict:
-    user_id = current_user_id(request)
+    current_user_id(request)
     result = await predict_disease(crop_name=crop_name, file=file)
     if result.get("ok"):
         disease_query = (
@@ -302,8 +309,22 @@ async def diagnosis(
                 for idx, item in enumerate(get_pest_guides(crop_name), start=1)
             ]
         result["related_pests"] = related
-        save_diagnosis(user_id, result)
+        result["saved"] = False
     return result
+
+
+@router.post("/diagnosis/save")
+async def save_diagnosis_result(payload: DiagnosisSaveRequest, request: Request) -> dict:
+    save_diagnosis(
+        current_user_id(request),
+        {
+            "crop": payload.crop,
+            "disease": payload.disease,
+            "confidence": payload.confidence,
+            "filename": payload.filename,
+        },
+    )
+    return {"ok": True, "message": "진단 이력을 저장했습니다."}
 
 
 @router.get("/recommendation/overall")

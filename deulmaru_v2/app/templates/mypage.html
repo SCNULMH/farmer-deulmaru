@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>마이페이지 - 들마루 v2</title>
-  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css?v=20260516-save">
 </head>
 <body>
   <header class="topbar">
@@ -36,6 +36,22 @@
         <article class="card compact-card"><span class="tag">{{ item.deadline }}</span><h3>{{ item.title }}</h3><p class="muted">{{ item.created_at }}</p></article>
         {% else %}
         <article class="card compact-card"><h3>관심 저장이 없습니다.</h3><p>지원사업 목록에서 관심 저장을 눌러보세요.</p></article>
+        {% endfor %}
+      </div>
+    </section>
+    <section class="section-grid">
+      <div class="section-heading"><p class="eyebrow">Diagnosis</p><h2>저장한 진단 이력</h2></div>
+      <div class="cards three">
+        {% for item in history %}
+        <article class="card compact-card">
+          <span class="tag">{{ item.crop }}</span>
+          <h3>{{ item.disease }}</h3>
+          <p>신뢰도 {{ item.confidence }}%</p>
+          {% if item.filename %}<p class="muted">{{ item.filename }}</p>{% endif %}
+          <p class="muted">{{ item.created_at }}</p>
+        </article>
+        {% else %}
+        <article class="card compact-card"><h3>저장한 진단 이력이 없습니다.</h3><p>AI 진단 결과에서 저장 버튼을 누르면 이곳에 표시됩니다.</p></article>
         {% endfor %}
       </div>
     </section>

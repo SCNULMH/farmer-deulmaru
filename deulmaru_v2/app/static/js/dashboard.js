@@ -6,6 +6,7 @@ const chatbotPanel = document.querySelector("#chatbotPanel");
 const manualToggle = document.querySelector("[data-manual-toggle]");
 const usageModal = document.querySelector("#usageModal");
 const usageModalClose = document.querySelector("[data-usage-modal-close]");
+let latestDiagnosis = null;
 
 function setChatbotOpen(isOpen) {
   if (!chatbotPanel || !chatbotToggle) return;
@@ -74,6 +75,7 @@ if (usageModalClose) {
 if (form && result) {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    latestDiagnosis = null;
     result.innerHTML = "<strong>진단 중입니다.</strong><p>이미지를 읽고 진단 모델에 전달하고 있습니다.</p>";
 
     try {
@@ -87,6 +89,13 @@ if (form && result) {
         result.innerHTML = `<strong>진단 실패</strong><p>${escapeHtml(data.message)}</p>`;
         return;
       }
+
+      latestDiagnosis = {
+        crop: data.crop,
+        disease: data.disease,
+        confidence: data.confidence,
+        filename: data.filename,
+      };
 
       const relatedPests = (data.related_pests || []).map((pest) => `
         <article class="related-pest-card">
@@ -105,14 +114,41 @@ if (form && result) {
         <p>신뢰도 ${escapeHtml(data.confidence)}%</p>
         <p>${escapeHtml(data.next_action)}</p>
         <p class="muted">분석 모드: ${escapeHtml(data.model_mode || "서버 응답 확인 필요")}</p>
+        <button type="button" class="diagnosis-save-button" data-diagnosis-save>진단 이력 저장</button>
         ${relatedPests ? `<div class="related-pest-list"><p><strong>관련 병해충 정보</strong></p>${relatedPests}</div>` : ""}
-        <p class="muted">분석 결과는 최근 진단 기록에 저장됩니다.</p>
+        <p class="muted">저장 버튼을 누르면 마이페이지 진단 이력에 보관됩니다.</p>
       `;
     } catch (error) {
       result.innerHTML = "<strong>진단 실패</strong><p>서버 응답을 확인해 주세요.</p>";
     }
   });
 }
+
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-diagnosis-save]");
+  if (!button || !latestDiagnosis) return;
+
+  button.disabled = true;
+  button.textContent = "저장 중";
+
+  try {
+    const response = await fetch("/api/diagnosis/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(latestDiagnosis),
+    });
+
+    if (!response.ok) {
+      throw new Error("save failed");
+    }
+
+    button.textContent = "저장됨";
+    latestDiagnosis = null;
+  } catch (error) {
+    button.textContent = "저장 실패";
+    button.disabled = false;
+  }
+});
 
 document.querySelectorAll(".interest-button").forEach((button) => {
   button.addEventListener("click", async () => {
