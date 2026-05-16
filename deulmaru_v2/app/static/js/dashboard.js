@@ -114,6 +114,7 @@ if (form && result) {
         <p>신뢰도 ${escapeHtml(data.confidence)}%</p>
         <p>${escapeHtml(data.next_action)}</p>
         <p class="muted">분석 모드: ${escapeHtml(data.model_mode || "서버 응답 확인 필요")}</p>
+        ${data.model_note ? `<p class="muted">${escapeHtml(data.model_note)}</p>` : ""}
         <button type="button" class="diagnosis-save-button" data-diagnosis-save>진단 이력 저장</button>
         ${relatedPests ? `<div class="related-pest-list"><p><strong>관련 병해충 정보</strong></p>${relatedPests}</div>` : ""}
         <p class="muted">저장 버튼을 누르면 마이페이지 진단 이력에 보관됩니다.</p>
