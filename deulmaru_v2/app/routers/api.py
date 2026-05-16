@@ -107,6 +107,20 @@ async def ncpms_search(query: str = "토마토", search_type: str = "crop") -> l
     ]
 
 
+@router.get("/ncpms/pest-detail/{sick_key}")
+async def ncpms_pest_detail(sick_key: str) -> dict:
+    from app.services.public_data import fetch_pest_detail
+
+    detail = fetch_pest_detail(sick_key)
+    if detail:
+        return detail
+    return {
+        "symptom": "상세 증상 정보를 불러오지 못했습니다. 병해충 사전 검색 결과와 현장 증상을 함께 확인하세요.",
+        "action": "정확한 방제 여부는 농업기술센터 또는 NCPMS 원문 정보를 함께 확인한 뒤 결정하세요.",
+        "images": [],
+    }
+
+
 @router.get("/ncpms/consult")
 async def ncpms_consult(query: str = "토마토", page: int = 1) -> list[dict]:
     results = search_consults(query, page)
@@ -251,6 +265,33 @@ async def diagnosis(
     user_id = current_user_id(request)
     result = await predict_disease(crop_name=crop_name, file=file)
     if result.get("ok"):
+        disease_query = (
+            result.get("disease", "")
+            .replace("의심", "")
+            .replace("주의", "")
+            .replace("추가 확인 필요", "")
+            .strip()
+        )
+        related = []
+        if disease_query:
+            related = search_pests(disease_query, "sick", limit=3)
+        if not related:
+            related = search_pests(crop_name, "crop", limit=3)
+        if not related:
+            related = [
+                {
+                    "sick_key": f"fallback-{idx}",
+                    "crop": item.get("crop", crop_name),
+                    "name": item.get("name", "병해충 정보"),
+                    "english_name": "",
+                    "thumb": "",
+                    "image": "",
+                    "symptom": item.get("symptom", ""),
+                    "action": item.get("action", ""),
+                }
+                for idx, item in enumerate(get_pest_guides(crop_name), start=1)
+            ]
+        result["related_pests"] = related
         save_diagnosis(user_id, result)
     return result
 

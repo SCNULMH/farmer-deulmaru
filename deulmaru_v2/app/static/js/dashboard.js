@@ -18,11 +18,23 @@ if (form && result) {
         return;
       }
 
+      const relatedPests = (data.related_pests || []).map((pest) => `
+        <article class="related-pest-card">
+          ${pest.image || pest.thumb ? `<img src="${pest.image || pest.thumb}" alt="${pest.name}" onerror="this.remove()">` : ""}
+          <div>
+            <strong>${pest.name || "병해충 정보"}</strong>
+            <p>${pest.crop || data.crop}</p>
+            ${pest.sick_key ? `<a href="/dictionary?query=${encodeURIComponent(pest.name)}&search_type=sick">병해충 사전에서 확인</a>` : ""}
+          </div>
+        </article>
+      `).join("");
+
       result.innerHTML = `
         <strong>${data.disease}</strong>
         <p>${data.crop} 이미지 ${data.filename} (${data.size_kb}KB)</p>
         <p>신뢰도 ${data.confidence}%</p>
         <p>${data.next_action}</p>
+        ${relatedPests ? `<div class="related-pest-list"><p><strong>관련 병해충 정보</strong></p>${relatedPests}</div>` : ""}
         <p class="muted">분석 결과는 최근 진단 기록에 저장됩니다.</p>
       `;
     } catch (error) {
