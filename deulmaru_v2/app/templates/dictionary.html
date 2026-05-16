@@ -32,7 +32,7 @@
       {% for pest in pests %}
       <article class="card dictionary-card">
         {% if pest.image or pest.thumb %}
-        <img class="dictionary-thumb" src="{{ pest.image or pest.thumb }}" alt="{{ pest.name }}">
+        <img class="dictionary-thumb" src="{{ pest.image or pest.thumb }}" alt="{{ pest.name }}" onerror="this.replaceWith(Object.assign(document.createElement('div'), {className: 'dictionary-thumb placeholder', textContent: '이미지 준비중'}))">
         {% else %}
         <div class="dictionary-thumb placeholder">이미지 준비중</div>
         {% endif %}
@@ -41,6 +41,7 @@
         {% if pest.english_name %}<p class="muted">{{ pest.english_name }}</p>{% endif %}
         {% if pest.symptom %}<p>{{ pest.symptom }}</p>{% endif %}
         {% if pest.action %}<p class="action-text">{{ pest.action }}</p>{% endif %}
+        <button type="button" class="secondary-action pest-detail-button" data-sick-key="{{ pest.sick_key or 'fallback-' ~ loop.index }}" data-pest-name="{{ pest.name }}">상세설명</button>
       </article>
       {% else %}
       <article class="card compact-card">
@@ -50,5 +51,44 @@
       {% endfor %}
     </section>
   </main>
+
+  <div class="modal-backdrop" id="pestModal" hidden>
+    <section class="modal-panel">
+      <button type="button" class="modal-close" data-close-pest>닫기</button>
+      <div id="pestDetail">상세 정보를 불러오는 중입니다.</div>
+    </section>
+  </div>
+
+  <script>
+    const pestModal = document.querySelector("#pestModal");
+    const pestDetail = document.querySelector("#pestDetail");
+
+    document.querySelectorAll(".pest-detail-button").forEach((button) => {
+      button.addEventListener("click", async () => {
+        pestModal.hidden = false;
+        pestDetail.innerHTML = "<strong>상세 정보를 불러오는 중입니다.</strong>";
+        const response = await fetch(`/api/ncpms/pest-detail/${button.dataset.sickKey}`);
+        const data = await response.json();
+        const images = (data.images || []).map((image) => `
+          <figure>
+            <img src="${image.url}" alt="${image.title || "병해충 이미지"}" onerror="this.closest('figure').remove()">
+            <figcaption>${image.title || ""}</figcaption>
+          </figure>
+        `).join("");
+        pestDetail.innerHTML = `
+          <h2>${button.dataset.pestName || "병해충 상세"}</h2>
+          <p><strong>증상</strong></p>
+          <p>${data.symptom || "상세 증상 정보가 없습니다."}</p>
+          <p><strong>방제 및 조치</strong></p>
+          <p>${data.action || "방제 정보가 없습니다."}</p>
+          <div class="detail-images">${images}</div>
+        `;
+      });
+    });
+
+    document.querySelector("[data-close-pest]").addEventListener("click", () => {
+      pestModal.hidden = true;
+    });
+  </script>
 </body>
 </html>

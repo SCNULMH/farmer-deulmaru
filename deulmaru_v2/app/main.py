@@ -501,8 +501,10 @@ async def legacy_ncpms_search(query: str, type: str = "sick") -> dict:
 
 @app.get("/ncpms/sick_detail")
 async def legacy_ncpms_sick_detail(sick_key: str) -> dict:
-    # Existing frontend can still use the list payload; detailed fallback keeps the route alive.
-    return {"sick_key": sick_key, "detail": "상세 정보는 병해충 사전 검색 결과와 NCPMS 원문을 함께 확인하세요."}
+    from app.services.public_data import fetch_pest_detail
+
+    detail = fetch_pest_detail(sick_key)
+    return detail or {"sick_key": sick_key, "detail": "상세 정보는 병해충 사전 검색 결과와 NCPMS 원문을 함께 확인하세요."}
 
 
 @app.get("/ncpms/consult")
