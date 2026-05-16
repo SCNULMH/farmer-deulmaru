@@ -39,6 +39,16 @@ templates = Jinja2Templates(directory="app/templates")
 app.include_router(api.router, prefix="/api")
 
 
+def parse_optional_age(value: str | int | None) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        age = int(value)
+    except (TypeError, ValueError):
+        return None
+    return age if age > 0 else None
+
+
 class SignupForm(BaseModel):
     user_id: str = Field(min_length=3, max_length=32, pattern=r"^[a-zA-Z0-9_-]+$")
     password: str = Field(min_length=8, max_length=128)
@@ -257,7 +267,7 @@ async def support_page(
     request: Request,
     keyword: str = "",
     region: str = "",
-    age: int | None = None,
+    age: str = "",
     status: str = "",
     start_date: str = "",
     end_date: str = "",
@@ -270,7 +280,7 @@ async def support_page(
         session_user,
         keyword=keyword,
         region=selected_region,
-        age=age,
+        age=parse_optional_age(age),
         status=status,
         start_date=start_date,
         end_date=end_date,
@@ -284,7 +294,7 @@ async def support_page(
             "filters": {
                 "keyword": keyword,
                 "region": selected_region,
-                "age": age or "",
+                "age": age,
                 "status": status,
                 "start_date": start_date,
                 "end_date": end_date,
@@ -299,7 +309,7 @@ async def legacy_support_page(
     request: Request,
     keyword: str = "",
     region: str = "",
-    age: int | None = None,
+    age: str = "",
     status: str = "",
     start_date: str = "",
     end_date: str = "",

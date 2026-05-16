@@ -27,12 +27,22 @@ def current_user_id(request: Request) -> str:
     return user["id"]
 
 
+def parse_optional_age(value: str | int | None) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        age = int(value)
+    except (TypeError, ValueError):
+        return None
+    return age if age > 0 else None
+
+
 @router.get("/grants")
 async def grants(
     request: Request,
     keyword: str = "",
     region: str = "",
-    age: int | None = None,
+    age: str = "",
     status: str = "",
     start_date: str = "",
     end_date: str = "",
@@ -43,7 +53,7 @@ async def grants(
         user,
         keyword=keyword,
         region=selected_region,
-        age=age,
+        age=parse_optional_age(age),
         status=status,
         start_date=start_date,
         end_date=end_date,
