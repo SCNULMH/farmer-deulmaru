@@ -210,10 +210,18 @@
     </section>
   </main>
 
-  <a class="chatbot-button" href="https://www.nongsaro.go.kr/chatbot/aichatbot.html" target="_blank" rel="noreferrer">
+  <button class="chatbot-button" type="button" data-chatbot-toggle aria-controls="chatbotPanel" aria-expanded="false">
     <img src="/static/image/isac.png" alt="">
     <span>AI 이삭이</span>
-  </a>
+  </button>
+
+  <section class="chatbot-panel" id="chatbotPanel" hidden aria-label="AI 이삭이 챗봇">
+    <div class="chatbot-panel-head">
+      <strong>AI 이삭이</strong>
+      <button type="button" class="chatbot-close" data-chatbot-close>닫기</button>
+    </div>
+    <iframe src="https://www.nongsaro.go.kr/chatbot/aichatbot.html" title="AI 이삭이 챗봇" loading="lazy"></iframe>
+  </section>
 
   <script src="/static/js/dashboard.js"></script>
 </body>

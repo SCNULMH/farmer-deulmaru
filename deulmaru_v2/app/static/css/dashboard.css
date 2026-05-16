@@ -491,7 +491,7 @@ main {
   position: fixed;
   right: 28px;
   bottom: 28px;
-  z-index: 20;
+  z-index: 32;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -508,6 +508,52 @@ main {
   width: 44px;
   height: 44px;
   object-fit: contain;
+}
+
+.chatbot-panel {
+  position: fixed;
+  right: 28px;
+  bottom: 94px;
+  z-index: 31;
+  width: min(420px, calc(100vw - 32px));
+  height: min(620px, calc(100vh - 132px));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 22px 70px rgba(17, 29, 21, 0.26);
+}
+
+.chatbot-panel[hidden] {
+  display: none;
+}
+
+.chatbot-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 54px;
+  border-bottom: 1px solid var(--line);
+  background: var(--green);
+  color: #fff;
+  padding: 0 14px 0 18px;
+}
+
+.chatbot-close {
+  min-height: 32px;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.chatbot-panel iframe {
+  width: 100%;
+  height: calc(100% - 54px);
+  border: 0;
+  display: block;
 }
 
 .hero {
@@ -969,6 +1015,18 @@ input {
   .support-result-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .chatbot-button {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .chatbot-panel {
+    right: 12px;
+    bottom: 82px;
+    width: calc(100vw - 24px);
+    height: min(580px, calc(100vh - 104px));
   }
 
   h1 {

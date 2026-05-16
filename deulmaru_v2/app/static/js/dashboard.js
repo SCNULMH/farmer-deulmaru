@@ -1,5 +1,30 @@
 const form = document.querySelector("#diagnosisForm");
 const result = document.querySelector("#diagnosisResult");
+const chatbotToggle = document.querySelector("[data-chatbot-toggle]");
+const chatbotClose = document.querySelector("[data-chatbot-close]");
+const chatbotPanel = document.querySelector("#chatbotPanel");
+
+function setChatbotOpen(isOpen) {
+  if (!chatbotPanel || !chatbotToggle) return;
+  chatbotPanel.hidden = !isOpen;
+  chatbotToggle.setAttribute("aria-expanded", String(isOpen));
+}
+
+if (chatbotToggle && chatbotPanel) {
+  chatbotToggle.addEventListener("click", () => {
+    setChatbotOpen(chatbotPanel.hidden);
+  });
+}
+
+if (chatbotClose) {
+  chatbotClose.addEventListener("click", () => setChatbotOpen(false));
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    setChatbotOpen(false);
+  }
+});
 
 if (form && result) {
   form.addEventListener("submit", async (event) => {
