@@ -336,11 +336,14 @@ async def support_detail_page(request: Request, grant_id: str) -> HTMLResponse:
         detail = {
             "id": fallback["id"],
             "title": fallback["title"],
-            "target": fallback["reason"],
-            "period": fallback["deadline"],
+            "target": fallback.get("target") or fallback["reason"],
+            "period": fallback.get("period") or fallback["deadline"],
             "agency": fallback["source"],
-            "content": fallback["reason"],
-            "url": "",
+            "department": fallback.get("department", "공고 기관 문의"),
+            "region": fallback.get("region", "전국"),
+            "status": fallback.get("status", "공고 확인"),
+            "content": fallback.get("content") or fallback["reason"],
+            "url": fallback.get("url", ""),
         }
     return templates.TemplateResponse(
         "support_detail.html",

@@ -69,12 +69,21 @@ def fetch_support_grants(
         target = clean(pick(row, "eduTarget", "target", "sprtTrgtCn", "plcySprtCn", "bizTrgtCn", default=""))
         content = clean(pick(row, "contents", "bizCn", "plcyExplnCn", "description", "cn", default=""))
         agency = clean(pick(row, "chargeAgency", "instNm", "source", "deptNm", "jrsdInstNm", default="청년농 지원사업 API"))
+        start_date = clean(pick(row, "applStDt", "aplyBgngDt", "startDt", default="공고 확인"))
+        region = clean(pick(row, "area2Nm", "area1Nm", "region", "rgnNm", default="전국"))
+        department = clean(pick(row, "chargeDept", "deptNm", "department", default="공고 기관 문의"))
+        info_url = clean(pick(row, "infoUrl", "url", "link", "refUrl", default=""))
         grants.append(
             {
                 "id": seq,
                 "title": clean(title),
                 "source": agency or "청년농 지원사업 API",
                 "deadline": clean(deadline),
+                "period": f"{start_date} ~ {clean(deadline)}",
+                "region": region,
+                "status": support_status(deadline),
+                "department": department,
+                "url": info_url,
                 "fit": max(72, 96 - idx * 5),
                 "reason": "사용자 지역과 작물 정보를 기준으로 확인할 만한 지원사업입니다.",
                 "target": target,
@@ -309,18 +318,40 @@ def fetch_pest_detail(sick_key: str) -> dict:
 
 
 def normalize_support_detail(row: dict) -> dict:
+    end_date = pick(row, "applEdDt", "aplyEndDt", "endDt", default="공고 확인")
     return {
         "id": str(pick(row, "seq", "id", "policyId", "plcyNo", default="")),
         "title": clean(pick(row, "title", "policyNm", "bizNm", "plcyNm", "servNm", "name", default="지원사업")),
         "target": clean(pick(row, "eduTarget", "target", "sprtTrgtCn", "plcySprtCn", default="공고문 확인")),
         "period": clean(
             f"{pick(row, 'applStDt', 'aplyBgngDt', 'startDt', default='공고 확인')} ~ "
-            f"{pick(row, 'applEdDt', 'aplyEndDt', 'endDt', default='공고 확인')}"
+            f"{end_date}"
         ),
         "agency": clean(pick(row, "chargeAgency", "instNm", "source", "deptNm", default="공고 기관")),
+        "department": clean(pick(row, "chargeDept", "deptNm", "department", default="공고 기관 문의")),
+        "region": clean(pick(row, "area2Nm", "area1Nm", "region", "rgnNm", default="전국")),
+        "status": support_status(end_date),
         "content": clean(pick(row, "contents", "bizCn", "plcyExplnCn", "description", default="상세 내용은 공고를 확인하세요.")),
-        "url": clean(pick(row, "url", "link", "refUrl", default="")),
+        "url": clean(pick(row, "infoUrl", "url", "link", "refUrl", default="")),
     }
+
+
+def support_status(end_date) -> str:
+    text = clean(end_date)
+    if not text or text in {"공고 확인", "상시", "상시/공고 확인"}:
+        return "공고 확인"
+
+    digits = re.sub(r"\D", "", text)
+    if len(digits) < 8:
+        return "공고 확인"
+
+    from datetime import date
+
+    try:
+        deadline = date(int(digits[:4]), int(digits[4:6]), int(digits[6:8]))
+    except ValueError:
+        return "공고 확인"
+    return "접수중" if date.today() <= deadline else "마감"
 
 
 def first_dict(value) -> dict | None:

@@ -157,7 +157,8 @@ document.addEventListener("click", async (event) => {
 });
 
 document.querySelectorAll(".interest-button").forEach((button) => {
-  button.addEventListener("click", async () => {
+  button.addEventListener("click", async (event) => {
+    event.stopPropagation();
     const grantId = button.dataset.grantId;
     button.disabled = true;
     const response = await fetch(`/api/interests/${grantId}`, { method: "POST" });
@@ -166,6 +167,26 @@ document.querySelectorAll(".interest-button").forEach((button) => {
     } else {
       button.textContent = "저장 실패";
       button.disabled = false;
+    }
+  });
+});
+
+document.querySelectorAll(".clickable-grant-card").forEach((card) => {
+  const openDetail = (event) => {
+    if (event.target.closest("a, button, input, select, textarea")) {
+      return;
+    }
+    window.location.href = card.dataset.detailUrl;
+  };
+
+  card.addEventListener("click", openDetail);
+  card.addEventListener("keydown", (event) => {
+    if (event.target.closest("a, button, input, select, textarea")) {
+      return;
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openDetail(event);
     }
   });
 });

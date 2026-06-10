@@ -14,14 +14,17 @@
   <main>
     {% if grant %}
     <section class="page-hero detail-hero">
-      <p class="eyebrow">{{ grant.agency }}</p>
+      <p class="eyebrow">{{ grant.region }} · {{ grant.status }}</p>
       <h1>{{ grant.title }}</h1>
       <p class="lead">{{ grant.content }}</p>
     </section>
-    <section class="detail-grid">
+    <section class="detail-grid support-detail-grid">
       <article class="card"><span class="tag">대상</span><p>{{ grant.target }}</p></article>
       <article class="card"><span class="tag">신청기간</span><p>{{ grant.period }}</p></article>
       <article class="card"><span class="tag">기관</span><p>{{ grant.agency }}</p></article>
+      <article class="card"><span class="tag">지역</span><p>{{ grant.region }}</p></article>
+      <article class="card"><span class="tag">진행상태</span><p>{{ grant.status }}</p></article>
+      <article class="card"><span class="tag">담당부서</span><p>{{ grant.department }}</p></article>
     </section>
     <div class="hero-actions">
       <button class="interest-button" data-grant-id="{{ grant.id or grant_id }}">관심 저장</button>

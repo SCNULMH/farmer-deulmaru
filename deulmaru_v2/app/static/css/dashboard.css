@@ -982,6 +982,23 @@ dd {
   padding-top: 58px;
 }
 
+.clickable-grant-card {
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.clickable-grant-card:hover,
+.clickable-grant-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(47, 111, 78, 0.55);
+  box-shadow: 0 22px 58px rgba(33, 48, 38, 0.18);
+  outline: none;
+}
+
+.support-detail-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .fit {
   position: absolute;
   top: 20px;

@@ -124,7 +124,13 @@
       </div>
       <div class="benefit-list">
         {% for grant in grants[:3] %}
-        <article class="benefit-card">
+        <article
+          class="benefit-card clickable-grant-card"
+          data-detail-url="/support/{{ grant.id }}"
+          tabindex="0"
+          role="link"
+          aria-label="{{ grant.title }} 상세정보 보기"
+        >
           <div class="fit">{{ grant.fit }}%</div>
           <p class="benefit-source">{{ grant.source }}</p>
           <h3>{{ grant.title }}</h3>
