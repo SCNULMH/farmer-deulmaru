@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+
+
+body {
+    background-color: #ffffff; /* 배경색 설정 */
+    background-image: none; /* body 자체에 background-image는 사용하지 않음 */
+    margin: 0;
+    padding: 0;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 일반 회원가입 섹션 */
+.title-section h2 {
+    font-weight: 600 !important;
+    font-size: 26px !important;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+.paragraph {
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 18px;
+}
+
+
+.round-button {
+    display: inline-block;
+    padding: none;
+    margin-top: 7%;
+    width: 90px;
+    height: 90px;
+    border: 2px solid #2a6344; /* 1px 테두리 */
+    background: none; /* 배경 없음 */
+    border-radius: 50px; /* 동그란 모양 */
+    font-size: 15px;
+    font-weight: bold;
+    color: #2a6344; /* 글씨 색 */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* 마우스 호버 효과 */
+.round-button:hover {
+    background: #2a6344;
+    color: white;
+}
+
+
+.border-right {
+    border-right: 2px solid #ccc; /* 가운데 구분선 */
+}
+
+/* 모바일 화면에서는 구분선 제거 */
+@media (max-width: 768px) {
+    .border-right {
+        border-right: none;
+        border-bottom: 2px solid #ccc; /* 작은 화면에서는 가로 구분선 */
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+
+
+/* 카카오 회원가입 세션 */
+.col-md-6 a img { /* 카카오 로그인 img */
+    margin-top: 7%;
+}
+
+
+
+
+
+
+
+/* 하단에 고정된 GIF 배경 */
+.background-gif {
+    position: fixed; /* 스크롤해도 고정 */
+    bottom: 0; /* 화면 하단에 붙이기 */
+    left: 50%; /* 가로 중앙 정렬 */
+    transform: translateX(-50%); /* 정중앙 위치 맞추기 */
+    width: 100%; /* 가로폭을 전체로 */
+    height: auto; /* 높이는 원본 비율 유지 */
+    z-index: -1; /* 모든 요소 뒤에 위치 */
+}

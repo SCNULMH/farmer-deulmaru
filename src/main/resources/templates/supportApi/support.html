@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정부 지원금 목록</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" th:href="@{/css/support.css}">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	    var serviceKey = /*[[${serviceKey}]]*/ "";
+	/*]]>*/
+</script>
+
+</head>
+
+<body>
+
+	<!-- 헤더 삽입 -->
+	<div th:replace="layout/header :: header"></div>
+
+	<!-- 배너 추가 -->
+    <div class="container-sm text-center w-50">
+        <div class="banner-content text-center">
+            <h2>지원사업 정보</h2>
+            <p>지역별 지원사업 정보를 확인하세요</p>
+        </div>
+    </div>
+
+	<!-- 🔍 검색 및 세부 필터 -->
+	<div class="container-sm ">
+		<div class="input-group ">
+		
+		<!-- 선택된 지역 값을 저장 (기본값 '전국') -->
+		<input type="hidden" id="selectedRegion" value="전국">	
+			<input type="text" class="search-input" id="searchKeyword" placeholder="검색어를 입력하세요">
+			<!-- 🔍 검색 버튼 -->
+			<button class="search-input-btn" id="searchBtn"><img src="/image/input_icon.png"></button>		
+		</div>
+				
+	</div>
+	
+		<div class="container-sm mt-5 mb-4">
+			<div class="date-picker-container">
+				<!-- 📅 신청 기간 필터 -->
+				<p class="date-label">📅 기간 선택</p>
+				<div class="date-range">
+				<input type="date" id="startDate">
+				<span class="date-dash">-</span>
+				<input type="date" id="endDate">
+		</div>
+			</div>
+		</div>
+	
+	
+			<!-- 🌍 지역 필터 버튼 그룹 -->
+		<div class="container-sm text-left">
+			<div id="regionFilter" class="btn-group" role="group" aria-label="지역 필터">
+			  <button type="button" class="btn region-btn" data-value="전국">전국</button>
+			  <button type="button" class="btn region-btn" data-value="서울">서울</button>
+			  <button type="button" class="btn region-btn" data-value="부산">부산</button>
+			  <button type="button" class="btn region-btn" data-value="대구">대구</button>
+			  <button type="button" class="btn region-btn" data-value="인천">인천</button>
+			  <button type="button" class="btn region-btn" data-value="광주">광주</button>
+			  <button type="button" class="btn region-btn" data-value="대전">대전</button>
+			  <button type="button" class="btn region-btn" data-value="울산">울산</button>
+			  <button type="button" class="btn region-btn" data-value="세종">세종</button>
+			  <button type="button" class="btn region-btn" data-value="경기">경기</button>
+			  <button type="button" class="btn region-btn" data-value="강원">강원</button>
+			  <button type="button" class="btn region-btn" data-value="충북">충북</button>
+			  <button type="button" class="btn region-btn" data-value="충남">충남</button>
+			  <button type="button" class="btn region-btn" data-value="전북">전북</button>
+			  <button type="button" class="btn region-btn" data-value="전남">전남</button>
+			  <button type="button" class="btn region-btn" data-value="경북">경북</button>
+			  <button type="button" class="btn region-btn" data-value="경남">경남</button>
+			  <button type="button" class="btn region-btn" data-value="제주">제주</button>
+			</div>
+		</div>	
+		
+
+
+	<!-- 🔹 지원금 목록 카드뷰 -->
+	<div class="card-container" id="grantList">
+		<!-- JavaScript에서 지원금 데이터가 동적으로 삽입됨 -->
+	</div>
+
+	<!-- 🔢 페이지네이션 -->
+	<ul class="pagination" id="pagination"></ul>
+
+
+
+
+
+		
+	<!-- ✅ 이삭이 버튼 (챗봇 토글) -->
+     <div class="button-isac mb-5">
+        <button class="image-btn-isac" onclick="toggleChatbot()">
+            <span>AI 이삭이</span>
+            <img src="/image/이삭3-removebg-preview.png" alt="버튼 이미지">
+        </button>
+    </div>
+
+	<!-- ✅ 챗봇 팝업 UI -->
+	<div id="chatbot" class="chatbot-container">
+	    <div class="chatbot-popup">
+	        <button class="close-chatbot" onclick="toggleChatbot()">×</button>
+	        <div class="iframe-wrapper">
+	            <iframe src="https://www.nongsaro.go.kr/chatbot/aichatbot.html" width="100%" height="100%" frameborder="0"></iframe>
+	        </div>
+	    </div>
+	</div>
+
+	<script>
+		
+		
+	</script>
+
+    <!-- 로그인 안하면 쫓아내기 -->
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	    const isLoggedIn = /*[[${session.user != null}]]*/ false;
+	    if (!isLoggedIn) {
+	        alert("로그인이 필요합니다!");
+	        location.href = "/auth/deulmaru_Login";
+	    }
+	/*]]>*/
+	</script>
+
+	
+	<script>
+	function toggleChatbot() {
+	    const chatbot = document.getElementById('chatbot');
+	    const isOpen = chatbot.style.display === 'block';
+	
+	    if (isOpen) {
+	        chatbot.style.display = 'none';
+	        document.documentElement.classList.remove('scroll-locked');
+	        document.body.classList.remove('scroll-locked');
+	    } else {
+	        chatbot.style.display = 'block';
+	        document.documentElement.classList.add('scroll-locked');
+	        document.body.classList.add('scroll-locked');
+	    }
+	}
+	</script>
+
+	<!-- 지역 코드 매핑 -->
+	<script>
+	const regionCodes = {
+	    "":"00", "전국": "00", "서울": "11", "부산": "21", "대구": "22", "인천": "23", "광주": "24", "대전": "25", "울산": "26", "세종": "29", "경기": "31", "강원": "32", "충북": "33", "충남": "34", "전북": "35", "전남": "36", "경북": "37", "경남": "38", "제주": "39"
+	    	,"기장" : "21" , "달성" : "22" , "달성" : "22" , "강화" : "23" , "옹진" : "23" , "울주" : "26" , "수원" : "31" , "성남" : "31" , "의정부" : "31" , "안양" : "31" , "부천" : "31" , "광명" : "31" , "평택" : "31" , "동두천" : "31" , "안산" : "31" , "고양" : "31" , "과천" : "31" , "구리" : "31" , "남양주" : "31" , "오산" : "31" , "시흥" : "31" , "군포" : "31" , "의왕" : "31" , "하남" : "31" , "용인" : "31" , "파주" : "31" , "이천" : "31" , "안성" : "31" , "김포" : "31" , "화성" : "31" , "광주" : "31" , "양주" : "31" , "포천" : "31" , "여주" : "31" , "연천" : "31" , "가평" : "31" , "양평" : "31" , "춘천" : "32" , "원주" : "32" , "강릉" : "32" , "동해" : "32" , "태백" : "32" , "속초" : "32" , "삼척" : "32" , "홍천" : "32" , "횡성" : "32" , "영월" : "32" , "평창" : "32" , "정선" : "32" , "철원" : "32" , "화천" : "32" , "양구" : "32" , "인제" : "32" , "고성" : "32" , "양양" : "32" , "청주" : "33" , "충주" : "33" , "제천" : "33" , "보은" : "33" , "옥천" : "33" , "영동" : "33" , "증평" : "33" , "진천" : "33" , "괴산" : "33" , "음성" : "33" , "단양" : "33" , "천안" : "34" , "공주" : "34" , "보령" : "34" , "아산" : "34" , "서산" : "34" , "논산" : "34" , "계룡" : "34" , "당진" : "34" , "금산" : "34" , "부여" : "34" , "서천" : "34" , "청양" : "34" , "홍성" : "34" , "예산" : "34" , "태안" : "34" , "전주" : "35" , "군산" : "35" , "익산" : "35" , "정읍" : "35" , "남원" : "35" , "김제" : "35" , "완주" : "35" , "진안" : "35" , "무주" : "35" , "장수" : "35" , "임실" : "35" , "순창" : "35" , "고창" : "35" , "부안" : "35" , "목포" : "36" , "여수" : "36" , "순천" : "36" , "나주" : "36" , "광양" : "36" , "담양" : "36" , "곡성" : "36" , "구례" : "36" , "고흥" : "36" , "보성" : "36" , "화순" : "36" , "장흥" : "36" , "강진" : "36" , "해남" : "36" , "영암" : "36" , "무안" : "36" , "함평" : "36" , "영광" : "36" , "장성" : "36" , "완도" : "36" , "진도" : "36" , "신안" : "36" , "포항" : "37" , "경주" : "37" , "김천" : "37" , "안동" : "37" , "구미" : "37" , "영주" : "37" , "영천" : "37" , "상주" : "37" , "문경" : "37" , "경산" : "37" , "군위" : "37" , "의성" : "37" , "청송" : "37" , "영양" : "37" , "영덕" : "37" , "청도" : "37" , "고령" : "37" , "성주" : "37" , "칠곡" : "37" , "예천" : "37" , "봉화" : "37" , "울진" : "37" , "울릉" : "37" , "창원" : "38" , "진주" : "38" , "통영" : "38" , "사천" : "38" , "김해" : "38" , "밀양" : "38" , "거제" : "38" , "양산" : "38" , "의령" : "38" , "함안" : "38" , "창녕" : "38" , "고성" : "38" , "남해" : "38" , "하동" : "38" , "산청" : "38" , "함양" : "38" , "거창" : "38" , "합천" : "38" , "제주" : "39" , "서귀포" : "39"};
+
+</script>
+
+
+	<!-- 요청 URL 생성 -->
+	<script>
+	// 버튼 클릭 이벤트 처리
+	$(document).on('click', '.region-btn', function() {
+	    // 모든 버튼에서 active 클래스 제거 후, 클릭한 버튼에 추가
+	    $(".region-btn").removeClass("active");
+	    $(this).addClass("active");
+	    
+	    // 선택한 지역 값을 hidden input에 저장
+	    let selectedRegion = $(this).data("value");
+	    $("#selectedRegion").val(selectedRegion);
+	});
+
+	// API URL 생성 함수 내에서 지역 값 가져오기 수정
+	function buildApiUrl(page = 1) {
+	    let baseUrl = "https://apis.data.go.kr/1390000/youngV2/policyListV2";
+	    let params = [];
+	    
+	    // 필수 파라미터
+	    params.push("typeDv=json");
+	    params.push("serviceKey=" + serviceKey);
+	    params.push(`rowCnt=${itemsPerPage}`);
+	    params.push(`cp=${page}`);
+	    
+	    // 동적 파라미터
+	    let selectedRegion = $("#selectedRegion").val(); // 버튼 선택값
+	    let keyword = $("#searchKeyword").val();
+	    let startDate = $("#startDate").val();
+	    let endDate = $("#endDate").val();
+	    let status = $("#searchStatus").val();
+	    let minPrice = $("#minPrice").val();
+	    let maxPrice = $("#maxPrice").val();
+	    let sortOrder = $("#sortOrder").val();
+
+	    if (keyword) params.push(`search_keyword=${encodeURIComponent(keyword)}`);
+
+	    // 버튼 선택한 지역을 지역 코드로 변환하여 추가
+	    if (selectedRegion && regionCodes[selectedRegion]) {
+	        params.push(`search_area1=${regionCodes[selectedRegion]}`);
+	    }
+	    
+	    if (startDate) params.push(`sd=${startDate}`);
+	    if (endDate) params.push(`ed=${endDate}`);
+	    if (status) params.push(`search_status=${encodeURIComponent(status)}`);
+	    if (minPrice) params.push(`minPrice=${minPrice}`);
+	    if (maxPrice) params.push(`maxPrice=${maxPrice}`);
+	    if (sortOrder) params.push(`sort=${sortOrder}`);
+
+	    let finalUrl = `${baseUrl}?${params.join("&")}`;
+	    console.log("📌 API 요청 URL:", finalUrl);
+
+	    return finalUrl;
+	}
+
+
+
+</script>
+
+
+	<!-- API 호출 -->
+	<script>
+    let currentPage = 1; // 현재 페이지 저장
+    let itemsPerPage = 9; // 한 페이지당 개수
+
+    function fetchGrants(page = 1) {
+        currentPage = page; // 현재 페이지 저장
+        let apiUrl = buildApiUrl(page); // ✅ 동적으로 URL 생성
+
+        $.ajax({
+            url: apiUrl,
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log("📌 API 응답 데이터:", response);
+                renderGrantList(response.policy_list);
+                let totalItems = response.policy_paging?.totalCount || 0;
+                let totalPages = Math.ceil(totalItems / itemsPerPage);
+                renderPagination(totalPages, page);
+            },
+            error: function() {
+                alert("데이터를 불러오는 중 오류가 발생했습니다.");
+            }
+        });
+    }
+
+</script>
+
+	<!-- 리스트 렌더링 -->
+	<script>
+	// 동적 카드 생성 시 버튼에 data-seq 속성을 추가
+	function renderGrantList(grants) {
+	    let html = "";
+	    if (grants && grants.length > 0) {
+	        grants.forEach(function(grant) {
+	            let status = getStatus(grant.applEdDt); // 진행 상태 계산
+	            html += `
+	                <li class="card benefit-card">
+	                    <div class="card-body">
+	                        <h3 class="card-title">${grant.title || "제목 없음"}</h3>
+	                        
+	                        <div class="info-row d-flex">
+	                            <p class="card-text"><strong>대상 :</strong></p>
+	                            <p class="card-text card-text-content">${grant.eduTarget || "대상 정보 없음"}</p>
+	                        </div>
+	                        
+	                        <div class="info-row d-flex">
+	                            <p class="date-range"><strong>신청기간 :</strong></p>
+	                            <p class="date-range-content">${grant.applStDt || "기간 없음"} ~ ${grant.applEdDt || "기간 없음"}</p>
+	                        </div>
+	                        
+	                        <div class="info-row d-flex">
+	                            <p class="card-ongoing"><strong>진행 상태 :</strong></p>
+	                            <p class="card-ongoing-info">${status}</p>
+	                        </div>
+	                        
+	                        <button class="show-more" data-seq="${grant.seq}">상세보기</button>
+	                    </div>
+	                </li>
+	            `;
+	        });
+	        
+	        html = `
+	            <div class="benefit-content-container container-sm w-75">
+	                <div class="benefit-content" id="benefit">
+	                    <ul class="benefit-list d-flex flex-wrap">
+	                        ${html}
+	                    </ul>
+	                </div>
+	            </div>
+	        `;
+	    } else {
+	        html = "<p>⚠ 데이터가 없습니다.</p>";
+	    }
+	    
+	    $("#grantList").html(html);
+	}
+
+	// 버튼 클릭 이벤트 처리 (동적 요소에 적용)
+	$(document).on('click', '.show-more', function() {
+	    // 버튼에 저장된 데이터 속성에서 grant.seq 값 읽어오기
+	    const seq = $(this).data('seq');
+	    if (seq) {
+	        window.location.href = `/supportApi/detail/${seq}`;
+	    }
+	});
+
+</script>
+
+	<!-- 페이지네이션 -->
+	<script>
+    function renderPagination(totalPages, currentPage) {
+        let paginationHtml = "";
+
+        if (totalPages > 1) {
+            // ⏮ 첫 페이지 이동 버튼
+            if (currentPage > 1) {
+                paginationHtml += `<li onclick="changePage(1)">«</li>`;
+            }
+
+            // 🔢 현재 페이지 기준 앞뒤 2개 페이지만 표시
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    paginationHtml += `<li class="active">${i}</li>`;
+                } else {
+                    paginationHtml += `<li onclick="changePage(${i})">${i}</li>`;
+                }
+            }
+
+            // ⏭ 마지막 페이지 이동 버튼
+            if (currentPage < totalPages) {
+                paginationHtml += `<li onclick="changePage(${totalPages})">»</li>`;
+            }
+        }
+
+        $("#pagination").html(paginationHtml); // 기존 페이지네이션 제거 후 새로 렌더링
+    }
+
+    function changePage(page) {
+        fetchGrants(page); // ✅ 페이지 변경 시 API 호출
+    }
+</script>
+
+	<!-- 진행,마감 구분하기 -->
+	<script>
+	function getStatus(applEdDt) {
+    let today = new Date();
+    let endDate = new Date(applEdDt);
+
+    if (!applEdDt || isNaN(endDate)) {
+        return "정보 없음";
+    }
+
+    return today <= endDate ? "진행중" : "마감";
+}
+</script>
+
+	<!-- 첫 페이지 기본값 호출 -->
+	<script>
+	$(document).ready(function() {
+    $("#searchBtn").click(function() {
+        fetchGrants(1); // ✅ 검색 버튼 클릭 시 1페이지부터 새로 불러오기
+    });
+
+    $("#sortOrder").change(function() {
+        fetchGrants(1); // ✅ 정렬 변경 시 첫 페이지부터 다시 불러오기
+    });
+
+    fetchGrants(1); // ✅ 페이지 로딩 시 기본 데이터 불러오기
+});
+
+</script>
+
+
+
+    <script>
+         // AI 챗봇 토글 JS 함수
+         function toggleChatbot() {
+        var chatbot = document.getElementById("chatbot");
+
+        // 챗봇 창이 열려있으면 숨기고, 닫혀있으면 표시
+        if (chatbot.style.display === "none" || chatbot.style.display === "") {
+            chatbot.style.display = "block";
+        } else {
+            chatbot.style.display = "none";
+        }
+    }
+    </script>
+    
+
+	<script th:src="@{/js/deulmaru_alram.js}"></script>
+	<div th:replace="layout/Footer :: Footer"></div>
+	
+</body>
+</html>

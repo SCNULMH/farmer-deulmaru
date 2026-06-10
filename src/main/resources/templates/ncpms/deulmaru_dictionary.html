@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>병해충 사전 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/deulmaru_dictionary.css}">
+  </head>
+  <body>
+    <div th:replace="layout/header :: header"></div>
+
+
+    <!-- 병해충 조회 배너 -->
+    <div class="container-sm text-center w-50">
+      <div class="banner-content text-center">
+        <h2>병해충 사전</h2>
+        <p>작물별로 발생하는 병해충 도감을 확인하세요</p>
+      </div>
+    </div>
+
+    <!-- 검색창 영역 (드롭다운 방식) -->
+    <div class="container-sm">
+      <div class="search-section">
+        <div class="input-group">
+          <!-- 드롭다운 버튼 -->
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="searchTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-value="sick">
+            병해충명
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="searchTypeDropdown">
+            <li><a class="dropdown-item" href="#" data-value="sick">병해충명</a></li>
+            <li><a class="dropdown-item" href="#" data-value="crop">작물명</a></li>
+          </ul>
+          <input type="text" id="searchQuery" class="form-control" placeholder="검색어를 입력하세요">
+          <button class="btn btn-primary" onclick="fetchSearchData()"><img src="/image/input_icon.png"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 검색 결과 테이블 -->
+    <div class="container-sm tab-content hidden" id="dictionary">
+      <div class="row" id="resultTable">
+        <!-- 검색 결과 카드들이 동적으로 추가됩니다 -->
+      </div>
+    </div>
+
+    <!-- 상세보기 모달 -->
+    <div id="sickDetailModal" class="modal" style="display:none;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">병해충 상세정보</h5>
+            <button type="button" class="btn-close" onclick="closeSickDetailModal()"></button>
+          </div>
+          <div class="modal-body" id="sickDetailContainer">
+            <!-- 상세정보 내용이 채워집니다 -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+	<!-- ✅ 이삭이 버튼 (챗봇 토글) -->
+     <div class="button-isac mb-5">
+        <button class="image-btn-isac" onclick="toggleChatbot()">
+            <span>AI 이삭이</span>
+            <img src="/image/이삭3-removebg-preview.png" alt="버튼 이미지">
+        </button>
+    </div>
+
+    <!-- ✅ 챗봇 팝업 UI -->
+    <div id="chatbot" class="chatbot-container">
+        <div class="chatbot-popup">
+            <button class="close-chatbot" onclick="toggleChatbot()">×</button>
+            <iframe src="https://www.nongsaro.go.kr/chatbot/aichatbot.html" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
+    
+    
+    <script>
+         // AI 챗봇 토글 JS 함수
+         function toggleChatbot() {
+        var chatbot = document.getElementById("chatbot");
+
+        // 챗봇 창이 열려있으면 숨기고, 닫혀있으면 표시
+        if (chatbot.style.display === "none" || chatbot.style.display === "") {
+            chatbot.style.display = "block";
+        } else {
+            chatbot.style.display = "none";
+        }
+    }
+    </script>
+    <script>
+	function toggleChatbot() {
+	    const chatbot = document.getElementById('chatbot');
+	    const isOpen = chatbot.style.display === 'block';
+	
+	    if (isOpen) {
+	        chatbot.style.display = 'none';
+	        document.documentElement.classList.remove('scroll-locked');
+	        document.body.classList.remove('scroll-locked');
+	    } else {
+	        chatbot.style.display = 'block';
+	        document.documentElement.classList.add('scroll-locked');
+	        document.body.classList.add('scroll-locked');
+	    }
+	}
+	</script>
+
+    <!-- 스크립트 로드 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/deulmaru_const.js"></script>
+    <script src="/js/deulmaru_dictionary_search.js"></script>
+
+    <script th:src="@{/js/deulmaru_alram.js}"></script>
+
+	<!-- ✅ 이미지 확대 모달 -->
+	<div id="imageModal" class="modal" style="display:none; justify-content: center; align-items: center;">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <img id="modalImage" src="" class="img-fluid" style="max-height:80vh; border-radius:10px;">
+	  </div>
+	</div>
+
+		
+	
+    <div th:replace="layout/Footer :: Footer"></div>
+  </body>
+</html>

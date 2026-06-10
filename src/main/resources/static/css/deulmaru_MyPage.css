@@ -1,0 +1,601 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+@font-face {
+    font-family: '클로버체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/YClover-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Paperlogy-8ExtraBold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: '최애체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/YOnepickTTF-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* 기본 스타일 */
+.body {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+
+
+/* 배너 영역 */
+.container {
+    align-items: center;
+
+}
+
+/* 배너 영역 */
+.banner-content {
+    background: #badfa337; /* 반투명 배경 */
+    padding: 4%;
+    border-radius: 0 0 40px 40px;
+    color: #115114;
+}
+
+.banner-content h2 {
+    font-size: 33px;
+    font-weight: bold;
+    margin-bottom: 3%;
+}
+
+.banner-content p {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+
+
+
+/* ✅ 기본 탭 버튼 스타일 유지 */
+.tab-menu {
+    display: flex;
+    justify-content: left;
+    margin-top: 5%;
+    padding: 10px 0;
+}
+
+
+.tab-button {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    background-color: #f8f9f9;
+    font-size: 16px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+}
+
+
+.tab-button.active {
+    background-color: #115114;
+    color: white;
+}
+
+
+
+/* ✅ 마우스 오버 효과 */
+.tab-button:hover {
+    transition: all 0.2s ease;
+    color: #444444;
+}
+
+
+/* ✅ `·` 구분 기호 스타일 */
+.separator {
+    font-size: 24px;  /* 버튼과 동일한 크기 */
+    color: #909090;   /* 글씨 색상 버튼과 맞추기 */
+    margin: 0 10px;   /* 좌우 간격 조정 */
+    display: flex;
+    align-items: center; /* 텍스트 수직 정렬 */
+}
+
+/* ✅ 탭 콘텐츠 숨기기 */
+.hidden {
+    display: none;
+}
+
+
+/* ✅ 탭 콘텐츠를 탭 메뉴 아래에 위치하도록 조정 */
+.tab-content-container {
+    padding: 20px;
+    background-color:transparent;
+    border-radius: 5px;
+    margin-top: 3%;
+    margin-bottom: 15%;
+}
+
+/* ✅ 탭 콘텐츠 숨기기 */
+.hidden {
+    display: none;
+}
+
+
+
+/* 카카오 연동하기 버튼 */
+.tab-content .mt-4 p {
+	font-weight: bold;
+	font-size: 20px;
+	color: #373737c4;
+}
+
+.tab-content .mt-4 .btn-kakao {
+	background-color: #fdeb22;
+	padding: 10px 15px;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    border-radius: 7px;
+	text-decoration: none;
+	color: #3f1f00;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+
+/* 내프로필 관리 인풋 영역 */
+#profileTab .input-group-text {
+    width: 100px;
+    font-weight: bold;
+    color: gray;
+}
+
+
+#profileTab .button-group{
+    margin-top: 1%;
+    justify-content :end;
+    transition: all 0.3s ease-in-out;
+}
+
+#profileTab .btn:nth-child(2) {
+    background-color: #11512e;
+    border: #11512e;
+    color: white;
+}
+
+#profileTab .btn:nth-child(2):hover {
+    background-color: #0e2c1b;
+}
+
+/* ✅ 스위치 버튼 크기 키우기 */
+.form-check-input {
+    transform: scale(1.2); /* 크기를 1.5배 확대 */
+    width: 40px; /* 가로 크기 조정 */
+    height: 17px; /* 세로 크기 조정 */
+    margin-right: 12px; /* 스위치와 라벨 사이 간격 */
+}
+
+/* ✅ 라벨 크기 키우기 */
+.form-check-label {
+    font-size: 16px; /* 글자 크기 키우기 */
+    font-weight: bold; /* 글자 강조 */
+    color: #4d4d4d;
+}
+
+
+
+
+/* ai 진단 이력 관리 영역 */
+#diagHistoryTab .table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#diagHistoryTab  .table th, .table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+#diagHistoryTab  .table th:nth-child(1), .diag-date {
+    width: 30%;
+}
+
+#diagHistoryTab  .table-dark th {
+    background-color: #b3b3b355; /* 테이블 헤더 배경색 */
+    color: rgb(50, 50, 50); /* 헤더 글자색 */
+}
+
+#diagHistoryTab  .table tbody .disease-name:hover {
+    background-color: #678d652f; 
+}
+
+
+
+
+
+/* ✅ 지원금 섹션 스타일 */
+
+/* ✅ 카드 리스트 스타일 */
+.benefit-list {
+    width: 100%;
+    gap: 30px !important;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+    margin-top: 1%;
+    margin-bottom: 3%;
+}
+
+/* ✅ 개별 카드 스타일  */
+.benefit-card {
+    width: 100%; /* ✅ 열에 맞춰 채우기 */
+    max-width: 350px;
+    height: 260px;
+    background-color: #ffd24a58;
+    border: transparent;
+    border-radius: 10px;
+    padding: 13px;
+    justify-items: center !important; /* 각 카드 가운데 정렬 */
+    align-item: center !important;
+}
+
+/* ✅ 카드 제목 스타일 */
+.benefit-card .card-title {
+	font-family: 'Paperlogy-8ExtraBold';
+    font-size: 20px;
+    font-weight: bold;
+    color: #8a4a00;
+    margin-bottom: 15px;
+    margin-right: 5px;
+    text-align: left;
+}
+
+/* ✅ 카드 내용 스타일 */
+.benefit-card .card-text {
+    font-size: 16px;
+    color: #262626;
+    font-weight: bold;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* ✅ 날짜 스타일 */
+.benefit-card .date-range, .card-ongoing {
+    font-size: 16px;
+    color: #262626;
+    line-height: 1.5;
+    text-align: left;
+    margin-right: 10px;
+    font-weight : bold;
+    margin-bottom : 15px;
+}
+
+.benefit-card .show-more{
+    border: none;
+    background-color: transparent;
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    margin-top: 30px;
+}
+.benefit-card .show-more:hover {
+    color: #8a4a00;
+    text-decoration: underline; /* 밑줄 효과 */
+
+}
+
+.benefit-card .cancel-interest-btn{
+    border: none;
+    background-color: transparent;
+    font-weight: 900;
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    margin-top: 30px;
+}
+
+.benefit-card .cancel-interest-btn:hover {
+	color: #8a4a00 ;
+    text-decoration: underline; /* 밑줄 효과 */
+}
+
+#benefitTab .benefit-list p {
+	font-size : 19px;
+	color: #373737c4;
+}
+
+
+
+
+
+
+/* 나의 작물 재배 일정 컨테이너 영역 */
+#cropScheduleArea {
+	margin-bottom: 0;
+}
+
+
+/* input-group */
+#cropScheduleArea .input-group {
+	margin-bottom: 20px;
+}
+
+#cropScheduleArea .input-group-text {
+	background-color: #115114;
+	color: #fff;
+	font-weight: bold;
+	border: none;
+	font-size: 16px;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+}
+
+#cropInput {
+	border: 2px solid #115114;
+	border-left: none;
+	font-size: 16px;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	padding: 10px;
+}
+
+#cropScheduleContent p {
+	margin-top: 3%;
+	font-size: 19px;
+	color: 292929c4;
+}
+
+/* "나의 작물 재배 일정" 텍스트 */
+/* 일정 타이틀 */
+.agri-calendar h3 {
+	font-weight: 800;
+	font-size: 24px;
+	margin-bottom: 16px;
+	text-align: center;
+	color: #2f4f4f;
+	letter-spacing: -0.5px;
+}
+
+.agri-calendar h2 {
+	font-weight: bold;
+	font-size : 20px;
+	margin-bottom: 10px;
+}
+
+
+#cropScheduleContent .selected-crop-info p {
+	margin-top: 2% !important;
+	margin-bottom: 3% !important;
+	font-size: 20px;
+	text-align: center;
+}
+
+#cropScheduleContent .selected-crop-info {
+	margin-top: 2% !important;
+}
+
+#cropScheduleContent .m_scrollTable {
+	margin-bottom: 3%;	
+}
+
+
+.tblSchedule th {
+	text-align: center;
+	border: 1px solid rgba(47, 169, 33, 0.714);
+	color: #313131;
+}
+
+.tblSchedule thead tr:nth-child(2) td{
+	background-color: rgba(47, 169, 33, 0.714);
+	font-size: 10px;
+	color:transparent;
+}
+.tblSchedule thead tr:nth-child(2) td.bg2 {
+	background-color: rgba(47, 169, 33, 0.5);
+}
+
+.tblSchedule thead tr:nth-child(2) td.bg3 {
+	background-color: rgba(47, 169, 33, 0.325);
+}
+
+
+
+.tblSchedule tbody tr:nth-child(2),
+.tblSchedule tbody tr:nth-child(4),
+.tblSchedule tbody tr:nth-child(6),
+.tblSchedule tbody tr:nth-child(8),
+.tblSchedule tbody tr:nth-child(10),
+.tblSchedule tbody tr:nth-child(14),
+.tblSchedule tbody tr:nth-child(16),
+.tblSchedule tbody tr:nth-child(18),
+.tblSchedule tbody tr:nth-child(20) {
+	border: 1px solid #acacac92;
+}
+
+
+.tblSchedule tbody td.calTd.bgBlue,
+.tblSchedule tbody td.calTd.bgRed,
+.tblSchedule tbody td.calTd.bgYellow {
+	background-color: #c4f0ff92;
+	font-size: 17px;
+}
+
+.tblSchedule tbody td.calTd.bgRed {
+	background-color: #c4f0ff92;
+	font-size: 17px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  ✅ 이삭이 버튼 (챗봇 토글)  */
+.button-isac {
+    position: fixed;  /* 화면에 고정 */
+    bottom: 0px;      /* 화면 하단에서 20px 떨어진 위치 */
+    right: 20px;       /* 화면 오른쪽에서 20px 떨어진 위치 */
+    z-index: 1000;     /* 다른 요소 위에 표시되도록 설정 */
+    
+}
+.image-btn-isac {
+    width: 150px;
+    height: 110px;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    
+}
+.image-btn-isac img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.image-btn-isac span {
+    font-size: 17px;
+    font-weight: 900;
+    color: rgb(10, 128, 6);
+    font-family: '클로버체';
+}
+
+.image-btn-isac:hover {
+    transform: scale(1.1);
+    
+}
+
+/* <!-- ✅ 챗봇 팝업 UI --> */
+/* ✅ 챗봇 팝업 컨테이너 스타일 */
+.chatbot-container {
+    position: fixed;
+    bottom: 20px; /* 화면 하단에서 20px 위 */
+    right: 20px; /* 화면 오른쪽에서 20px 왼쪽 */
+    width: 30%; /* 챗봇 팝업 너비 */
+    display: none;
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    overflow: hidden;
+}
+
+/* ✅ 챗봇 팝업 스타일 */
+.chatbot-popup {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    width: 100%;
+    height: 90%;
+    border: 1px solid #ddd;
+}
+
+/* ✅ 닫기 버튼 스타일 */
+.close-chatbot {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+
+
+
+
+
+
+
+/*  ✅ 이삭이 버튼 (챗봇 토글)  */
+        .button-isac {
+            position: fixed;  /* 화면에 고정 */
+            bottom: 0px;      /* 화면 하단에서 20px 떨어진 위치 */
+            right: 20px;       /* 화면 오른쪽에서 20px 떨어진 위치 */
+            z-index: 1000;     /* 다른 요소 위에 표시되도록 설정 */
+            
+        }
+        .image-btn-isac {
+            width: 150px;
+            height: 110px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            
+        }
+        .image-btn-isac img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .image-btn-isac span {
+            font-size: 17px;
+            font-weight: 900;
+            color: #000;
+            font-family: '최애체';
+        }
+
+        .image-btn-isac:hover {
+            transform: scale(1.1);
+            transition: all 0.2s ease-in-out;
+            
+        }
+
+        /* <!-- ✅ 챗봇 팝업 UI --> */
+        /* ✅ 챗봇 팝업 컨테이너 스타일 */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px; /* 화면 하단에서 20px 위 */
+            right: 20px; /* 화면 오른쪽에서 20px 왼쪽 */
+            width: 30%; /* 챗봇 팝업 너비 */
+            display: none;
+            z-index: 1000; /* 다른 요소 위에 표시 */
+            overflow: hidden;
+        }
+
+
+
+        /* ✅ 챗봇 팝업 스타일 */
+        .chatbot-popup {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            width: 100%;
+            height: 90%;
+            border: 1px solid #ddd;
+        }
+
+        /* ✅ 닫기 버튼 스타일 */
+        .close-chatbot {
+            background: none;
+            border: none;
+            font-size: 26px;
+            color: #000;
+            cursor: pointer;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+        
+        .close-chatbot:hover {
+        	font-size: 29px;
+        	font-weight: bold;
+        }
+

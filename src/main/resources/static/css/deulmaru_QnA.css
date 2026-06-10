@@ -1,0 +1,406 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+@font-face {
+    font-family: '클로버체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/YClover-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Paperlogy-8ExtraBold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: '최애체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/YOnepickTTF-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* 기본 스타일 */
+body {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+
+/* 배너 영역 */
+.banner-content {
+    background: #badfa337; /* 반투명 배경 */
+    padding: 4%;
+    border-radius: 0 0 40px 40px;
+    color: #115114;
+}
+
+.banner-content h2 {
+    font-size: 33px;
+    font-weight: bold;
+    margin-bottom: 3%;
+}
+
+.banner-content p {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+
+
+.input-group {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;     /* 줄바꿈 방지 */
+    max-width: 50%;        /* 원하는 최대 너비 */
+    margin: 10px auto;
+    margin-top: 4%;
+    margin-bottom: 3%;
+}
+
+/* 검색창 스타일 */
+.search-input {
+    flex: 1; /* 남은 공간 모두 차지 */
+    min-width: 0; /* flex 항목 줄어들 수 있도록 */
+    border: 4px solid #115114;
+    border-top-left-radius: 50px !important;
+    border-bottom-left-radius: 50px !important;
+    border-right: none;
+    padding: 10px 15px;
+    color: #878787;
+    font-size: 16px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+	transition: all 0.2s ease-in-out;
+}
+
+/* 드롭다운 버튼 스타일 */
+.input-group .btn {
+    background-color: transparent; 
+    color: rgb(56, 56, 56); 
+    font-size : 17px;
+    border: 4px solid #115114; 
+    border-right:transparent;
+    border-radius: 50px;
+}
+
+.input-group .form-control {
+	border: 4px solid #115114; 
+	border-right: transparent;
+	border-left: transparent;
+	font-size : 17px;
+}
+
+/* input이 focus 상태일 때 스타일 변경 */
+.input-group .form-control:focus {
+    outline: none !important; /* 기본 파란색 테두리 제거 */
+    border: 2px solid #115114 !important; /* 테두리 색 변경 */
+    box-shadow: none !important;
+}    
+
+
+.input-group #searchTypeDropdown:hover,
+.input-group #searchTypeDropdown:active,
+.input-group #searchTypeDropdown:focus {
+	background-color: transparent !important;
+	color: inherit !important;
+}
+
+
+.input-group .btn-primary {
+	width: 12%;
+    border: 4px solid #115114;
+    border-left: transparent !important;
+    padding: 10px 10px;
+    border-radius: 50px;
+    color: #878787;
+    background-color: transparent;
+}
+
+.input-group .btn-primary img {
+	width: 25px;
+	height: 26px;	
+}
+
+
+/* 모든 상태에서 효과 제거 */
+.input-group .btn:hover,
+.input-group .btn:focus,
+.input-group .btn:active,
+.input-group .btn-primary:hover,
+.input-group .btn-primary:focus,
+.input-group .btn-primary:active {
+    background-color: transparent !important;
+    color: rgb(56, 56, 56) !important;
+    border-color: #115114 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: none !important; /* 크기 변형 방지 */
+    transition: none !important; /* 부드러운 효과 제거 */
+}
+
+/* 검색 입력 필드 focus 효과 제거 */
+.input-group .form-control:focus {
+    outline: none !important;
+    border: 4px solid #115114 !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+
+#paging {
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 5%;
+	margin-bottom: 10%;
+}
+
+#paging .btn-secondary {
+	background-color: transparent;
+	color: black;
+	border: transparent;
+	font-size: 18px;
+}
+
+#paging .btn-secondary:hover {
+	font-weight: bold;
+	transition: all 0.2s ease-in-out;
+}
+
+
+#paging #pageNumbers .btn {
+	background-color : #497c60;
+	border: transparent;
+	color: #fff;
+	padding: 6px 10px;
+	font-size : 18px;
+}
+
+#paging #pageNumbers .btn:hover {
+	background-color : #11512e;
+}
+
+
+
+
+
+/* 상담 결과 테이블 영역 */
+#consultResultTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#consultResultTable th,
+#consultResultTable td {
+  padding: 15px; /* 셀 간격 증가 */
+  text-align: left;
+}
+
+#consultResultTable thead {
+  border-bottom: 2px solid #000; /* 구분선 두껍게 */
+}
+
+#consultResultTable th {
+  font-weight: bold;
+  font-size : 18px;
+}
+
+#consultResultTable tbody tr {
+  border-bottom: 1px solid #ddd; /* 행 구분선 추가 */
+}
+
+
+#consultResultTable tbody td{
+	font-size : 17px;
+	max-width: 450px;
+}
+
+#consultResultTable tbody td:nth-child(1) {
+	font-size:18px;
+}
+
+#consultResultTable tbody td button {
+	border: transparent;
+	background-color: #497c60;
+	color: #fff;
+	padding: 4px 6px;
+	border-radius: 5px;
+}
+
+#consultResultTable tbody td button:hover {
+	background-color: #29503a;
+	transition: all 0.2s ease-in-out;
+}
+
+
+
+
+
+/* 상세보기 콘텐츠 영역 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+
+/* 모달 콘텐츠 */
+.modal-content {
+    background-color: #fefefe;
+    top: 15px; /* 화면 상단에서 15% 지점에 위치 */
+    margin: 0 auto;
+    padding: 3%;
+    border: 2px solid #888;
+    width: 80%;
+    max-width: 900px;
+    text-align: left;
+}
+
+.consult-title {
+	font-weight: bold;
+	font-size: 25px;
+	color : #c46136;
+	margin-bottom: 3% !important;
+	margin-bottom: 2% !important;
+}
+
+
+.consult-detail-container p {
+	border-bottom: 2px solid #d5d5d56d;
+	padding-bottom: 16px;
+	font-size: 18px;
+	line-height: 1.8 !important;
+}
+
+.modal-image {
+	max-width: 500px !important;
+	margin: 20px !important;
+	justify-content : center !important;
+}
+
+
+
+/* 닫기 버튼 */
+.close {
+    color: #aaa;
+    text-align: end !important;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  ✅ 이삭이 버튼 (챗봇 토글)  */
+        .button-isac {
+            position: fixed;  /* 화면에 고정 */
+            bottom: 48px;      /* 화면 하단에서 20px 떨어진 위치 */
+            right: 20px;       /* 화면 오른쪽에서 20px 떨어진 위치 */
+            z-index: 1000;     /* 다른 요소 위에 표시되도록 설정 */
+            
+        }
+         .image-btn-isac {
+            width: 150px;
+            height: 110px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            
+        }
+        .image-btn-isac img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .image-btn-isac span {
+            font-size: 17px;
+            font-weight: 900;
+            color: #000;
+            font-family: '최애체';
+        }
+
+        .image-btn-isac:hover {
+            transform: scale(1.1);
+            transition: all 0.2s ease-in-out;
+            
+        }
+
+    /* ✅ 챗봇 팝업 전체 영역 */
+    .chatbot-container {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 70%;
+        height: 80%;
+        z-index: 1001;
+    }
+
+    /* ✅ 챗봇 팝업창 UI */
+    .chatbot-popup {
+        background: #fff;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /* ✅ 닫기 버튼 */
+    .close-chatbot {
+        align-self: flex-end;
+        background: none;
+        border: none;
+        font-size: 24px;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    /* ✅ iframe wrapper */
+    .iframe-wrapper {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+    }
+
+    .iframe-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* ✅ 팝업 열릴 때 스크롤 막기 */
+    .scroll-locked {
+        overflow: hidden;
+        height: 100%;
+    }

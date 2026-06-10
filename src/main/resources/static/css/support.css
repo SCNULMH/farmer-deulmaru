@@ -1,0 +1,486 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+@font-face {
+    font-family: '클로버체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/YClover-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Paperlogy-8ExtraBold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: '최애체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/YOnepickTTF-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* 기본 스타일 */
+.body {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 배너 영역 */
+.banner-content {
+    background: #badfa337; /* 반투명 배경 */
+    padding: 4%;
+    border-radius: 0 0 40px 40px;
+    color: #115114;
+}
+
+.banner-content h2 {
+    font-size: 33px;
+    font-weight: bold;
+    margin-bottom: 3%;
+}
+
+.banner-content p {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+
+
+
+.input-group {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;     /* 줄바꿈 방지 */
+    max-width: 50%;        /* 원하는 최대 너비 */
+    margin: 10px auto;
+    margin-top: 4%;
+    margin-bottom: 6%;
+}
+
+
+.search-input {
+    flex: 1; /* 남은 공간 모두 차지 */
+    min-width: 0; /* flex 항목 줄어들 수 있도록 */
+    border: 4px solid #115114;
+    border-top-left-radius: 50px !important;
+    border-bottom-left-radius: 50px !important;
+    border-right: none;
+    padding: 10px 15px;
+    color: #878787;
+    font-size: 16px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+	transition: all 0.2s ease-in-out;
+}
+
+.search-input-btn {
+    border: 4px solid #115114;
+    border-left: none !important;
+    padding: 10px 15px;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    color: #878787;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px; /* 고정 크기 버튼 (이미지 크기와 어울리게) */
+    flex-shrink: 0; /* 줄어들지 않게 */
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+	transition: all 0.2s ease-in-out;
+}
+
+.search-input-btn img {
+    width: 25px;
+    height: 26px;
+}
+
+
+@media (max-width: 480px) {
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input,
+    .search-input-btn {
+        border-radius: 30px !important;
+    }
+
+    .search-input {
+        border-right: 4px solid #115114;
+        margin-bottom: 8px;
+    }
+
+    .search-input-btn {
+        width: 100%;
+        border-left: 4px solid #115114 !important;
+    }
+}
+
+
+
+
+
+
+
+
+/* 지역 필터 버튼 그룹 */
+#regionFilter {
+	margin-left: 4%;
+	
+}
+#regionFilter .region-btn {
+	border: transparent !important;
+	border-radius: 0px;
+	font-family: 'Paperlogy-8ExtraBold';
+	font-size : 22px;
+	font-weight: bold;
+	color: #272727c0;
+}
+#regionFilter .region-btn:hover,
+#regionFilter .region-btn:active,
+#regionFilter .region-btn:focus {
+	background-color: transparent !important;
+	transform: scale(1.1) !important;
+	color:  #497c60 !important;
+}
+
+
+
+/* 📅 신청 기간 필터 전체 박스 */
+.date-picker-container {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 12px;
+	flex-wrap: wrap;
+	width: 100%;
+	margin-top: 12px;
+	margin-bottom:3%;
+	font-family: 'Pretendard', sans-serif;
+	
+}
+
+/* "기간 선택" 텍스트 */
+.date-label {
+	font-weight: bold;
+	font-size: 18px;
+	color: #444;
+	margin: 0;
+	white-space: nowrap;
+}
+
+/* 날짜 선택 영역 묶음 */
+.date-range {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+
+/* 날짜 입력 필드 공통 스타일 */
+#startDate,
+#endDate {
+	width: 140px;
+	height: 36px;
+	padding: 6px 12px;
+	border: 2px solid gray;
+	border-radius: 10px;
+	text-align: center;
+	cursor: pointer;
+	color: #444;
+	font-size: 15px;
+	background-color: #fff;
+	box-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+	transition: all 0.2s ease-in-out;
+}
+
+/* 선택 시 강조 효과 */
+#startDate:focus,
+#endDate:focus {
+	outline: none;
+	border-color: #ff6e3a;
+	box-shadow: 0 0 6px #ff6e3a33;
+}
+
+/* ~ 표시 꾸미기 */
+.date-dash {
+	font-size: 22px;
+	font-weight: bold;
+	color: #888;
+	user-select: none;
+}
+
+
+
+.date-picker-container p {
+	font-weight: bold;
+	font-size: 17px;
+	padding-top: 10px;
+}
+
+
+
+/* ✅ 지원금 섹션 스타일 */
+/* ✅ 카드 리스트 스타일 */
+.benefit-list {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 30px;
+    justify-content: center !important;
+    padding: 0;
+    list-style: none;
+    margin-top: 3%;
+    margin-bottom: 3%;
+
+}
+
+
+
+/* ✅ 개별 카드 스타일 */
+.benefit-card {
+    width: calc((100% - 90px) / 3); /* 한 줄 최대 3개 */
+    max-width: 400px; /* 카드 최대 너비 설정 */
+    flex: 1 1 auto;
+    height: 250px;
+    background-color: transparent;
+    border: 1px solid rgba(191, 191, 191, 0.584);
+    border-radius: 10px;
+    padding: 13px;
+    box-shadow: 0 3px 5px rgba(59, 59, 59, 0.089);
+    transition: all 0.3s ease-in-out;
+}
+
+/* ✅ 호버 효과 */
+.benefit-card:hover {
+    box-shadow: 0 15px 17px rgba(59, 59, 59, 0.089);
+}
+
+/* ✅ 카드 제목 스타일 */
+.benefit-card .card-title {
+	font-family: 'Paperlogy-8ExtraBold';
+    font-size: 20px;
+    font-weight: bold;
+    color: #8a4a00;
+    margin-bottom: 15px;
+    margin-right: 5px;
+    text-align: left;
+}
+
+/* ✅ '대상'과 내용이 같은 높이로 정렬되도록 설정 */
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+/* ✅ '대상' 텍스트는 고정된 크기로 유지 */
+.card-text {
+    font-size: 16px;
+    color: #262626;
+    font-weight: bold;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* ✅ 내용 부분만 말줄임표 적용 */
+.card-text-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 1;
+    max-width: 230px;
+    margin: 0;
+}
+
+/* ✅ 📌 반응형 미디어 쿼리 추가 */
+/* 📌 화면 너비 1024px 이하 → 카드 2개씩 */
+@media (max-width: 1024px) {
+    .benefit-card {
+        width: calc((100% - 30px) / 2); /* 2개씩 배치 */
+    }
+
+    .benefit-list {
+        justify-content: center; /* 중앙 정렬 */
+    }
+}
+
+/* 📌 화면 너비 768px 이하 → 카드 1개씩 */
+@media (max-width: 768px) {
+    .benefit-card {
+        width: 100%; /* 한 줄에 한 개 */
+        max-width: 350px;
+    }
+
+    .benefit-list {
+        justify-content: center; /* 중앙 정렬 */
+    }
+}
+
+
+
+
+/* ✅ 날짜 스타일 */
+.benefit-card .date-range, .card-ongoing {
+    font-size: 16px;
+    color: #262626;
+    line-height: 1.5;
+    text-align: left;
+    margin-right: 10px;
+    font-weight : bold;
+    margin-bottom : 15px;
+}
+
+.benefit-card .date-range,
+.benefit-card .date-range-content{
+	margin-bottom: 0;
+}
+
+
+.benefit-card .date-range-content,
+.card-ongoing-info {
+	font-weight : bold;
+}
+
+.benefit-card .show-more{
+    border: none;
+    background-color: transparent;
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    margin-top: 30px;
+}
+
+
+.benefit-card .show-more:hover {
+    color: #8a4a00;
+    text-decoration: underline; /* 밑줄 효과 */
+
+}
+
+/* 페이지네이션 영역 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 5% auto;
+    margin-top: 4%;
+    margin-bottom: 10%;
+}
+
+.pagination li {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid rgba(191, 191, 191, 0.5);
+    color: #555;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.pagination li.active {
+    background-color:#11512e;
+    color: #fff;
+    border-color:#11512e;
+}
+
+.pagination li:hover:not(.active) {
+    background-color: #f0f0f0;
+}
+
+
+
+
+
+
+
+/*  ✅ 이삭이 버튼 (챗봇 토글)  */
+        .button-isac {
+            position: fixed;  /* 화면에 고정 */
+            bottom: 0px;      /* 화면 하단에서 20px 떨어진 위치 */
+            right: 20px;       /* 화면 오른쪽에서 20px 떨어진 위치 */
+            z-index: 1000;     /* 다른 요소 위에 표시되도록 설정 */
+            
+        }
+         .image-btn-isac {
+            width: 150px;
+            height: 110px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            
+        }
+        .image-btn-isac img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .image-btn-isac span {
+            font-size: 17px;
+            font-weight: 900;
+            color: #000;
+            font-family: '최애체';
+        }
+
+        .image-btn-isac:hover {
+            transform: scale(1.1);
+            transition: all 0.2s ease-in-out;
+            
+        }
+
+    /* ✅ 챗봇 팝업 전체 영역 */
+    .chatbot-container {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 70%;
+        height: 80%;
+        z-index: 1001;
+    }
+
+    /* ✅ 챗봇 팝업창 UI */
+    .chatbot-popup {
+        background: #fff;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /* ✅ 닫기 버튼 */
+    .close-chatbot {
+        align-self: flex-end;
+        background: none;
+        border: none;
+        font-size: 24px;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    /* ✅ iframe wrapper */
+    .iframe-wrapper {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+    }
+
+    .iframe-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* ✅ 팝업 열릴 때 스크롤 막기 */
+    .scroll-locked {
+        overflow: hidden;
+        height: 100%;
+    }

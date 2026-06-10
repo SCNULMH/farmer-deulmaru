@@ -1,0 +1,329 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+@font-face {
+    font-family: '클로버체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/YClover-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Paperlogy-8ExtraBold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: '최애체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/YOnepickTTF-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* 기본 스타일 */
+.body {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+
+
+
+/* 안내 가이드 */
+.box-part {
+    background: #badfa337;
+    border-radius: 12px;
+    box-shadow: 5px 5px 10px rgba(42, 41, 41, 0.1);
+    padding: 20px;
+}
+
+.box-part h3 {
+    font-weight: bold;
+    color: #b55e39d2;
+    font-size: 24px;
+    font-family: 'Paperlogy-8ExtraBold';
+}
+
+.box-part p {
+    font-size: 19px;
+    margin-left: 3%;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+.ai_inst_ttl {
+    font-size: 17px;
+    font-weight: bold;
+    font-family: 'Paperlogy-8ExtraBold';
+}
+
+/* 내용 기본 숨기기 */
+.ai_inst_content {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease-in-out;
+}
+
+/* 내용 보일 때 */
+.ai_inst_content.show {
+    height: auto;
+}
+
+.btn-show-more {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    font-size: 24px;
+    
+}
+
+.btn-show-more:hover {
+    transform: translateY(-2px) scale(1.1);
+}
+
+
+
+
+
+/* 진단 영역 */
+.container .row {
+	margin-top: 8%;
+	margin-bottom:  10%;
+}
+
+/* 파일 업로드 */
+#root {
+    width: 100%;
+    max-width: 800px;
+}
+
+.title {
+    text-align: center;
+    margin-top: 7%;
+    font-size: 25px;
+    font-weight: bold;
+    
+}
+
+/* 부모 컨테이너를 중앙 정렬 */
+.contents {
+    display: flex;
+    flex-direction: column;  /* 세로 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* 업로드 박스 중앙 정렬 */
+.contents .upload-box {
+    width: 100%;
+    max-width: 400px; /* 적절한 최대 너비 */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 드래그 영역 스타일 */
+.contents .upload-box .drag-file {
+    width: 100%;
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 3px dashed #dbdbdb;
+}
+
+.contents .upload-box .drag-file.highlight {
+    border: 3px dashed red;
+}
+
+.contents .upload-box .drag-file .image {
+	width: auto;         /* 가로 크기를 고정하지 않고 자동으로 */
+	max-width: 70%;      /* 드래그 영역의 80%까지만 확장 */
+	height: auto;        /* 세로 비율 자동 유지 */
+	max-height: 60%;     /* 드래그 영역의 80%까지만 확장 */
+	object-fit: contain;  /* 이미지 비율 유지하며 영역 내에 맞추기 */
+	opacity: 0.8; 
+}
+
+.contents .upload-box .drag-file .message {
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-weight: bold;
+    color: gray;
+}
+
+/* 파일 업로드 버튼 중앙 정렬 */
+.contents .upload-box .file-label { 
+    margin: 10% auto;  /* 상단 3%, 좌우 중앙 정렬 */
+    margin-bottom: 5%;
+    background-color: #5b975b;
+    color: #fff;
+    text-align: center;
+    padding: 7px 0;
+    width: 55%;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.file {
+    display: none; /* 기본 파일 입력 요소 숨기기 */
+}
+
+/* 판별 결과 보기  */
+.show-diag {
+	font-weight: bold;
+	font-size: 20px;
+	text-align: center;
+}
+
+/* 작물 선택 드롭다운 버튼 */
+#cropNameInput {
+	margin-bottom: 5% !important;
+	margin-top: 4%;
+}
+
+
+/* 진단하기 버튼 */
+#diagnosis-button {
+	margin: 3% 0 3% auto;  /* 상단 3%, 우측 0, 하단 3%, 좌측 auto */
+	padding: 8px 10px;
+	border-radius: 7px;
+	background-color:#ffd82ce3; 
+	border: #ffd82ce3; 
+	font-size: 16px;
+	color: #000;
+	display: block;  /* 버튼을 블록 요소로 바꿔야 margin auto가 적용됨 */
+	text-align: center; /* 버튼 안의 텍스트 가운데 정렬 */
+	
+}
+
+#diagnosis-button :hover {
+	background-color:#f6d12df0; 
+	box-shadow: 5px 5px 10px rgba(42, 41, 41, 0.1);
+}
+
+
+#result-text {
+	margin-top: 15%;
+	text-align: center;
+	font-weight: bold;
+	color: gray;
+}
+
+
+#save-history-button{
+	font-weight: bold;
+	color:darkgreen;
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  ✅ 이삭이 버튼 (챗봇 토글)  */
+        .button-isac {
+            position: fixed;  /* 화면에 고정 */
+            bottom: 48px;      /* 화면 하단에서 20px 떨어진 위치 */
+            right: 20px;       /* 화면 오른쪽에서 20px 떨어진 위치 */
+            z-index: 1000;     /* 다른 요소 위에 표시되도록 설정 */      
+        }
+        .image-btn-isac {
+            width: 150px;
+            height: 110px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            
+        }
+        .image-btn-isac img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .image-btn-isac span {
+            font-size: 17px;
+            font-weight: 900;
+            color: #000;
+            font-family: '최애체';
+        }
+
+        .image-btn-isac:hover {
+            transform: scale(1.1);
+            transition: all 0.2s ease-in-out;
+            
+        }
+
+    /* ✅ 챗봇 팝업 전체 영역 */
+    .chatbot-container {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 70%;
+        height: 80%;
+        z-index: 1001;
+    }
+
+    /* ✅ 챗봇 팝업창 UI */
+    .chatbot-popup {
+        background: #fff;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /* ✅ 닫기 버튼 */
+    .close-chatbot {
+        align-self: flex-end;
+        background: none;
+        border: none;
+        font-size: 24px;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    /* ✅ iframe wrapper */
+    .iframe-wrapper {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+    }
+
+    .iframe-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* ✅ 팝업 열릴 때 스크롤 막기 */
+    .scroll-locked {
+        overflow: hidden;
+        height: 100%;
+    }

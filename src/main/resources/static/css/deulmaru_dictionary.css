@@ -1,0 +1,494 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+@font-face {
+    font-family: '클로버체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/YClover-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Paperlogy-8ExtraBold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: '최애체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/YOnepickTTF-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* 기본 스타일 */
+body {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+
+/* 배너 영역 */
+.banner-content {
+    background: #badfa337; /* 반투명 배경 */
+    padding: 4%;
+    border-radius: 0 0 40px 40px;
+    color: #11512e;
+}
+
+.banner-content h2 {
+    font-size: 33px;
+    font-weight: bold;
+    margin-bottom: 3%;
+}
+
+.banner-content p {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+
+
+.input-group {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;     /* 줄바꿈 방지 */
+    max-width: 50%;        /* 원하는 최대 너비 */
+    margin: 10px auto;
+    margin-top: 4%;
+    margin-bottom: 3%;
+}
+
+/* 검색창 스타일 */
+
+/* 드롭다운 버튼 스타일 */
+.input-group .btn {
+    background-color: transparent; 
+    color: rgb(56, 56, 56); 
+    font-size : 17px;
+    border: 4px solid #115114; 
+    border-right:transparent;
+    border-radius: 50px;
+}
+
+.input-group .form-control {
+	border: 4px solid #115114; 
+	border-right: transparent;
+	border-left: transparent;
+	font-size : 17px;
+}
+
+/* input이 focus 상태일 때 스타일 변경 */
+.input-group .form-control:focus {
+    outline: none !important; /* 기본 파란색 테두리 제거 */
+    border: 2px solid #115114 !important; /* 테두리 색 변경 */
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out;
+}    
+
+
+.input-group #searchTypeDropdown:hover,
+.input-group #searchTypeDropdown:active,
+.input-group #searchTypeDropdown:focus {
+	background-color: transparent !important;
+	color: inherit !important;
+	transition: all 0.2s ease-in-out;
+}
+
+
+.input-group .btn-primary {
+	width: 12%;
+    border: 4px solid #115114;
+    border-left: transparent !important;
+    padding: 10px 10px;
+    border-radius: 50px;
+    color: #878787;
+    background-color: transparent;
+}
+
+.input-group .btn-primary img {
+	width: 25px;
+	height: 26px;	
+}
+
+/* 모든 상태에서 효과 제거 */
+.input-group .btn:hover,
+.input-group .btn:focus,
+.input-group .btn:active,
+.input-group .btn-primary:hover,
+.input-group .btn-primary:focus,
+.input-group .btn-primary:active {
+    background-color: transparent !important;
+    color: rgb(56, 56, 56) !important;
+    border-color: #115114 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: none !important; /* 크기 변형 방지 */
+    transition: none !important; /* 부드러운 효과 제거 */
+}
+
+/* 검색 입력 필드 focus 효과 제거 */
+.input-group .form-control:focus {
+    outline: none !important;
+    border: 4px solid #115114 !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+
+#paging {
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 4%;
+	margin-bottom: 10%;
+}
+
+#paging .btn-secondary {
+	background-color: transparent;
+	color: black;
+	border: transparent;
+	font-size: 18px;
+}
+
+#paging .btn-secondary:hover {
+	font-weight: bold;
+	transition: all 0.2s ease-in-out;
+}
+
+
+
+
+
+/* ✅ 작물별 병해충(Dictionary) 카드 스타일 */
+#dictionary {
+    display: flex !important;
+    justify-content: center !important ; /* 전체 컨테이너 가운데 정렬 */
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0;
+    margin-bottom:10%;
+}
+
+
+/* ✅ 개별 카드 스타일 (한 줄에 3개씩) */
+#dictionary #resultTable .a {
+    display: block;
+    width: calc(33.33% - 16px); /* 3개씩 배치되도록 설정 */
+    max-width: 370px !important; /* 카드 크기 제한 */
+}
+
+#dictionary #resultTable a {
+	text-decoration:none;
+}
+
+#dictionary #resultTable .dictionary-card {
+    width: 85%; /* 부모 요소(a 태그)의 크기를 90% 차지 */
+    height: 100%; /* 내부 요소가 늘어날 경우 대응 */
+    display: flex;
+    justify-content: space-between;
+    border: 2px solid rgba(200, 200, 200, 0.5);
+    transition: all 0.3s ease-in-out;
+    background: white;
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.1);
+    padding: 0; /* 내부 여백 제거 */
+    box-sizing: border-box;
+    border-radius: 30px ; 
+    margin: 0 auto ; /* 추가: 카드가 부모 내에서 가운데 정렬 */
+}
+
+
+#dictionary #resultTable .card-body .insect-ttl {
+	font-size : 23px;
+	font-family: 'Paperlogy-8ExtraBold';
+}
+
+#dictionary #resultTable .card-body .crop-type {
+	font-size : 18px;
+	font-weight: 600;
+}
+
+#dictionary #resultTable .card-body .insect-ttl-eng,
+#dictionary #resultTable .card-body .insect-ttl-chn {
+	font-size : 16px;
+}
+
+
+/* 카드 이미지 크기 조정 */
+#dictionary #resultTable .dictionary-card img {
+    width: 100%; /* 부모 요소(dictionary-card)의 전체 너비 차지 */
+    height: 250px; /* 이미지 높이 고정 */
+	border-radius: 30px 30px 0 0;
+}
+
+
+
+/* ✅ 반응형 설정 (작은 화면일 때 한 줄에 2개, 모바일에서는 1개) */
+@media (max-width: 1024px) {
+    #dictionary #resultTable a {
+        width: calc(50% - 16px); /* 2개씩 배치 */
+    }
+}
+
+@media (max-width: 600px) {
+    #dictionary #resultTable a {
+        width: 100%; /* 모바일에서는 한 줄에 1개 */
+    }
+}
+
+
+
+/*상세보기 콘텐츠 영역*/
+#sickDetailModal .modal-dialog {
+	display: flex !important;
+	max-width: 70% !important;
+}
+
+#sickDetailModal .modal-title {
+	font-weight: bold;
+	font-size : 18px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-body {
+	padding: 5% !important;	
+}
+
+.modal-body h3 {
+	font-weight: bold;
+	margin-bottom: 3%;
+	color : #c46136;
+}
+
+.modal-body p {
+	font-size : 18px;
+	border-bottom: 1px solid #d5d5d56d;
+	padding-bottom: 16px;
+}
+
+#sickDetailModal .modal-body img {
+	max-width: 300px !important;
+	margin: 20px !important;
+	justify-content : center !important;
+}
+
+
+#imageModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#imageModal img {
+    max-width: 98vw;
+    max-height: 98vh;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+}
+
+
+
+
+/* ✅ 병해충 카드 스타일 */
+.dictionary-card {
+    width: 16rem; /* 병해충 카드는 QnA 카드보다 작게 설정 */
+    border: 2px solid rgba(200, 200, 200, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+.dictionary-card:hover {
+    background-color: rgba(250, 250, 250, 1);
+    box-shadow: 0 6px 9px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
+}
+
+/* ✅ 병해충 카드 내부 텍스트 정렬 */
+.dictionary-card .card-body {
+    text-align: center;
+}
+
+/* ✅ 병해충 카드 이미지 */
+.dictionary-card .card-img-top {
+    width: 100%;
+    height: auto;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid rgba(200, 200, 200, 0.5);
+}
+
+/* ✅ 병해충 카드 제목 */
+.insect-ttl {
+    font-size: 18px;
+    font-weight: bold;
+    color: #c46136;
+    text-align: left;
+}
+
+/* ✅ 병해충 카드 작물 타입 */
+.crop-type {
+    font-size: 14px;
+    color: #4f4f4f;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.card-text {
+    text-align: left;
+    color: #555;
+}
+
+.card-body p.insect-ttl-eng,
+.card-body p.insect-ttl-chn {
+    text-align: right;
+    color: #858585;
+    font-size: 13px;
+    margin: 0;
+}
+
+
+
+
+/* 페이지네이션 */
+.page-item .page-link {
+    color: #3b3b3b; /* 글자색 흰색 */
+    border: 1px solid #9f9f9fc8; /* 테두리 색상 */
+    transition: all 0.3s ease-in-out;
+}
+
+/* ✅ 페이지네이션 호버 효과 */
+.page-item .page-link:hover {
+    background-color: #b4b4b4a2; /* 더 어두운 색으로 변경 */
+    color: #3b3b3b;
+    transition: all 0.2s ease-in-out;
+}
+
+/* ✅ 현재 선택된 페이지 (활성화된 상태) */
+.page-item.active .page-link {
+    background-color: #1a1a1a;
+    border-color: #777;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* ✅ 비활성화된 버튼 (이전, 다음) */
+.page-item.disabled .page-link {
+    background-color: #444;
+    color: #888;
+    border-color: #666;
+    pointer-events: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  ✅ 이삭이 버튼 (챗봇 토글)  */
+        .button-isac {
+            position: fixed;  /* 화면에 고정 */
+            bottom: 00px;      /* 화면 하단에서 20px 떨어진 위치 */
+            right: 20px;       /* 화면 오른쪽에서 20px 떨어진 위치 */
+            z-index: 1000;     /* 다른 요소 위에 표시되도록 설정 */      
+        }
+        .image-btn-isac {
+            width: 150px;
+            height: 110px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            
+        }
+        .image-btn-isac img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .image-btn-isac span {
+            font-size: 17px;
+            font-weight: 900;
+            color: #000;
+            font-family: '최애체';
+        }
+
+        .image-btn-isac:hover {
+            transform: scale(1.1);
+            transition: all 0.2s ease-in-out;
+            
+        }
+
+    /* ✅ 챗봇 팝업 전체 영역 */
+    .chatbot-container {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 70%;
+        height: 80%;
+        z-index: 1001;
+    }
+
+    /* ✅ 챗봇 팝업창 UI */
+    .chatbot-popup {
+        background: #fff;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /* ✅ 닫기 버튼 */
+    .close-chatbot {
+        align-self: flex-end;
+        background: none;
+        border: none;
+        font-size: 24px;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    /* ✅ iframe wrapper */
+    .iframe-wrapper {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+    }
+
+    .iframe-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* ✅ 팝업 열릴 때 스크롤 막기 */
+    .scroll-locked {
+        overflow: hidden;
+        height: 100%;
+    }

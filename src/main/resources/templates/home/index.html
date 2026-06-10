@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>병해충 사전 페이지</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" th:href="@{/css/deulmaru_index.css}">
+</head>
+  <body>
+	<!-- 헤더 삽입 -->
+    <div th:replace="layout/header :: header"></div>
+    
+    
+    
+    <!-- 메인 화면 일러스트 -->
+	<div class="container-sm main-section">
+		 <div class="main-text">
+		 	<p>농촌의 일상에 도움이 되는 정보</p>
+		 	<p><span class="me-2">들마루</span>에서 찾아보세요</p>
+		 </div>
+		 
+		 <!-- img 영역 + 탭 버튼 -->
+		 <div class="main-image-wrapper">
+		    <img src="/image/GettyImages_cut_main_bg.jpg" alt="main image" class="main-image">
+		    
+		    <div class="tab-box">
+		      <p>종합 서비스</p>
+		      <p>들마루의 서비스를 확인하세요 </p>
+		      <ul class="tab-menu">
+		        <li>
+			      <a href="/supportApi/support">
+			        <img src="/image/icon_support-wh.png" alt="지원사업 정보">
+			        지원사업 <br> 정보
+			      </a>
+			    </li>
+			    <li>
+			      <a href="/auth/deulmaru_dictionary">
+			        <img src="/image/icons_dictionary-wh.png" alt="병해충 사전">
+			        병해충 <br> 사전
+			      </a>
+			    </li>
+			    <li>
+			      <a href="/auth/deulmaru_QnA">
+			        <img src="/image/icon_message_qna-wh.png" alt="병해충 상담">
+			        병해충 <br> 상담
+			      </a>
+			    </li>
+			    <li>
+			      <a href="/auth/deulmaru_Diagnosis">
+			        <img src="/image/icon_ai_laptop-wh.png" alt="AI 판별">
+			        AI <br> 판별
+			      </a>
+			    </li>
+		      </ul>
+		    </div>
+		  </div>
+	</div>
+   		
+    
+    
+    
+    
+    <!-- 맞춤 지원 보조금 슬라이드 swiper 탭 -->
+	<div class="container-sm">
+	  <div class="main-benefit">
+	    <div class="main-benefit-ttl text-left">
+	      <h4>나를 위한 추천 지원 사업</h4>
+	      <p>지역별, 연령별 나에게 맞는 지원 사업 정보를 확인하세요</p>
+	    </div>
+	    
+          <!-- 동적 콘텐츠가 삽입될 영역 -->
+          <div class="benefit-content hidden" id="benefit">
+            <div class="container my-4 mt-5">
+              <!-- 추천 영역 -->
+              <section id="recommendationSection">
+                <ul class="benefit-list d-flex flex-wrap">
+                  <!-- 동적 카드와 추천 기준 헤더가 이곳에 삽입됩니다 -->
+                </ul>
+              
+                <!-- plant-gif 영역 (디자인 고정 요소) -->
+                <div class="plant-gif">
+                <img th:src="@{/image/지원금컨테이너.gif}" alt="지원금 컨테이너">
+              </div>
+              </section>
+            </div>
+
+          </div>
+          
+          <!-- 자세히 보기 버튼 -->
+          <div class="more-link">
+            <a href="/supportApi/support">자세히 보기 →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+        <!-- 3. 메인 서비스 기능 탭 -->
+    <div class="main-svc container-sm mt-4">
+        <div class="main-svc-ttl text-center mb-2">
+            <h4>들마루 서비스</h4>
+        </div>
+        
+        <div class="main-svc-box d-flex align-items-center mb-5">
+            <a href="/auth/deulmaru_Diagnosis">
+                <div class="svc-box-1 svc-box">
+                    <p class="svc-box-ttl">AI 병해충 진단</p>
+                    <p class="svc-box-content">작물의 병해충을 진단할 수 있습니다</p>
+                    <img src="/image/freepik_diag_icon.png" alt="img">
+                </div>
+            </a>
+            <a href="/auth/deulmaru_dictionary">
+                <div class="svc-box-2 svc-box">
+                    <p class="svc-box-ttl">병해충 사전</p>
+                    <p class="svc-box-content">병해충에 관한 궁금증을 해결하세요</p>
+                    <img src="/image/freepik_const_icon.png" alt="img">
+                </div>  
+            </a>
+            <a href="/supportApi/support">
+                <div class="svc-box-3 svc-box">
+                    <p class="svc-box-ttl">지원금 정보</p>
+                    <p class="svc-box-content">농촌정착 지원금 정보를 확인하세요</p>
+                    <img src="/image/freepik_benefit_icon.png" alt="img">
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    
+    
+    <!-- ✅ 이삭이 버튼 (챗봇 토글) -->
+     <div class="button-isac mb-5">
+        <button class="image-btn-isac" onclick="toggleChatbot()">
+            <span>AI 이삭이</span>
+            <img src="/image/이삭3-removebg-preview.png" alt="버튼 이미지">
+        </button>
+    </div>
+
+   <!-- ✅ 챗봇 팝업 UI -->
+	<div id="chatbot" class="chatbot-container">
+	    <div class="chatbot-popup">
+	        <button class="close-chatbot" onclick="toggleChatbot()">×</button>
+	        <div class="iframe-wrapper">
+	            <iframe src="https://www.nongsaro.go.kr/chatbot/aichatbot.html" width="100%" height="100%" frameborder="0"></iframe>
+	        </div>
+	    </div>
+	</div>
+
+
+    <!-- 스크립트 로드 -->
+	<script>
+	function toggleChatbot() {
+	    const chatbot = document.getElementById('chatbot');
+	    const isOpen = chatbot.style.display === 'block';
+	
+	    if (isOpen) {
+	        chatbot.style.display = 'none';
+	        document.documentElement.classList.remove('scroll-locked');
+	        document.body.classList.remove('scroll-locked');
+	    } else {
+	        chatbot.style.display = 'block';
+	        document.documentElement.classList.add('scroll-locked');
+	        document.body.classList.add('scroll-locked');
+	    }
+	}
+	</script>
+    
+    <!-- Thymeleaf를 통해 로그인 여부 및 사용자 정보 전달 -->
+    <script th:inline="javascript">
+      var isLoggedIn = /*[[${session.user != null}]]*/ false;
+      // 로그인한 경우 사용자 정보를 가져오고, 로그인하지 않았다면 기본값 사용
+      var userGender = /*[[${session.user != null ? (session.user.userGender.name() == 'M' ? '남성' : '여성') : '남성'}]]*/ "남성";
+      var userBirthYear = /*[[${session.user != null ? session.user.userBirth.year : 2000}]]*/ 2000;
+      var currentYear = new Date().getFullYear();
+      var userAge = currentYear - userBirthYear;
+      var minAge = Math.floor(userAge / 10) * 10;
+      var userAgeGroupText = minAge + "대";
+      var userRegion = /*[[${session.user != null ? session.user.userLocate : '전국'}]]*/ "전국";
+    </script>
+    
+    <script>
+      // 각 추천 타입에 따른 타이틀 생성
+      var recommendationTitles = {
+        overall: userAgeGroupText + " " + userGender + " " + userRegion + " 거주자를 위한 추천",
+        ageGender: userAgeGroupText + " " + userGender + "을 위한 추천",
+        region: userRegion + " 거주자를 위한 추천"
+      };
+      
+      // 헬퍼 함수: 지원금의 진행 상태 계산
+      function getStatus(applEdDt) {
+          if (!applEdDt) return "정보 없음";
+          var today = new Date();
+          var endDate = new Date(applEdDt);
+          if (isNaN(endDate.getTime())) return "정보 없음";
+          return today <= endDate ? "진행중" : "마감";
+      }
+      
+      // 카드 생성 함수: 외부 API 응답의 지원금 상세 정보(grant)를 기반으로 카드 HTML 생성
+      // 추가로 recommendationType (예: "ageGender")를 받아 해당 타이틀을 함께 표시
+      function createCard(grant, recommendationType) {
+          var status = getStatus(grant.applEdDt);
+          // 추천 기준 타이틀 (추천 영역 헤더처럼 카드 위에 소제목으로 표시)
+          var criteriaTitle = "";
+          if (recommendationType && recommendationTitles[recommendationType]) {
+              criteriaTitle = "<h4 class='recommendation-criteria'>" + recommendationTitles[recommendationType] + "</h4>";
+          }
+          return `
+            <li class="card benefit-card">
+              <div class="card-body">
+                ${criteriaTitle}
+                <h3 class="card-title">${grant.title || "제목 없음"}</h3>
+                <p class="card-text"><strong>대상 :</strong> ${grant.eduTarget || "대상 정보 없음"}</p>
+                <p class="date-range"><strong>신청기간 :</strong> ${grant.applStDt || "기간 없음"} ~ ${grant.applEdDt || "기간 없음"}</p>
+                <p class="card-ongoing">
+                  <strong>진행 상태 :</strong>
+                  <span class="${status === '진행중' ? 'ongoing' : 'closed'}">${status}</span>
+                </p>
+                <button class="show-more" onclick="window.location.href='/supportApi/detail/${grant.seq}'">상세보기</button>
+              </div>
+            </li>
+          `;
+      }
+      
+      // 함수: 외부 공공 API 호출하여 지원금 상세 정보를 가져옴
+      function fetchGrantDetail(grantId, recommendationType, callback) {
+          $.ajax({
+              url: "https://apis.data.go.kr/1390000/youngV2/policyViewV2",
+              type: "GET",
+              dataType: "json",
+              data: {
+                  typeDv: "json",
+                  serviceKey: "REDACTED_SUPPORT_API_SERVICE_KEY",
+                  seq: grantId
+              },
+              success: function(response) {
+                  if (response && response.policy_result) {
+                      callback(response.policy_result, recommendationType);
+                  } else {
+                      console.error("지원금 상세 정보가 비어있습니다. (grantId: " + grantId + ")");
+                  }
+              },
+              error: function() {
+                  console.error("지원금 상세 정보를 불러오지 못했습니다. (grantId: " + grantId + ")");
+              }
+          });
+      }
+      
+      // 로그인하지 않은 경우: 전체 추천 Top3 호출
+      function loadOverallRecommendations() {
+          var $ul = $("#recommendationSection ul.benefit-list");
+          $("#recommendationTitle").text("전체 추천 지원금 Top3");
+          $ul.html("<p>추천 지원금을 불러오는 중...</p>");
+          
+          $.ajax({
+              url: "/api/recommendation/overall",
+              type: "GET",
+              dataType: "json",
+              success: function(recommendations) {
+                  if (!recommendations || recommendations.length === 0) {
+                      $ul.html("<p>추천 지원금이 없습니다.</p>");
+                      return;
+                  }
+                  $ul.empty();
+                  recommendations.forEach(function(item) {
+                      fetchGrantDetail(item.grantId, null, function(grant) {
+                          $ul.append(createCard(grant, null));
+                      });
+                  });
+              },
+              error: function() {
+                  $ul.html("<p>추천 지원금을 불러오는 데 실패했습니다.</p>");
+              }
+          });
+      }
+      
+      // 로그인한 경우: 개인 맞춤 추천을 호출. API는 Map 형태로 { overall: {...}, ageGender: {...}, region: {...} } 반환.
+      function loadPersonalRecommendations() {
+          var $ul = $("#recommendationSection ul.benefit-list");
+          $ul.html("<p>추천 지원금을 불러오는 중...</p>");
+          
+          $.ajax({
+              url: "/api/recommendation/personal",
+              type: "GET",
+              dataType: "json",
+              success: function(recommendations) {
+                  if (!recommendations || Object.keys(recommendations).length === 0) {
+                      $ul.html("<p>추천 지원금이 없습니다.</p>");
+                      return;
+                  }
+                  $ul.empty();
+                  // 각 추천 영역을 처리합니다.
+                  // keys: overall, ageGender, region
+                  ["overall", "ageGender", "region"].forEach(function(key) {
+                      var rec = recommendations[key];
+                      if (rec && rec.grantId) {
+                          fetchGrantDetail(rec.grantId, key, function(grant, recType) {
+                              $ul.append(createCard(grant, recType));
+                          });
+                      }
+                  });
+              },
+              error: function() {
+                  $ul.html("<p>추천 지원금을 불러오는 데 실패했습니다.</p>");
+              }
+          });
+      }
+      
+      // 문서 로드 시, 로그인 여부에 따라 추천 API 호출
+      $(document).ready(function() {
+          if (isLoggedIn) {
+              loadPersonalRecommendations();
+          } else {
+              loadOverallRecommendations();
+          }
+      });
+    </script>
+    
+   	<script>
+         // AI 챗봇 토글 JS 함수
+         function toggleChatbot() {
+        var chatbot = document.getElementById("chatbot");
+
+        // 챗봇 창이 열려있으면 숨기고, 닫혀있으면 표시
+        if (chatbot.style.display === "none" || chatbot.style.display === "") {
+            chatbot.style.display = "block";
+        } else {
+            chatbot.style.display = "none";
+        }
+    }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/deulmaru_alram.js}"></script>
+    <div th:replace="layout/Footer :: Footer"></div>
+    
+  </body>
+</html>

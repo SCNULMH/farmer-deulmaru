@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>지원금 상세 정보</title>
+	
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	<link rel="stylesheet" th:href="@{/css/support-detail.css}">
+</head>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    var serviceKey = /*[[${serviceKey}]]*/ "";
+/*]]>*/
+</script>
+
+
+
+
+<body>
+
+	<!-- 헤더 삽입 -->
+	<div th:replace="layout/header :: header"></div>
+	
+	<div class="container-sm text-left">
+		<div class="support-detail">
+		    <h1 id="grantTitle">지원금 상세 정보</h1>
+		    <p class="sub-info">
+		        <span id="grantLocation" class="status">지역 정보 없음</span> | 
+		        <span id="grantStatus" class="status"></span>
+		    </p>
+		
+		    <table>
+		        <tr>
+		            <th>신청기간</th>
+		            <td id="grantPeriod"></td>
+		        </tr>
+		        <tr>
+		            <th>주관기관</th>
+		            <td id="grantAgency"></td>
+		        </tr>
+		        <tr>
+		            <th>대상</th>
+		            <td id="grantTarget"></td>
+		        </tr>
+		        <tr>
+		            <th>담당부서</th>
+		            <td id="grantDept"></td>
+		        </tr>
+				<tr>
+			    	<th>요약내용</th>
+			    	<td id="grantContent"></td>
+				</tr>
+		    </table>
+		    <div class="btn-container">
+		        <a href="/supportApi/support" class="btn">목록으로</a>
+		        <a id="infoUrlBtn" href="#" class="btn" target="_blank" style="display: none;">공문보기</a>
+		        <button id="interestBtn" class="btn">관심 등록</button>
+		    </div>
+		</div>	    
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+    $(document).ready(function() {
+        let seq = "[[${seq}]]";  // Thymeleaf에서 전달된 seq 값
+        console.log("📌 상세 페이지 seq 값:", seq);
+
+        $.ajax({
+        	url: "https://apis.data.go.kr/1390000/youngV2/policyViewV2?typeDv=json&serviceKey=" + serviceKey + "&seq=" + seq,
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log("📌 상세 API 응답 데이터:", response);
+
+                let grant = response.policy_result;
+
+                $("#grantTitle").text(grant.title || "제목 없음");
+                $("#grantPeriod").text((grant.applStDt || "기간 없음") + " ~ " + (grant.applEdDt || "기간 없음"));
+                $("#grantAgency").text(grant.chargeAgency || "기관 정보 없음");
+                $("#grantTarget").text(grant.eduTarget || "대상 정보 없음");
+                $("#grantDept").text(grant.chargeDept || "담당 부서 정보 없음");
+                
+            	// 내용 표시 (개행 문자 \n → <br> 태그 변환)
+                let formattedContent = (grant.contents || "내용 없음").replace(/\n/g, "<br>");
+                $("#grantContent").html(formattedContent);
+
+                // 지역 정보 추가 (null 또는 빈 값이면 "전국"으로 설정)
+                let locationText = grant.area2Nm && grant.area2Nm.trim() ? grant.area2Nm : "전국";
+                $("#grantLocation").text(locationText);
+
+                // 현재 상태 (진행 중 / 마감) 계산
+                let today = new Date();
+                let endDate = new Date(grant.applEdDt);
+                if (!isNaN(endDate.getTime()) && today <= endDate) {
+                    $("#grantStatus").text("진행 중").addClass("ongoing");
+                } else {
+                    $("#grantStatus").text("마감").addClass("closed");
+                }
+
+                // 공문보기 버튼 설정 (infoUrl이 있을 경우)
+                if (grant.infoUrl && grant.infoUrl.trim()) {
+                    $("#infoUrlBtn").attr("href", grant.infoUrl).show();
+                }
+            },
+            error: function() {
+                alert("상세 정보를 불러오는 중 오류가 발생했습니다.");
+            }
+        });
+    });
+    </script>
+    
+	<script>
+	$(document).ready(function() {
+	    let seq = "[[${seq}]]";  // 지원금 ID
+	    let userId = "[[${session.user?.userId}]]";  // 세션에서 로그인한 유저 정보
+	
+	    if (!userId || userId === "null") {
+	        alert("로그인이 필요합니다.");
+			window.location.href = "/auth/deulmaru_Login";
+	        $("#interestBtn").text("로그인 필요").addClass("disabled").prop("disabled", true);
+	        return;
+	    }
+	
+	    // ✅ 페이지 로드 시, 관심 등록 여부 확인
+	    $.ajax({
+	        url: "/api/interest/check",
+	        type: "GET",
+	        data: { grantId: seq },
+	        success: function(response) {
+	            if (response.exists) {
+	                // 이미 등록되어 있다면, 취소 버튼으로 표시
+	                $("#interestBtn").text("관심 취소").removeClass("disabled").prop("disabled", false);
+	            }
+	        },
+	        error: function() {
+	            console.log("관심 등록 여부 확인 실패");
+	        }
+	    });
+	
+	    // ✅ 관심 등록 / 취소 버튼 클릭 이벤트
+	    $("#interestBtn").click(function() {
+	        let btn = $(this);
+	        let applEdDt = $("#grantPeriod").text().split("~")[1].trim(); // 마감일
+	        let title = $("#grantTitle").text();
+	        // 버튼 텍스트에 따라 등록 또는 취소 처리
+	        if (btn.text() === "관심 등록") {
+	            // 등록 처리
+	            $.ajax({
+	                url: "/api/interest/add",
+	                type: "POST",
+	                data: { grantId: seq, applEdDt: applEdDt, title: title },
+	                success: function(response) {
+	                    alert(response);
+	                    btn.text("관심 취소");
+	                },
+	                error: function(xhr) {
+	                    alert("관심 등록 실패! (" + xhr.responseText + ")");
+	                }
+	            });
+	        } else if (btn.text() === "관심 취소") {
+	            // 취소 처리
+	            $.ajax({
+	                url: "/api/interest/cancel",
+	                type: "DELETE",
+	                data: { grantId: seq },
+	                success: function(response) {
+	                    alert(response);
+	                    btn.text("관심 등록");
+	                },
+	                error: function(xhr) {
+	                    alert("관심 취소 실패! (" + xhr.responseText + ")");
+	                }
+	            });
+	        }
+	    });
+	});
+	</script>
+
+	<script>
+    // ✅ 페이지 로드 시, 관심 등록 여부 확인
+    $.ajax({
+        url: "/api/interest/check",
+        type: "GET",
+        data: { grantId: seq },
+        success: function(response) {
+            if (response.exists) {
+                // 이미 등록되어 있다면, 취소 버튼으로 표시
+                $("#interestBtn").text("관심 취소").removeClass("disabled").prop("disabled", false);
+            }
+        },
+        error: function() {
+            console.log("관심 등록 여부 확인 실패");
+        }
+    });
+
+    // ✅ 관심 등록 / 취소 버튼 클릭 이벤트
+    $("#interestBtn").click(function() {
+        let btn = $(this);
+        let applEdDt = $("#grantPeriod").text().split("~")[1].trim(); // 마감일
+        let title = $("#grantTitle").text();
+        
+        // 버튼 텍스트에 따라 등록 또는 취소 처리
+        if (btn.text() === "관심 등록") {
+            // 등록 처리
+            $.ajax({
+                url: "/api/interest/add",
+                type: "POST",
+                data: { grantId: seq, applEdDt: applEdDt, title: title },
+                success: function(response) {
+                    alert(response);
+                    btn.text("관심 취소");
+                },
+                error: function(xhr) {
+                    alert("관심 등록 실패! (" + xhr.responseText + ")");
+                }
+            });
+        } else if (btn.text() === "관심 취소") {
+            // 취소 처리
+            $.ajax({
+                url: "/api/interest/cancel",
+                type: "DELETE",
+                data: { grantId: seq },
+                success: function(response) {
+                    alert(response);
+                    btn.text("관심 등록");
+                },
+                error: function(xhr) {
+                    alert("관심 취소 실패! (" + xhr.responseText + ")");
+                }
+            });
+        }
+    });
+</script>
+<script th:src="@{/js/deulmaru_alram.js}"></script>
+
+<div th:replace="layout/Footer :: Footer"></div>
+
+</body>
+</html>

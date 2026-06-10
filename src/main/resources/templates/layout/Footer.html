@@ -1,0 +1,95 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="Footer">
+        <style>
+            /* 푸터 스타일 */
+            .site-footer {
+                background-color: #497c49; 
+                color: rgba(255, 255, 255, 0.867); /* 텍스트 색상 */
+                padding: 2%;
+                padding-bottom: 10px;
+                text-align: left;
+                border-radius: 110px 0 0 0;
+            }
+
+            /* 푸터 컨테이너 */
+            .footer-container {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* 왼쪽 정렬 */
+                padding-left: 4%;
+            }
+
+            /* 이미지와 h1을 나란히 정렬 */
+            .footer-header {
+                display: flex;
+                align-items: center; /* 세로 중앙 정렬 */
+                gap: 10px; /* 이미지와 텍스트 사이 간격 */
+                margin-bottom: 10px;
+            }
+
+            /* 로고 이미지 */
+            .footer-header img {
+                width: 50px;
+                height: 50px;
+            }
+
+            /* 제목 스타일 */
+            .footer-header h1 {
+                font-weight: bold;
+                font-size: 28px;
+                margin: 0;
+            }
+
+            /* 푸터 내용 */
+            .footer-content p {
+                margin-bottom: 7px;
+                font-size: 18px;
+            }
+
+            /* 저작권 텍스트 */
+            .footer-text {
+                margin-top: 10px;
+                font-size: 17px;
+                opacity: 0.8; /* 살짝 투명하게 */
+            }
+
+            /* 푸터 네비게이션 */
+            .footer-nav {
+                display: flex;
+                gap: 15px; /* 링크 간 간격 */
+            }
+
+            /* 푸터 네비게이션 링크 */
+            .footer-nav a {
+                color: white;
+                text-decoration: none;
+                font-size: 14px;
+                transition: color 0.3s ease-in-out;
+            }
+
+            /* 푸터 네비게이션 링크 호버 효과 */
+            .footer-nav a:hover {
+                color: #1abc9c; /* 연한 민트색 */
+            }
+
+        </style>
+
+
+
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-header d-flex align-text-left">
+                	<img th:src="@{/image/들마루로고.png}" alt="들마루로고">
+                    <h1>들마루</h1>
+                </div>
+
+                <div class="footer-content">
+                    <p>(57938) 전남 순천시 중앙로 260 </p>
+                    <p>들마루 종합상담 : 061-754-3501</p>
+                </div>
+
+                <p class="footer-text">COPYRIGHT &copy; 2025 들마루. All Rights Reserved.</p>
+            </div>
+        </footer>
+
+    </div>

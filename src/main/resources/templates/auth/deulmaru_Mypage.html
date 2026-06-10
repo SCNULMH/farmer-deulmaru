@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>들마루 마이페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/deulmaru_MyPage.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI CSS -->
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+</head>
+<body>
+    <!-- 헤더 삽입 -->
+    <div th:replace="layout/header :: header"></div>
+
+    <!-- 병해충 조회 배너-->
+    <div class="container-sm text-center w-50">
+        <div class="banner-content text-center">
+            <h2>마이 페이지</h2>
+            <p>회원 정보를 수정하고 활동 히스토리를 조회하세요</p>
+        </div>
+    </div>
+
+    <!-- 메뉴 탭 -->
+	<div class="container-sm tab-menu">
+	    <button class="tab-button" data-tab="benefitTab" onclick="showTab('benefitTab')">지원금</button> 
+	    <button class="tab-button" data-tab="CalendarTab" onclick="showTab('CalendarTab')">농작업 일정</button> 
+	    <button class="tab-button" data-tab="diagHistoryTab" onclick="showTab('diagHistoryTab')">AI 진단 이력</button> 
+	    <button class="tab-button active" data-tab="profileTab" onclick="showTab('profileTab')">회원정보 수정</button> 
+	</div>
+
+    <!-- 탭 콘텐츠 -->
+    <div class="tab-content-container container-sm">
+        <!-- 내 프로필 탭 -->
+        <div class="tab-content" id="profileTab"> 
+            <!-- 업데이트 폼 -->
+            <form action="/mypage/update-profile" method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">닉네임</span>
+                    <input type="text" class="form-control" th:value="${session.user.userNickname}" name="userNickname" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">이메일</span>
+                    <input type="text" class="form-control" th:value="${session.user.userEmail}" disabled>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">아이디</span>
+                    <input type="text" class="form-control" th:value="${session.user.userId}" disabled>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">비밀번호</span>
+                    <input type="password" class="form-control" name="userPw" placeholder="변경할 비밀번호 입력">
+                </div>
+
+				<div class="input-group mb-3">
+				    <span class="input-group-text">주소지</span>
+				    <select class="form-select" name="userLocate">
+				        <option th:selected="${session.user.userLocate == '서울'}" value="서울">서울</option>
+				        <option th:selected="${session.user.userLocate == '부산'}" value="부산">부산</option>
+				        <option th:selected="${session.user.userLocate == '대구'}" value="대구">대구</option>
+				        <option th:selected="${session.user.userLocate == '인천'}" value="인천">인천</option>
+				        <option th:selected="${session.user.userLocate == '광주'}" value="광주">광주</option>
+				        <option th:selected="${session.user.userLocate == '대전'}" value="대전">대전</option>
+				        <option th:selected="${session.user.userLocate == '울산'}" value="울산">울산</option>
+				        <option th:selected="${session.user.userLocate == '세종'}" value="세종">세종</option>
+				        <option th:selected="${session.user.userLocate == '경기'}" value="경기">경기</option>
+				        <option th:selected="${session.user.userLocate == '강원'}" value="강원">강원</option>
+				        <option th:selected="${session.user.userLocate == '충북'}" value="충북">충북</option>
+				        <option th:selected="${session.user.userLocate == '충남'}" value="충남">충남</option>
+				        <option th:selected="${session.user.userLocate == '전북'}" value="전북">전북</option>
+				        <option th:selected="${session.user.userLocate == '전남'}" value="전남">전남</option>
+				        <option th:selected="${session.user.userLocate == '경북'}" value="경북">경북</option>
+				        <option th:selected="${session.user.userLocate == '경남'}" value="경남">경남</option>
+				        <option th:selected="${session.user.userLocate == '제주'}" value="제주">제주</option>
+				    </select>
+				</div>
+				
+                <div class="button-group text-end mt-4">
+                    <button type="button" class="btn btn-outline-secondary me-2">취소</button>
+                    <button class="btn btn-primary" type="submit">수정</button>
+                </div>
+            </form>
+
+            <!-- 카카오 계정이 연동된 경우 -->
+            <div th:if="${session.user != null and session.user.kakaoId != null}" class="mt-4">
+                <p class="kakao-connect">  현재 카카오 계정과 연동되어 있습니다.</p>
+                <form action="/auth/kakao/unlink" method="post">
+                    <button type="submit" class="btn-kakao">카카오 연동 해제</button>
+                </form>
+            </div>
+
+            <!-- 카카오 계정이 연동되지 않은 경우 -->
+            <div th:if="${session.user != null and session.user.kakaoId == null}" class="mt-4">
+                <p>카카오 계정이 연동되지 않았습니다.</p>
+                <a href="/auth/kakao/link" class="btn-kakao">카카오 계정 연동하기</a>
+            </div>
+        </div> <!-- 여기서 내 프로필 탭을 닫아야 합니다. -->
+
+        <!-- AI 진단 이력 탭 -->
+		<!-- AI 진단 이력 탭 -->
+		<div class="tab-content hidden" id="diagHistoryTab">
+		    <table class="table table-bordered text-left">
+		        <thead class="table-dark">
+		            <tr>
+		                <th>진단 날짜</th>
+		                <th>작물명</th>
+		                <th>병해충 명</th>
+		                <th>정확도</th>
+		                <th>진단 이미지</th>
+						<th>진단 이력 삭제</th>
+		            </tr>
+		        </thead>
+				<tbody>
+				    <tr th:if="${#lists.isEmpty(identiHistory)}">
+				        <td colspan="5">진단 이력이 없습니다.</td>
+				    </tr>
+				    <tr th:each="history : ${identiHistory}">
+				        <td th:text="${#temporals.format(history.identificationTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+				        <td th:text="${history.cropName}"></td>
+				        <td th:text="${history.diseaseName}"></td>
+				        <td th:text="${history.confidenceScore + '%'}"></td>
+						<td>
+						    <img th:src="@{'/uploads/' + ${#strings.substring(history.imagePath, history.imagePath.lastIndexOf('/') + 1)}}"
+						         alt="진단 이미지" class="img-thumbnail"
+						         style="width:100px; height:auto; cursor:pointer;"
+						         onclick="openImageModal(this.src)">
+						</td>
+				    </tr>
+				</tbody>
+
+
+		    </table>
+		</div>
+		
+		<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered modal-lg">
+		    <div class="modal-content">
+		      <div class="modal-body text-center">
+		        <img id="modalImage" src="" alt="진단 이미지 확대" class="img-fluid" style="max-height: 600px;">
+		      </div>
+		    </div>
+		  </div>
+		</div> 
+
+		<script>
+
+		</script>
+
+
+        <!-- 지원금 탭 -->
+        <div class="tab-content hidden" id="benefitTab">
+            <ul class="benefit-list  d-flex flex-wrap">
+                <li class="card benefit-card">
+                    <div class="card-body">
+                        <h3 class="card-title">귀농귀촌정책 | 농촌 정책 지원</h3>
+                        <p class="card-text"><strong>대상 :</strong> 김포주민</p>
+                        <p class="date-range"><strong>신청기간 :</strong> 2025.02.11 ~ 2025.05.10</p>
+                        <p class="card-ongoing"><strong>진행 상태 :</strong> 마감</p>
+                        <button class="show-more">상세보기</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+	<!-- 나의 작물 재배 일정 -->
+	<div class="tab-content hidden" id="CalendarTab">
+	  <div class="container-sm text-left" id="cropScheduleArea">
+	    
+	    
+	    <div class="agri-calendar">
+	      <h3>📆 나의 농작업 일정 📆</h3>
+	      <!-- API 결과로 받은 HTML 템플릿을 삽입할 영역 -->
+	      <div id="cropScheduleContent">
+	        <p>재배작물을 선택하면 일정이 표시됩니다.</p>
+	      </div>
+	    </div>
+
+	    <!-- 재배작물 선택 영역 -->
+	    <div class="input-group mt-5 mb-3">
+	      <span class="input-group-text">재배작물</span>
+	      <input type="text" id="cropInput" class="form-control" placeholder="작물명을 입력하세요" th:value="${session.user.userCrop}">
+	      <input type="hidden" name="userCrop" id="userCrop" th:value="${session.user.userCrop}">
+	    </div>
+	    
+	  </div>
+	</div>
+    </div>
+	
+	
+	
+	
+	
+	
+	 <!-- ✅ 이삭이 버튼 (챗봇 토글) -->
+     <div class="button-isac mb-5">
+        <button class="image-btn-isac" onclick="toggleChatbot()">
+            <span>AI 이삭이</span>
+            <img src="/image/이삭3-removebg-preview.png" alt="버튼 이미지">
+        </button>
+    </div>
+
+    <!-- ✅ 챗봇 팝업 UI -->
+    <div id="chatbot" class="chatbot-container">ㅈ
+        <div class="chatbot-popup">
+            <button class="close-chatbot" onclick="toggleChatbot()">×</button>
+            <iframe src="https://www.nongsaro.go.kr/chatbot/aichatbot.html" width="100%" height="500px" frameborder="0"></iframe>
+        </div>
+    </div>
+    
+    
+    
+    
+    <script>
+         // AI 챗봇 토글 JS 함수
+         function toggleChatbot() {
+        var chatbot = document.getElementById("chatbot");
+
+        // 챗봇 창이 열려있으면 숨기고, 닫혀있으면 표시
+        if (chatbot.style.display === "none" || chatbot.style.display === "") {
+            chatbot.style.display = "block";
+        } else {
+            chatbot.style.display = "none";
+        }
+    }
+    </script>
+    
+    
+    
+
+    <script src="/js/deulmaru_const.js"></script>
+    <script src="/js/deulmaru_mypage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+	
+    <script th:src="@{/js/deulmaru_alram.js}"></script>
+    <div th:replace="layout/Footer :: Footer"></div>
+</body>
+</html>

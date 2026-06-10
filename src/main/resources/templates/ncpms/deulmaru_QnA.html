@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>병해충 QnA 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/deulmaru_QnA.css}">
+  </head>
+  <body>
+ 
+    <div th:replace="layout/header :: header"></div>
+    
+    
+    <!-- 병해충 조회 배너 -->
+    <div class="container-sm text-center w-50">
+      <div class="banner-content text-center">
+        <h2>병해충 상담</h2>
+        <p>병해충 관련 상담 내용을 조회하세요</p>
+      </div>
+    </div>
+    
+    <!-- 검색창 영역 (상담) -->
+    <div class="container-sm">
+      <div class="input-group">
+        <!-- 드롭다운 버튼 (검색 기준 선택 – 제목 또는 내용, 추후 필요 시 활용) -->
+        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          제목+내용
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li><a class="dropdown-item" href="#" data-value="dgnssReqSj">제목</a></li>
+          <li><a class="dropdown-item" href="#" data-value="cropName">작물명</a></li>
+        </ul>
+        <!-- 상담 검색 입력 -->
+        <input type="text" id="consultQuery" class="form-control" placeholder="검색어를 입력하세요">
+        <button class="btn btn-primary" onclick="fetchConsultData()"><img src="/image/input_icon.png"></button>
+      </div>
+    </div>
+    
+    <!-- 상담 결과 테이블 -->
+    <div class="container-sm tab-content" id="qna">
+      <table id="consultResultTable" class="table">
+        <thead>
+          <tr>
+            <th>제목</th>
+            <th>상담 ID</th>
+            <th>등록일</th>
+            <th>상세보기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 상담 결과가 동적으로 추가됩니다 -->
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- 페이지네이션 -->
+    <div class="container-sm" id="paging">
+      <span id="pageInfo"></span>
+      <button id="prevBtn" class="btn btn-secondary" onclick="changePage(-1)">◀ 이전</button>
+      <div id="pageNumbers"></div>
+      <button id="nextBtn" class="btn btn-secondary" onclick="changePage(1)">다음 ▶</button>
+    </div>
+    
+    <!-- 상담 상세보기 모달 -->
+    <div id="consultDetailModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="consultDetailContainer"></div>
+      </div>
+    </div>
+    
+    <!-- 모달 -->
+	<div id="imageModal" class="modal">
+	    <div class="modal-content">
+	        <span class="close" onclick="closeImageModal()">&times;</span>
+	        <img class="modal-image" id="modalImage" src="" alt="Image">
+	    </div>
+	</div>
+    
+    
+	
+	
+	<!-- ✅ 이삭이 버튼 (챗봇 토글) -->
+	<div class="button-isac">
+	    <button class="image-btn-isac" onclick="toggleChatbot()">
+	        <span>AI 이삭이</span>
+	        <img src="/image/이삭3-removebg-preview.png" alt="버튼 이미지">
+	    </button>
+	</div>
+
+	<!-- ✅ 챗봇 팝업 UI -->
+	<div id="chatbot" class="chatbot-container">
+	    <div class="chatbot-popup">
+	        <button class="close-chatbot" onclick="toggleChatbot()">×</button>
+	        <div class="iframe-wrapper">
+	            <iframe src="https://www.nongsaro.go.kr/chatbot/aichatbot.html" width="100%" height="100%" frameborder="0"></iframe>
+	        </div>
+	    </div>
+	</div>
+
+
+    <!-- 스크립트 로드 -->
+	<script>
+	function toggleChatbot() {
+	    const chatbot = document.getElementById('chatbot');
+	    const isOpen = chatbot.style.display === 'block';
+	
+	    if (isOpen) {
+	        chatbot.style.display = 'none';
+	        document.documentElement.classList.remove('scroll-locked');
+	        document.body.classList.remove('scroll-locked');
+	    } else {
+	        chatbot.style.display = 'block';
+	        document.documentElement.classList.add('scroll-locked');
+	        document.body.classList.add('scroll-locked');
+	    }
+	}
+	</script>
+    
+
+    
+    <!-- 스크립트 로드 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/deulmaru_const.js"></script>
+    <script src="/js/deulmaru_QNA.js"></script>
+    <script th:src="@{/js/deulmaru_alram.js}"></script>
+    <div th:replace="layout/Footer :: Footer"></div>
+  </body>
+</html>

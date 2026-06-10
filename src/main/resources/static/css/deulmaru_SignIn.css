@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+
+
+.navbar{
+    background-color: #fff;
+}
+
+.navbar-brand {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 25px;
+    font-style: normal;
+    color: #497c60;
+}
+
+
+.navbar-nav .nav-link {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #3e3e3e; /* 파란색 */
+    font-size: 15px;
+}
+.navbar-nav .nav-link {
+    transition: all 0.2s ease-in-out;
+}
+
+.signIn_txt h1{
+    font-weight: 500;
+    font-size: 25px;
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    margin: 2%;
+}
+
+.userInfo h3{
+    margin-top: 3%;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 15px;
+    text-align: center;
+}
+
+.instruction{
+    font-family: "Noto Sans KR", sans-serif ;
+    font-size: 15px;
+    text-align: left;
+    margin-left: 25%;
+}
+
+.btn-primary:hover {
+    background-color: #2a6344 !important; /* 기존 색보다 어두운 초록색 */
+    border-color: #2a6344 !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* 부드러운 애니메이션 효과 */
+}
+
+body {
+    background-color: #ffffff; /* 배경색 설정 */
+    background-image: none; /* body 자체에 background-image는 사용하지 않음 */
+    margin: 0;
+    padding: 0;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 하단에 고정된 GIF 배경 */
+.background-gif {
+    position: fixed; /* 스크롤해도 고정 */
+    bottom: 0; /* 화면 하단에 붙이기 */
+    left: 50%; /* 가로 중앙 정렬 */
+    transform: translateX(-50%); /* 정중앙 위치 맞추기 */
+    width: 100%; /* 가로폭을 전체로 */
+    height: auto; /* 높이는 원본 비율 유지 */
+    z-index: -1; /* 모든 요소 뒤에 위치 */
+}
+
+

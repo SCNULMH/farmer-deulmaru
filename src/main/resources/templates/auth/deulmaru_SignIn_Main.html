@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>들마루 회원가입</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+	<link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/deulmaru_SignIn_Main.css}">
+</head>
+  <body>
+	<!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <!-- 왼쪽 메뉴 -->
+           
+
+            <!-- 로고 중앙 정렬 -->
+            <a class="navbar-brand position-absolute start-50 translate-middle-x" href="/">
+                <img src="/image/들마루로고.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-center">
+                들마루
+            </a>
+
+            <!-- 오른쪽 메뉴 -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- 로그인 여부에 따라 표시 -->
+                    <li class="nav-item" th:if="${session.user != null}">
+                        <span class="nav-link">환영합니다, <span th:text="${session.user.userNickname}"></span> 님!</span>
+                    </li>
+                    <li class="nav-item" th:if="${session.user != null}">
+                        <a class="nav-link btn btn-secondary" href="/auth/mypage">마이페이지</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.user != null}">
+                        <a class="nav-link btn btn-danger" href="/auth/logout">로그아웃</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.user == null}">
+                        <a class="nav-link btn btn-outline-primary" href="/auth/login">로그인</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.user == null}">
+                        <a class="nav-link btn btn-primary" href="/auth/register-options">회원가입</a>
+                    </li>
+                </ul>
+            </div>
+        
+			</div>
+			
+    </nav>
+    
+
+    <!-- 회원가입 선택 -->
+    <div class="container">
+        <div class="row justify-content-center">
+             <div class="col-12 col-md-6 text-left text-md-left p-4 mt-5 border-right">
+            <div class="title-section">
+                <h2>일반 회원가입</h2>
+            </div>
+            <div class="paragraph">
+                <p class="p1 mt-5">아직 회원이 아니신가요?</p>
+                <p class="p2 ">회원가입을 하시면 다양한 서비스를 편리하게 이용하실 수 있습니다. </p>
+            </div>
+            <div>
+            	<a href=deulmaru_SignIn>
+                <button class="round-button">회원가입</button>
+            	</a>
+            </div>
+        </div>
+
+        <!-- 카카오톡 가입 -->
+        <div class="col-12 col-md-6 text-center text-md-center p-4 mt-5">
+                <div class="title-section">
+                    <h2>카카오톡으로 가입하기</h2>
+                </div>
+                <!-- 카카오 로그인 -->
+				
+					<a href="https://kauth.kakao.com/oauth/authorize?client_id=REDACTED_KAKAO_CLIENT_ID&redirect_uri=http://localhost:8082/auth/kakao/callback&response_type=code">
+					    <img src="/image/kakao_login_medium_wide.png" 
+					         alt="카카오 로그인" width="350">
+					</a>
+
+					   
+                    <p id="token-result" class="text-center"></p>
+                        <!-- grass_gif -->
+                        <img src="/image/풀.gif" alt="배경 GIF" class="background-gif w-75">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+  </body>
+</html>    

@@ -1,0 +1,170 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@100..900&family=Sunflower:wght@700&display=swap');
+@font-face {
+    font-family: '클로버체';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/YClover-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Paperlogy-8ExtraBold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+
+
+	.body {
+	    font-family: "Noto Sans KR", sans-serif;
+	}
+
+	
+    /* 네비게이션 바 스타일 */
+	.navbar {
+	    background-color: #fff !important;
+	    height: 60px;
+	}
+
+	.navbar-brand {
+	    font-family: "Noto Sans KR", sans-serif !important;
+	    font-weight: 500 !important;
+	    font-size: 27px !important;
+	    color: #11512e !important;
+	}
+
+
+    /* 로그인/회원가입 버튼 스타일 */
+    .navbar-nav .nav-link {
+        font-weight: 700 !important;
+        transition: all 0.2s ease-in-out;
+        padding: 5px 10px !important;
+        font-size:17px !important;       
+    }
+    
+    
+
+	.nav-link.btn.btn-secondary,
+	.nav-link.btn.btn-danger,
+	.nav-link.btn-outline-primary,
+	.nav-link.btn-primary {
+		color: #000 !important;
+	}
+	
+	
+	.nav-link.btn.btn-secondary:hover,
+	.nav-link.btn.btn-danger:hover,
+	.nav-link.btn-outline-primary:hover,
+	.nav-link.btn-primary:hover {
+		background-color: inherit !important;
+		font-size:18px !important;
+		transition: all 0.2s ease-in-out;
+		transform: none !important;
+	}
+
+
+	/* bell icon */
+	.navbar-nav .nav-link img {
+		width: auto;
+		height: 22px;
+	}
+
+	#alarmList div {
+		padding: 15px !important;
+	}
+	
+	#alarmList {
+	  display: none;
+	  position: absolute;
+	  top: 60px;
+	  right: 20px;
+	  background: #ffffff;
+	  border: 1px solid #ccc;
+	  width: 360px !important;
+	  max-height: 400px;
+	  overflow-y: auto;
+	  z-index: 999;
+	  border-radius: 8px;
+	  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	  font-family: 'Noto Sans KR', sans-serif;
+	}
+	
+	/* 알림 개별 항목 */
+	#alarmList div {
+	  display: flex;
+	  align-items: flex-start;
+	  gap: 10px;
+	  padding: 12px 15px;
+	  border-bottom: 1px solid #f0f0f0;
+	  transition: background-color 0.2s;
+	}
+	
+	#alarmList div:hover {
+	  background-color: #f9f9f9 !important;
+	}
+
+	#alarmCountBadge {
+      position: absolute; 
+      top: -5px; 
+      right: -5px; 
+      background-color: red; 
+      color: white; 
+      border-radius: 50%; 
+      padding: 3px 6px; 
+      font-size: 12px; 
+      display: none;
+	}
+
+
+
+
+
+
+	/* ✅ 메뉴 선택 바 (네비게이션 바 아래) */
+	.menu-bar {
+	    background-color: #fff; /* 네비게이션 바와 같은 배경색 */
+	    padding: 17px 0;
+	    text-align: center;
+	    border-bottom: 2px solid #eaeaea; /* 구분선 추가 */
+	    border-top: 1px solid #eaeaea;
+	}
+
+	.menu-list {
+	    list-style-type: none;
+	    padding: 0;
+	    margin: 0;
+	    display: flex;
+	    justify-content: center;
+	    gap: 40px; /* 메뉴 간격 */
+	}
+
+	.menu-list li {
+	    display: inline-block;
+	}
+
+	.menu-list a {
+	    text-decoration: none;
+	    font-family: "Noto Sans KR", sans-serif;
+	    font-weight: 500;
+	    font-size: 20px;
+	    color: #11512e;
+	    padding: 10px 15px;
+	    transition: all 0.2s ease-in-out;
+	}
+
+	.menu-list a:hover {
+	    color: #000;
+	    transition: all 0.2s ease-in-out;
+	}
+
+
+
+	@media screen and (max-width: 768px) {
+		.menu-list {
+			gap: 8px;
+		}
+		
+		.menu-list a {
+			font-size: 15px;
+		}
+	}
+
