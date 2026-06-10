@@ -55,3 +55,18 @@ models/*.pth
 ### Firebase / Google Cloud local state ###
 .firebase/
 *.log
+
+### Private contest documents / local work records ###
+/서류/
+/docs/chat/
+*.hwp
+*.hwpx
+
+### Secrets / credentials ###
+*.pem
+*.key
+*firebase-adminsdk*.json
+*service-account*.json
+*serviceAccount*.json
+credentials*.json
+secrets*.json
