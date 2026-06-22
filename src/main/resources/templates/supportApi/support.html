@@ -9,12 +9,6 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/support.css}">
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script th:inline="javascript">
-	/*<![CDATA[*/
-	    var serviceKey = /*[[${serviceKey}]]*/ "";
-	/*]]>*/
-</script>
-
 </head>
 
 <body>
@@ -171,12 +165,10 @@
 
 	// API URL 생성 함수 내에서 지역 값 가져오기 수정
 	function buildApiUrl(page = 1) {
-	    let baseUrl = "https://apis.data.go.kr/1390000/youngV2/policyListV2";
+	    let baseUrl = "/supportApi/api/list";
 	    let params = [];
 	    
 	    // 필수 파라미터
-	    params.push("typeDv=json");
-	    params.push("serviceKey=" + serviceKey);
 	    params.push(`rowCnt=${itemsPerPage}`);
 	    params.push(`cp=${page}`);
 	    

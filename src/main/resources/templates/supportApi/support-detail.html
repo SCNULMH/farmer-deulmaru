@@ -8,15 +8,6 @@
 	
 	<link rel="stylesheet" th:href="@{/css/support-detail.css}">
 </head>
-<script th:inline="javascript">
-/*<![CDATA[*/
-    var serviceKey = /*[[${serviceKey}]]*/ "";
-/*]]>*/
-</script>
-
-
-
-
 <body>
 
 	<!-- 헤더 삽입 -->
@@ -78,7 +69,7 @@
         console.log("📌 상세 페이지 seq 값:", seq);
 
         $.ajax({
-        	url: "https://apis.data.go.kr/1390000/youngV2/policyViewV2?typeDv=json&serviceKey=" + serviceKey + "&seq=" + seq,
+			url: "/supportApi/api/detail/" + encodeURIComponent(seq),
             type: "GET",
             dataType: "json",
             success: function(response) {

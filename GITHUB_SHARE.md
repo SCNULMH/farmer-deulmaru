@@ -9,7 +9,7 @@
 추가 작업 후 공유할 때는 아래 명령을 실행합니다.
 
 ```powershell
-cd C:\Users\user\Desktop\farmer-deulmaru
+cd path\to\farmer-deulmaru
 git status
 git add <변경한 파일>
 git commit -m "Update contest app"

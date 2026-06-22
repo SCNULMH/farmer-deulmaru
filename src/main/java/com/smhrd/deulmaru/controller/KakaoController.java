@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -31,6 +32,19 @@ public class KakaoController {
     @GetMapping("/login")
     public String kakaoLoginPage() {
         return "auth/deulmaru_SignIn";
+    }
+
+    @GetMapping("/authorize")
+    public String authorizeKakao() {
+        String oauthUrl = UriComponentsBuilder
+                .fromHttpUrl("https://kauth.kakao.com/oauth/authorize")
+                .queryParam("client_id", kakaoConfig.getClientId())
+                .queryParam("redirect_uri", kakaoConfig.getRedirectUri())
+                .queryParam("response_type", "code")
+                .build()
+                .encode()
+                .toUriString();
+        return "redirect:" + oauthUrl;
     }
     
     //  로그아웃 처리

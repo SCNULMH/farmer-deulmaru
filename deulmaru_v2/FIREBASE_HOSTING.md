@@ -51,7 +51,7 @@ gcloud run services update deulmaru-v2 \
 로컬 PC에 Google Cloud SDK가 설치되어 있다면 같은 명령을 PowerShell에서도 실행할 수 있습니다.
 
 ```powershell
-cd C:\Users\user\Desktop\farmer-deulmaru\deulmaru_v2
+cd path\to\farmer-deulmaru\deulmaru_v2
 
 gcloud config set project growup-39cbf
 gcloud run deploy deulmaru-v2 `
@@ -67,7 +67,7 @@ gcloud run deploy deulmaru-v2 `
 루트 폴더에서 실행합니다.
 
 ```powershell
-cd C:\Users\user\Desktop\farmer-deulmaru
+cd path\to\farmer-deulmaru
 firebase deploy --only hosting --project growup-39cbf
 ```
 

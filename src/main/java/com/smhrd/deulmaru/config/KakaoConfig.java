@@ -6,16 +6,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KakaoConfig {
 
-    @Value("${kakao.api.client-id}")
+    @Value("${kakao.api.client-id:${KAKAO_CLIENT_ID:}}")
     private String clientId;
 
-    @Value("${kakao.api.redirect-uri}")
+    @Value("${kakao.api.redirect-uri:${KAKAO_REDIRECT_URI:http://localhost:8089/auth/kakao/callback}}")
     private String redirectUri;
 
-    @Value("${kakao.api.token-url}")
+    @Value("${kakao.api.token-url:https://kauth.kakao.com/oauth/token}")
     private String tokenUrl;
 
-    @Value("${kakao.api.user-info-url}")
+    @Value("${kakao.api.user-info-url:https://kapi.kakao.com/v2/user/me}")
     private String userInfoUrl;
 
     // ✅ Getter 메서드 추가 (Thymeleaf에서 사용 가능)

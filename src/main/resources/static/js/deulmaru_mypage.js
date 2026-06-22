@@ -31,12 +31,11 @@ console.log("✅ deulmaru_mapage.js 로드 완료");
                     var grantId = interest.grantId;
                     
                     $.ajax({
-                        url: "https://apis.data.go.kr/1390000/youngV2/policyViewV2",
+                        url: "/supportApi/api/detail/" + encodeURIComponent(grantId),
                         type: "GET",
                         dataType: "json",
                         data: {
                             typeDv: "json",
-                            serviceKey: "REDACTED_SUPPORT_API_SERVICE_KEY",
                             seq: grantId
                         },
                         success: function(response) {

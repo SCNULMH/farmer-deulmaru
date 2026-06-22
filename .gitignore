@@ -63,10 +63,23 @@ models/*.pth
 *.hwpx
 
 ### Secrets / credentials ###
+.env
+.env.*
+!.env.example
+!.env.*.example
 *.pem
 *.key
+*.p12
+*.pfx
+*.jks
+*.sqlite
+*.sqlite3
+*.db
 *firebase-adminsdk*.json
 *service-account*.json
 *serviceAccount*.json
 credentials*.json
 secrets*.json
+src/main/resources/application-*.properties
+src/main/resources/application-local.yml
+src/main/resources/application-local.yaml

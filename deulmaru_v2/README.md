@@ -5,7 +5,7 @@
 ## 실행
 
 ```powershell
-cd C:\Users\user\Desktop\farmer-deulmaru\deulmaru_v2
+cd path\to\farmer-deulmaru\deulmaru_v2
 .\.venv\Scripts\Activate.ps1
 uvicorn app.main:app --reload --port 8000
 ```

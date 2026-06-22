@@ -1,7 +1,9 @@
 package com.smhrd.deulmaru.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,8 +14,9 @@ import java.util.Map;
 @Service
 public class CropScheduleService {
 
-    private final String BASE_URL = "http://api.nongsaro.go.kr/service/farmWorkingPlanNew/workScheduleEraInfoLst";
-    private final String API_KEY = "REDACTED_NONGSARO_API_KEY";
+    private static final String BASE_URL = "http://api.nongsaro.go.kr/service/farmWorkingPlanNew/workScheduleEraInfoLst";
+    @Value("${nongsaro.api-key:${NONGSARO_API_KEY:}}")
+    private String apiKey;
     
  // 작물명과 cntntsNo 매핑 (전체 매핑 값)
     private static final Map<String, String> cropMapping = new HashMap<>();
@@ -137,8 +140,16 @@ public class CropScheduleService {
         if (cntntsNo == null) {
             return null; // 매핑 정보가 없는 경우
         }
+        if (apiKey == null || apiKey.isBlank()) {
+            return null;
+        }
         
-        String url = BASE_URL + "?cntntsNo=" + cntntsNo + "&apiKey=" + API_KEY;
+        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+            .queryParam("cntntsNo", cntntsNo)
+            .queryParam("apiKey", apiKey)
+            .build()
+            .encode()
+            .toUriString();
         RestTemplate restTemplate = new RestTemplate();
         String xmlResponse = restTemplate.getForObject(url, String.class);
         

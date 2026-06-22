@@ -87,9 +87,9 @@
 
     <!-- 카카오 로그인 -->
     <div class="d-flex flex-column align-items-center">
-        <!-- 수정된 부분: 직접 카카오 OAuth URL로 연결 -->
+        <!-- 서버 설정을 통해 카카오 OAuth URL로 연결 -->
         <a class="kakao-login mt-1" 
-           href="https://kauth.kakao.com/oauth/authorize?client_id=REDACTED_KAKAO_CLIENT_ID&redirect_uri=http://localhost:8082/auth/kakao/callback&response_type=code">
+           href="/auth/kakao/authorize">
             <img src="/image/kakao_login_medium_wide.png" class="kakao-login-btn align-items-center mt-5" alt="카카오 로그인 버튼">
         </a>
         <p id="token-result" class="text-center"></p>
